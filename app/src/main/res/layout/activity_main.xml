@@ -12,120 +12,38 @@
 
 
     <LinearLayout
-        android:id="@+id/locationSelector"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:orientation="horizontal"
+        android:layout_marginBottom="@dimen/_20sdp"
 
-        <AutoCompleteTextView
-            android:id="@+id/locationAC"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/_20sdp"
-            android:layout_marginEnd="@dimen/_20sdp"
-            android:layout_marginBottom="@dimen/_10sdp"
-            android:background="@drawable/box_1"
-            android:gravity="center_vertical|start"
-            android:hint="Select Location"
-            android:paddingLeft="16dp"
-            android:paddingTop="8dp"
-            android:paddingRight="16dp"
-            android:paddingBottom="8dp"
-            android:textColor="@color/white"
-            android:textColorHint="#E0D4D4"
-            android:textSize="@dimen/_16sdp"
-            android:textStyle="bold"
-
-
-            />
+        >
 
         <LinearLayout
-            android:layout_width="match_parent"
+            android:layout_weight="1"
+            android:id="@+id/locationSelector"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/_20sdp"
-            android:orientation="horizontal">
+            android:orientation="vertical">
 
-
-            <EditText
-                android:id="@+id/latEditText"
-                android:layout_width="@dimen/_80sdp"
+            <AutoCompleteTextView
+                android:id="@+id/locationAC"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/_20sdp"
-                android:layout_marginEnd="@dimen/_20sdp"
-                android:autoSizeMaxTextSize="@dimen/_16sdp"
-                android:autoSizeTextType="uniform"
-                android:background="@drawable/box_1"
-
-                android:gravity="center_vertical|start"
-                android:hint="Latitude"
-                android:inputType="numberDecimal"
-                android:maxLines="1"
-                android:paddingLeft="16dp"
-                android:paddingTop="8dp"
-                android:paddingRight="16dp"
-                android:paddingBottom="8dp"
-                android:singleLine="true"
-                android:textColor="@color/white"
-                android:textColorHint="#E0D4D4"
-                android:textSize="@dimen/_12sdp"
-                android:textStyle="bold"
-                app:autoSizeMaxTextSize="@dimen/_16sdp"
-                app:autoSizeTextType="uniform"
-
-                />
-
-            <EditText
-                android:id="@+id/longEditText"
-                android:layout_width="@dimen/_80sdp"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="@dimen/_20sdp"
-                android:autoSizeMaxTextSize="@dimen/_16sdp"
-                android:autoSizeTextType="uniform"
-                android:background="@drawable/box_1"
-                android:gravity="center_vertical|start"
-                android:hint="Longitude"
-                android:inputType="numberDecimal"
-                android:maxLines="1"
-                android:paddingLeft="16dp"
-                android:paddingTop="8dp"
-                android:paddingRight="16dp"
-                android:paddingBottom="8dp"
-                android:singleLine="true"
-                android:textColor="@color/white"
-                android:textColorHint="#E0D4D4"
-                android:textSize="@dimen/_12sdp"
-                android:textStyle="bold"
-                app:autoSizeMaxTextSize="@dimen/_16sdp"
-                app:autoSizeTextType="uniform"
-
-
-                />
-
-
-            <TextView
-                android:id="@+id/set"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
                 android:layout_marginEnd="@dimen/_10sdp"
-                android:autoSizeMaxTextSize="@dimen/_16sdp"
-                android:autoSizeTextType="uniform"
+                android:layout_marginBottom="@dimen/_10sdp"
                 android:background="@drawable/box_1"
                 android:gravity="center_vertical|start"
-                android:inputType="numberDecimal"
-                android:maxLines="1"
-
+                android:hint="Select Location"
                 android:paddingLeft="16dp"
                 android:paddingTop="8dp"
                 android:paddingRight="16dp"
                 android:paddingBottom="8dp"
-                android:singleLine="true"
-                android:text="Set"
                 android:textColor="@color/white"
                 android:textColorHint="#E0D4D4"
-                android:textSize="@dimen/_12sdp"
+                android:textSize="@dimen/_16sdp"
                 android:textStyle="bold"
-                app:autoSizeMaxTextSize="@dimen/_16sdp"
-                app:autoSizeTextType="uniform"
 
 
                 />
@@ -133,45 +51,170 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:gravity="center"
-                android:orientation="vertical">
+                android:orientation="horizontal">
 
-                <ImageView
-                    android:id="@+id/close"
-                    android:layout_width="wrap_content"
-                    android:layout_height="@dimen/_15sdp"
 
-                    android:src="@android:drawable/ic_menu_close_clear_cancel"
+                <EditText
+                    android:id="@+id/latEditText"
+                    android:layout_width="@dimen/_80sdp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/_20sdp"
+                    android:layout_marginEnd="@dimen/_10sdp"
+                    android:autoSizeMaxTextSize="@dimen/_16sdp"
+                    android:autoSizeTextType="uniform"
+                    android:background="@drawable/box_1"
+
+                    android:gravity="center_vertical|start"
+                    android:hint="Latitude"
+                    android:inputType="numberDecimal"
+                    android:maxLines="1"
+                    android:paddingLeft="16dp"
+                    android:paddingTop="8dp"
+                    android:paddingRight="16dp"
+                    android:paddingBottom="8dp"
+                    android:singleLine="true"
+                    android:textColor="@color/white"
+                    android:textColorHint="#E0D4D4"
+                    android:textSize="@dimen/_12sdp"
+                    android:textStyle="bold"
+                    app:autoSizeMaxTextSize="@dimen/_16sdp"
+                    app:autoSizeTextType="uniform"
 
                     />
 
-                <ImageView
-                    android:id="@+id/refresh"
-                    android:layout_width="wrap_content"
-                    android:layout_height="@dimen/_15sdp"
+                <Space
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    />
 
-                    android:src="@android:drawable/ic_menu_rotate"
+                <EditText
+                    android:id="@+id/longEditText"
+                    android:layout_width="@dimen/_80sdp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="@dimen/_10sdp"
+                    android:autoSizeMaxTextSize="@dimen/_16sdp"
+                    android:autoSizeTextType="uniform"
+                    android:background="@drawable/box_1"
+                    android:gravity="center_vertical|start"
+                    android:hint="Longitude"
+                    android:inputType="numberDecimal"
+                    android:maxLines="1"
+                    android:paddingLeft="16dp"
+                    android:paddingTop="8dp"
+                    android:paddingRight="16dp"
+                    android:paddingBottom="8dp"
+                    android:singleLine="true"
+                    android:textColor="@color/white"
+                    android:textColorHint="#E0D4D4"
+                    android:textSize="@dimen/_12sdp"
+                    android:textStyle="bold"
+                    app:autoSizeMaxTextSize="@dimen/_16sdp"
+                    app:autoSizeTextType="uniform"
+
 
                     />
+
+
+                <Space
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    />
+
+
+                <TextView
+                    android:id="@+id/set"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="@dimen/_10sdp"
+                    android:autoSizeMaxTextSize="@dimen/_16sdp"
+                    android:autoSizeTextType="uniform"
+                    android:background="@drawable/box_1"
+                    android:gravity="center_vertical|start"
+                    android:inputType="numberDecimal"
+                    android:maxLines="1"
+
+                    android:paddingLeft="16dp"
+                    android:paddingTop="8dp"
+                    android:paddingRight="16dp"
+                    android:paddingBottom="8dp"
+                    android:singleLine="true"
+                    android:text="Set"
+                    android:textColor="@color/white"
+                    android:textColorHint="#E0D4D4"
+                    android:textSize="@dimen/_12sdp"
+                    android:textStyle="bold"
+                    app:autoSizeMaxTextSize="@dimen/_16sdp"
+                    app:autoSizeTextType="uniform"
+
+
+                    />
+
+
 
             </LinearLayout>
 
 
         </LinearLayout>
 
+        <LinearLayout
+            android:layout_marginEnd="@dimen/_20sdp"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <Space
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                />
+            <ImageView
+                android:id="@+id/close"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/_25sdp"
+
+                android:src="@android:drawable/ic_menu_close_clear_cancel"
+
+                />
+
+            <Space
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                />
+
+            <ImageView
+                android:id="@+id/refresh"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/_25sdp"
+
+                android:src="@android:drawable/ic_menu_rotate"
+
+                />
+            <Space
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                />
+        </LinearLayout>
+
+
+
 
     </LinearLayout>
 
     <TextView
-        android:visibility="gone"
-        tools:visibility="visible"
         android:id="@+id/locationTV"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/_20sdp"
         android:text="Location"
-        android:textColor="@color/white" />
+        android:textColor="@color/white"
+        android:visibility="gone"
+        tools:visibility="visible" />
 
 
     <LinearLayout

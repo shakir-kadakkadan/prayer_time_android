@@ -7,8 +7,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
-import android.text.Editable
-import android.text.TextWatcher
+import android.util.Log
 import android.view.View
 import android.widget.ArrayAdapter
 import androidx.appcompat.app.AppCompatActivity
@@ -21,7 +20,6 @@ import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.pt_layout.view.*
 import shakir.swalah.models.Cord
-
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -40,13 +38,13 @@ class MainActivity : AppCompatActivity() {
 
 
         if (lattt == 0.0 && longgg == 0.0) {
-            getGioIpDb()
+             getGioIpDb()
         } else {
-            onGetCordinates(lattt, longgg, location)
+             onGetCordinates(lattt, longgg, location)
         }
 
         if (arrayList.size == 0) {
-            getLocationFromCSV()
+             getLocationFromCSV()
         }
 
         set.setOnClickListener {
@@ -59,6 +57,7 @@ class MainActivity : AppCompatActivity() {
         close.setOnClickListener {
             locationSelector.visibility = View.GONE
             locationTV.visibility = View.VISIBLE
+            sharedPreferences.edit().putInt("locationTV_VISIBILITY", locationTV.visibility).apply()
         }
 
         refresh.setOnClickListener {
@@ -68,13 +67,19 @@ class MainActivity : AppCompatActivity() {
         locationTV.setOnClickListener {
             locationSelector.visibility = View.VISIBLE
             locationTV.visibility = View.GONE
+            sharedPreferences.edit().putInt("locationTV_VISIBILITY", locationTV.visibility).apply()
+        }
+        if ( sharedPreferences.getInt("locationTV_VISIBILITY", View.GONE)==View.VISIBLE){
+            locationTV.visibility = View.VISIBLE
+            locationSelector.visibility = View.GONE
+        }else{
+            locationTV.visibility = View.GONE
+            locationSelector.visibility = View.VISIBLE
         }
 
 
+
     }
-
-
-
 
 
     fun onGetCordinates(lattt: Double, longgg: Double, l: String? = "") {
@@ -109,8 +114,9 @@ class MainActivity : AppCompatActivity() {
 
     }
 
-
+    val TAG = "MainActivityAlarm"
     private fun setAlarm(prayTime: Date) {
+        Log.d(TAG, "setAlarm() called with: prayTime = [" + prayTime + "]");
 
         val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
 
@@ -211,27 +217,29 @@ class MainActivity : AppCompatActivity() {
             it.forEach {
                 val splited = it.trim().split(',')
                 arrayList.add(Cord(splited[0], splited[1].toDouble(), splited[2].toDouble()))
-                locationAC.setAdapter(
-                    ArrayAdapter(
-                        this,
-                        android.R.layout.simple_list_item_1,
-                        arrayList.map { it.name })
-                )
-                locationAC.threshold = 1
-                locationAC.setOnItemClickListener { parent, view, position, id ->
-                    val get = arrayList.find { it.name == locationAC.text.toString() }
-                    get?.let {
-                        onGetCordinates(get.latitude, get.longitude, get.name)
-                        getSharedPreferences("sp", Context.MODE_PRIVATE)
-                            .edit()
-                            .putDouble("lattt", get.latitude)
-                            .putDouble("longgg", get.longitude)
-                            .putString("location", get.name)
-                            .apply()
-                    }
-                }
             }
         }
+        locationAC.setAdapter(
+            ArrayAdapter(
+                this,
+                android.R.layout.simple_list_item_1,
+                arrayList.map { it.name })
+        )
+        locationAC.threshold = 1
+        locationAC.setOnItemClickListener { parent, view, position, id ->
+            val get = arrayList.find { it.name == locationAC.text.toString() }
+            get?.let {
+                onGetCordinates(get.latitude, get.longitude, get.name)
+                getSharedPreferences("sp", Context.MODE_PRIVATE)
+                    .edit()
+                    .putDouble("lattt", get.latitude)
+                    .putDouble("longgg", get.longitude)
+                    .putString("location", get.name)
+                    .apply()
+            }
+        }
+
+
     }
 
 
