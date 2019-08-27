@@ -9,8 +9,8 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import kotlinx.android.synthetic.main.activity_main_alarm_example.*
 import shakir.swalah.R
-import shakir.swalah.alarm.BootCompleteReceiver
-import shakir.swalah.alarm.Utils
+import shakir.swalah.BootCompleteReceiver
+import shakir.swalah.alarm.ut
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -65,7 +65,7 @@ class MainActivityAlarm : AppCompatActivity() {
                     putLong("timeInMilli", timeInMilliSeconds)
                     apply()
                 }
-                Utils.setAlarm(this, timeInMilliSeconds)
+                ut.setAlarm(this, timeInMilliSeconds)
             } else {
                 Toast.makeText(this, "Please enter the time first!", Toast.LENGTH_LONG).show()
             }

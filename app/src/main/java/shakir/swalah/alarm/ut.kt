@@ -5,7 +5,7 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 
-object Utils {
+object ut {
 
     fun setAlarm(context: Context, timeOfAlarm: Long) {
 

@@ -5,6 +5,14 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 
 android {
+    signingConfigs {
+        rel_config {
+            storeFile file('../KEY_STORE_adhan.jks')
+            storePassword 'sha@Skr'
+            keyPassword 'sha@Skr'
+            keyAlias = 'adhan'
+        }
+    }
     compileSdkVersion 28
     defaultConfig {
         applicationId "shakir.swalah"
@@ -13,13 +21,27 @@ android {
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        signingConfig signingConfigs.rel_config
     }
     buildTypes {
         release {
-            minifyEnabled false
+            minifyEnabled true
+            shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+
+
+    //APK FILE NAME - NEW
+    if (gradle.startParameter.projectProperties.get("android.injected.build.api") == null)
+        setProperty("archivesBaseName", "Adhan  "
+                + ((gradle.startParameter.taskNames[0]).toString().replace(":app:assemble", "").replace("Debug", "").replace("Release", " signed").trim())
+                + " " + ((new Date()).format('d MMM H꞉mm').toString())
+                + " " + "v" + defaultConfig.versionName + " ("
+                + defaultConfig.versionCode + ") ")
+
+
+
 }
 
 dependencies {
@@ -40,6 +62,6 @@ dependencies {
     implementation 'com.google.code.gson:gson:2.8.5'
     implementation 'com.squareup.okhttp3:logging-interceptor:3.10.0'
     implementation 'com.squareup.retrofit2:adapter-rxjava2:2.4.0'
-    implementation 'io.reactivex.rxjava2:rxjava:2.2.0'
-    implementation 'io.reactivex.rxjava2:rxandroid:2.1.0'
+    implementation 'io.reactivex.rxjava2:rxjava:2.2.6'
+    implementation 'io.reactivex.rxjava2:rxandroid:2.1.1'
 }

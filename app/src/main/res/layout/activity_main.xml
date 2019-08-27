@@ -159,6 +159,7 @@
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/LL_close_refresh"
             android:layout_marginEnd="@dimen/_20sdp"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
@@ -172,8 +173,11 @@
                 android:layout_weight="1"
                 />
             <ImageView
+            android:padding="6dp"
+                android:background="@drawable/bg4"
+                android:tint="@color/green1"
                 android:id="@+id/close"
-                android:layout_width="wrap_content"
+                android:layout_width="@dimen/_25sdp"
                 android:layout_height="@dimen/_25sdp"
 
                 android:src="@android:drawable/ic_menu_close_clear_cancel"
@@ -183,12 +187,15 @@
             <Space
                 android:layout_width="0dp"
                 android:layout_height="0dp"
-                android:layout_weight="1"
+                android:layout_weight="3"
                 />
 
             <ImageView
+                android:padding="6dp"
+                android:background="@drawable/bg4"
+                android:tint="@color/green1"
                 android:id="@+id/refresh"
-                android:layout_width="wrap_content"
+                android:layout_width="@dimen/_25sdp"
                 android:layout_height="@dimen/_25sdp"
 
                 android:src="@android:drawable/ic_menu_rotate"
@@ -207,6 +214,7 @@
     </LinearLayout>
 
     <TextView
+        android:layout_marginBottom="@dimen/_8sdp"
         android:id="@+id/locationTV"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -218,6 +226,8 @@
 
 
     <LinearLayout
+        android:textDirection="rtl"
+        android:layoutDirection="rtl"
         android:id="@+id/prayerTimeLL"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

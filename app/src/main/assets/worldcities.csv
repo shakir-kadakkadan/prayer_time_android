@@ -7494,7 +7494,9 @@ Diu,20.7197,70.9904
 Sirsa,29.4904,75.03
 Mangalore,12.9,74.85
 Thiruvananthapuram,8.5,76.95
-Kochi,10.015,76.2239
+Trivandrum,8.5,76.95
+Kochi-Kerala,10.015,76.2239
+Cochin,10.015,76.2239
 Bangalore,12.97,77.56
 Proddatur,14.7504,78.57
 Tirupati,13.6504,79.42
@@ -7546,6 +7548,7 @@ Ranchi,23.37,85.33
 Itanagar,27.1004,93.6166
 Raipur,21.235,81.635
 Kozhikode,11.2504,75.77
+Calicut,11.2504,75.77
 Machilipatnam,16.2004,81.18
 Khammam,17.2804,80.1601
 Kakinada,16.9675,82.2375
@@ -7880,7 +7883,7 @@ Hiroshima,34.3878,132.4429
 Kagoshima,31.586,130.5611
 Kanazawa,36.56,136.64
 Kobe,34.68,135.17
-Kochi,33.5624,133.5375
+Kochi-Japan,33.5624,133.5375
 Kofu,35.6504,138.5833
 Kumamoto,32.8009,130.7006
 Kyoto,35.03,135.75

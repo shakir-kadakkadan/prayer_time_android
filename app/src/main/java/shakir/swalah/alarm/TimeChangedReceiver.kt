@@ -3,7 +3,6 @@ package shakir.swalah.alarm
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import shakir.swalah.alarm.Utils
 
 
 class TimeChangedReceiver : BroadcastReceiver() {
@@ -14,7 +13,7 @@ class TimeChangedReceiver : BroadcastReceiver() {
             // ideally we should be fetching the data from a database
             val sharedPref = context?.getSharedPreferences("MyPref",Context.MODE_PRIVATE) ?: return
             val timeInMilli = sharedPref.getLong("timeInMilli", 1)
-            Utils.setAlarm(context,timeInMilli)
+            ut.setAlarm(context,timeInMilli)
         }
     }
 }

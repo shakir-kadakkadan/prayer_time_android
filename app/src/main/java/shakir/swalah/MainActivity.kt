@@ -3,11 +3,12 @@ package shakir.swalah
 import android.annotation.SuppressLint
 import android.app.AlarmManager
 import android.app.PendingIntent
+import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
-import android.content.SharedPreferences
+import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.widget.ArrayAdapter
 import androidx.appcompat.app.AppCompatActivity
@@ -26,35 +27,56 @@ import java.util.*
 
 class MainActivity : AppCompatActivity() {
 
+    //Lat range = -90 to +90
+    //LOng range = -180 to +180
+    val INVALID_CORDINATE = Double.MAX_VALUE
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        val receiver = ComponentName(applicationContext, BootCompleteReceiver::class.java)
+        applicationContext.packageManager?.setComponentEnabledSetting(
+            receiver,
+            PackageManager.COMPONENT_ENABLED_STATE_ENABLED,
+            PackageManager.DONT_KILL_APP
+        )
+
         val sharedPreferences = getSharedPreferences("sp", Context.MODE_PRIVATE)
-        val lattt = sharedPreferences.getDouble("lattt", 0.0)
-        val longgg = sharedPreferences.getDouble("longgg", 0.0)
+        val lattt = sharedPreferences.getDouble("lattt", INVALID_CORDINATE)
+        val longgg = sharedPreferences.getDouble("longgg", INVALID_CORDINATE)
         val location = sharedPreferences.getString("location", null)
 
 
 
-        if (lattt == 0.0 && longgg == 0.0) {
-             getGioIpDb()
+        if (lattt == INVALID_CORDINATE || longgg == INVALID_CORDINATE) {
+            getGioIpDb()
         } else {
-             onGetCordinates(lattt, longgg, location)
+            onGetCordinates(lattt, longgg, location, false)
         }
 
         if (arrayList.size == 0) {
-             getLocationFromCSV()
+            getLocationFromCSV()
         }
 
         set.setOnClickListener {
+
+
+            getSharedPreferences("sp", Context.MODE_PRIVATE)
+                .edit()
+                .putDouble("lattt", lattt)
+                .putDouble("longgg", longgg)
+                .putString("location", "Select City")
+                .apply()
             onGetCordinates(
                 latEditText.text.toString().toDouble(),
                 longEditText.text.toString().toDouble(),
-                "Custom Location"
+                "Custom Location",
+                true
             )
         }
         close.setOnClickListener {
+            LL_close_refresh.visibility = View.GONE
             locationSelector.visibility = View.GONE
             locationTV.visibility = View.VISIBLE
             sharedPreferences.edit().putInt("locationTV_VISIBILITY", locationTV.visibility).apply()
@@ -67,22 +89,32 @@ class MainActivity : AppCompatActivity() {
         locationTV.setOnClickListener {
             locationSelector.visibility = View.VISIBLE
             locationTV.visibility = View.GONE
+            LL_close_refresh.visibility = View.VISIBLE
             sharedPreferences.edit().putInt("locationTV_VISIBILITY", locationTV.visibility).apply()
         }
-        if ( sharedPreferences.getInt("locationTV_VISIBILITY", View.GONE)==View.VISIBLE){
+        if (sharedPreferences.getInt("locationTV_VISIBILITY", View.GONE) == View.VISIBLE) {
             locationTV.visibility = View.VISIBLE
             locationSelector.visibility = View.GONE
-        }else{
+            LL_close_refresh.visibility = View.GONE
+        } else {
             locationTV.visibility = View.GONE
             locationSelector.visibility = View.VISIBLE
+            LL_close_refresh.visibility = View.VISIBLE
         }
-
 
 
     }
 
 
-    fun onGetCordinates(lattt: Double, longgg: Double, l: String? = "") {
+    fun onGetCordinates(
+        lattt: Double,
+        longgg: Double,
+        l: String? = "",
+        cancelPrevisousPendingInten: Boolean = false
+    ) {
+
+        if (cancelPrevisousPendingInten)
+            Util.cancelLastPendingIntent(this)
         val array = arrayOf(
             PrayersType.FAJR,
             PrayersType.SUNRISE,
@@ -97,14 +129,26 @@ class MainActivity : AppCompatActivity() {
                 .timeCalculationMethod(AngleCalculationType.KARACHI)
                 .calculateTimes()
 
+
+        var nextPrayTime: PrayersType? = null
         prayerTimeLL.forEachIndexed { index, view ->
-            view.prayerName.setText(array[index].name)
+            view.prayerName.setText(AppApplication.getArabicNames(array[index].name))
             val prayTime = prayerTimes.getPrayTime(array[index])
             view.prayerTime.text =
                 SimpleDateFormat("HH:mm", Locale.ENGLISH).format(prayTime)
 
-            setAlarm(prayTime)
+            if (prayTime.time >= System.currentTimeMillis() && nextPrayTime == null) {
+                nextPrayTime = array[index]
+            }
+
+            view.setOnClickListener {
+                testAudio(this)
+            }
+
+
         }
+
+        Util.setNextAlarm(this)
         locationAC.setText("")
         locationAC.setHint(l)
         locationTV.setText(l)
@@ -115,34 +159,51 @@ class MainActivity : AppCompatActivity() {
     }
 
     val TAG = "MainActivityAlarm"
-    private fun setAlarm(prayTime: Date) {
-        Log.d(TAG, "setAlarm() called with: prayTime = [" + prayTime + "]");
+    /*  private fun setAlarm(
+          prayTime: Date,
+          name: String?,
+          arabicNames: String?
+      ) {
+          Log.d(TAG, "setAlarm() called with: prayTime = [" + prayTime + "]");
 
-        val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
+          val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
 
-        // Alarm type
-        val alarmType = AlarmManager.RTC
+          // Alarm type
+          val alarmType = AlarmManager.RTC
+
+          val uniqueIndexForParayer = Util.getUniqueIndexForParayer(name)
+          val broadcastIntent = Intent(this, AlarmBroadCastReceiver::class.java).apply {
+              setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+              putExtra("milli", prayTime.time)
+              putExtra("name", arabicNames)
+              putExtra("index", uniqueIndexForParayer)
+          }
 
 
-        val broadcastIntent = Intent(this, AlarmBroadCastReceiver::class.java)
-
-
-
-        broadcastIntent.putExtras(
-            Intent(this, MainActivity::class.java)
-                .setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-                .putExtra("milli", prayTime.time)
-        )
+          *//* broadcastIntent.putExtras(
+             Intent(this, MainActivity::class.java)
+                 .setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                 .putExtra("milli", prayTime.time)
+                 .putExtra("name", name)
+         )*//*
 
 
         val pendingAlarmIntent = PendingIntent.getBroadcast(
             this,
-            prayTime.time.toInt(), broadcastIntent,
+            uniqueIndexForParayer, broadcastIntent,
             PendingIntent.FLAG_ONE_SHOT
         )
-        alarmManager.set(alarmType, prayTime.time, pendingAlarmIntent)
-    }
 
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            alarmManager.setExactAndAllowWhileIdle(alarmType, prayTime.time, pendingAlarmIntent)
+        } else {
+            alarmManager.set(alarmType, prayTime.time, pendingAlarmIntent)
+        }
+
+
+    }
+*/
 
     /*  @SuppressLint("CheckResult")
       fun getIPStackCordinates() {
@@ -179,13 +240,14 @@ class MainActivity : AppCompatActivity() {
 
                         it.latitude?.let { lattt ->
                             it.longitude?.let { longgg ->
-                                onGetCordinates(lattt, longgg, it.city)
                                 getSharedPreferences("sp", Context.MODE_PRIVATE)
                                     .edit()
                                     .putDouble("lattt", lattt)
                                     .putDouble("longgg", longgg)
                                     .putString("location", it?.city)
                                     .apply()
+                                onGetCordinates(lattt, longgg, it.city, true)
+
                             }
                         }
                     } catch (e: Exception) {
@@ -194,19 +256,22 @@ class MainActivity : AppCompatActivity() {
                 },
                 {
                     it.printStackTrace()
-                    onGetCordinates(11.0, 76.0, "Kerala")
+
+                    val sharedPreferences = getSharedPreferences("sp", Context.MODE_PRIVATE)
+                    val lattt = sharedPreferences.getDouble("lattt", INVALID_CORDINATE)
+                    val longgg = sharedPreferences.getDouble("longgg", INVALID_CORDINATE)
+                    val location = sharedPreferences.getString("location", null)
+                    if (lattt == INVALID_CORDINATE && longgg == INVALID_CORDINATE) {
+                        onGetCordinates(11.0, 76.0, "Kerala", true)
+                    } else {
+                        onGetCordinates(lattt, longgg, location, true)
+                    }
+
 
                 }
             )
 
     }
-
-
-    fun SharedPreferences.Editor.putDouble(key: String, double: Double) =
-        putLong(key, java.lang.Double.doubleToRawLongBits(double))
-
-    fun SharedPreferences.getDouble(key: String, default: Double) =
-        java.lang.Double.longBitsToDouble(getLong(key, java.lang.Double.doubleToRawLongBits(default)))
 
 
     val arrayList = arrayListOf<Cord>()
@@ -229,16 +294,56 @@ class MainActivity : AppCompatActivity() {
         locationAC.setOnItemClickListener { parent, view, position, id ->
             val get = arrayList.find { it.name == locationAC.text.toString() }
             get?.let {
-                onGetCordinates(get.latitude, get.longitude, get.name)
+
                 getSharedPreferences("sp", Context.MODE_PRIVATE)
                     .edit()
                     .putDouble("lattt", get.latitude)
                     .putDouble("longgg", get.longitude)
                     .putString("location", get.name)
                     .apply()
+                onGetCordinates(get.latitude, get.longitude, get.name, true)
+
             }
         }
 
+
+    }
+
+
+    fun testAudio(context: Context) {
+        val broadcastIntent = Intent(context, AlarmBroadCastReceiver::class.java).apply {
+            setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+            putExtra("milli", System.currentTimeMillis())
+            putExtra("name", "test" + System.currentTimeMillis())
+            putExtra("index", System.currentTimeMillis())
+        }
+
+
+        val pendingAlarmIntent = PendingIntent.getBroadcast(
+            context,
+            (System.currentTimeMillis()).toInt(), broadcastIntent,
+            PendingIntent.FLAG_ONE_SHOT
+        )
+
+
+        val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+
+        // Alarm type
+        val alarmType = AlarmManager.RTC
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            alarmManager.setExactAndAllowWhileIdle(
+                alarmType,
+                (System.currentTimeMillis()),
+                pendingAlarmIntent
+            )
+        } else {
+            alarmManager.set(
+                alarmType,
+                (System.currentTimeMillis()),
+                pendingAlarmIntent
+            )
+        }
 
     }
 

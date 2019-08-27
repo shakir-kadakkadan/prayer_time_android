@@ -1,6 +1,7 @@
 package shakir.swalah
 
 import android.app.Application
+import com.azan.types.PrayersType
 import com.google.gson.GsonBuilder
 import io.reactivex.internal.functions.Functions
 import io.reactivex.plugins.RxJavaPlugins
@@ -66,5 +67,17 @@ class AppApplication : Application() {
 
     companion object {
         lateinit var restService: WebServices
+
+        fun getArabicNames(string: String?): String? {
+            return when (string?.let { PrayersType.valueOf(it) }) {
+                PrayersType.FAJR -> "الفجر"
+                PrayersType.SUNRISE -> "الشروق"
+                PrayersType.ZUHR -> "الظهر"
+                PrayersType.ASR -> "العصر"
+                PrayersType.MAGHRIB -> "المغرب"
+                PrayersType.ISHA -> "العشاء"
+                else ->null
+            }
+        }
     }
 }
