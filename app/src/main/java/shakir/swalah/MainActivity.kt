@@ -146,7 +146,7 @@ class MainActivity : AppCompatActivity() {
             }
 
             view.setOnClickListener {
-                testAudio(this)
+               /* testAudio(this)*/
             }
 
 
@@ -357,42 +357,45 @@ class MainActivity : AppCompatActivity() {
     }
 
 
-    fun testAudio(context: Context) {
-        val broadcastIntent = Intent(context, AlarmBroadCastReceiver::class.java).apply {
-            setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-            putExtra("milli", System.currentTimeMillis())
-            putExtra("name", "test" + System.currentTimeMillis())
-            putExtra("index", System.currentTimeMillis())
-        }
+    /*fun testAudio(context: Context) {
+        if (BuildConfig.DEBUG) {
+            val broadcastIntent = Intent(context, AlarmBroadCastReceiver::class.java).apply {
+                setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                putExtra("milli", System.currentTimeMillis())
+                putExtra("name", "test" + System.currentTimeMillis())
+                putExtra("index", System.currentTimeMillis())
+            }
 
 
-        val pendingAlarmIntent = PendingIntent.getBroadcast(
-            context,
-            (System.currentTimeMillis()).toInt(), broadcastIntent,
-            PendingIntent.FLAG_ONE_SHOT
-        )
-
-
-        val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
-
-        // Alarm type
-        val alarmType = AlarmManager.RTC
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            alarmManager.setExactAndAllowWhileIdle(
-                alarmType,
-                (System.currentTimeMillis()),
-                pendingAlarmIntent
+            val pendingAlarmIntent = PendingIntent.getBroadcast(
+                context,
+                (System.currentTimeMillis()).toInt(), broadcastIntent,
+                PendingIntent.FLAG_ONE_SHOT
             )
-        } else {
-            alarmManager.set(
-                alarmType,
-                (System.currentTimeMillis()),
-                pendingAlarmIntent
-            )
+
+
+            val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+
+            // Alarm type
+            val alarmType = AlarmManager.RTC
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                alarmManager.setExactAndAllowWhileIdle(
+                    alarmType,
+                    (System.currentTimeMillis()),
+                    pendingAlarmIntent
+                )
+            } else {
+                alarmManager.set(
+                    alarmType,
+                    (System.currentTimeMillis()),
+                    pendingAlarmIntent
+                )
+            }
+
         }
 
     }
-
+*/
 
 }

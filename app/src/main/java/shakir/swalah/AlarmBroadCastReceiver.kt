@@ -52,7 +52,6 @@ class AlarmBroadCastReceiver : BroadcastReceiver() {
         if (context != null) {
 
 
-
             val array = arrayOf(
                 PrayersType.FAJR,
                 PrayersType.SUNRISE,
@@ -77,13 +76,7 @@ class AlarmBroadCastReceiver : BroadcastReceiver() {
                     .calculateTimes()
 
 
-            Log.d("dgfbdsfjjd","$lattt $longgg $prayerTimes")
-
-
-
-
-
-
+            Log.d("dgfbdsfjjd", "$lattt $longgg $prayerTimes")
 
 
             /* val intent = Intent(this, AlertDetails::class.java).apply {
@@ -103,13 +96,13 @@ class AlarmBroadCastReceiver : BroadcastReceiver() {
             val audioManager =
                 context.getSystemService(Context.AUDIO_SERVICE) as AudioManager
 
-            if (audioManager.getStreamVolume(AudioManager.STREAM_ALARM) != audioManager.getStreamMaxVolume(
-                    AudioManager.STREAM_ALARM
-                )
+            if (audioManager.getStreamVolume(AudioManager.STREAM_ALARM)
+                <
+                (audioManager.getStreamMaxVolume(AudioManager.STREAM_ALARM) * .75)
             )
                 audioManager.setStreamVolume(
                     AudioManager.STREAM_ALARM,
-                    audioManager.getStreamMaxVolume(AudioManager.STREAM_ALARM)/5,
+                    (audioManager.getStreamMaxVolume(AudioManager.STREAM_ALARM) * .75).toInt(),
                     AudioManager.FLAG_SHOW_UI
                 )
 
