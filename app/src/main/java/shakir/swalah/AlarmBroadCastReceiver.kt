@@ -16,6 +16,9 @@ import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationCompat.VISIBILITY_PUBLIC
 import androidx.core.app.NotificationManagerCompat
+import com.azan.TimeCalculator
+import com.azan.types.AngleCalculationType
+import com.azan.types.PrayersType
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -43,7 +46,45 @@ class AlarmBroadCastReceiver : BroadcastReceiver() {
 
 
 
+
+
+
         if (context != null) {
+
+
+
+            val array = arrayOf(
+                PrayersType.FAJR,
+                PrayersType.SUNRISE,
+                PrayersType.ZUHR,
+                PrayersType.ASR,
+                PrayersType.MAGHRIB,
+                PrayersType.ISHA
+            )
+            val date = GregorianCalendar()
+
+            val sharedPreferences = context.getSharedPreferences("sp", Context.MODE_PRIVATE)
+            val lattt = sharedPreferences
+                .getDouble("lattt", 11.00)
+
+            val longgg = sharedPreferences
+                .getDouble("longgg", 76.00)
+
+
+            val prayerTimes =
+                TimeCalculator().date(date).location(lattt, longgg, 0.0, 0.0)
+                    .timeCalculationMethod(AngleCalculationType.KARACHI)
+                    .calculateTimes()
+
+
+            Log.d("dgfbdsfjjd","$lattt $longgg $prayerTimes")
+
+
+
+
+
+
+
 
             /* val intent = Intent(this, AlertDetails::class.java).apply {
                  flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
@@ -68,7 +109,7 @@ class AlarmBroadCastReceiver : BroadcastReceiver() {
             )
                 audioManager.setStreamVolume(
                     AudioManager.STREAM_ALARM,
-                    audioManager.getStreamMaxVolume(AudioManager.STREAM_ALARM),
+                    audioManager.getStreamMaxVolume(AudioManager.STREAM_ALARM)/5,
                     AudioManager.FLAG_SHOW_UI
                 )
 
@@ -124,8 +165,8 @@ class AlarmBroadCastReceiver : BroadcastReceiver() {
         }
 
         Handler().postDelayed({
-            context?.let { Util.setNextAlarm(it) }
-        }, 100)
+            context?.let { Util.setNextAlarm(it, true) }
+        }, 2500)
 
 
     }
@@ -140,7 +181,7 @@ class AlarmBroadCastReceiver : BroadcastReceiver() {
 
                 val importance = NotificationManager.IMPORTANCE_HIGH
                 val channel = NotificationChannel(CHANNEL_MAME, CHANNEL_MAME, importance).apply {
-                    description = "Show Adan Alarms"
+                    description = "Show Adan Notification"
                     setSound(null, null)
                 }
 

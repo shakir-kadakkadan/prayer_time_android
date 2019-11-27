@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/prayerTimeLL"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginLeft="@dimen/_20sdp"
+    android:layout_marginRight="@dimen/_20sdp"
+    android:layoutDirection="rtl"
+    android:orientation="vertical"
+    android:textDirection="rtl">
+
+    <include
+        android:id="@+id/FAJR"
+        layout="@layout/pt_layout"></include>
+
+    <include
+        android:id="@+id/SUNRISE"
+        layout="@layout/pt_layout"></include>
+
+    <include
+        android:id="@+id/ZUHR"
+        layout="@layout/pt_layout"></include>
+
+    <include
+        android:id="@+id/ASR"
+        layout="@layout/pt_layout"></include>
+
+    <include
+        android:id="@+id/MAGHRIB"
+        layout="@layout/pt_layout"></include>
+
+    <include
+        android:id="@+id/ISHA"
+        layout="@layout/pt_layout"></include>
+
+</LinearLayout>

@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout android:id="@+id/prayerTimeLL"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layoutDirection="rtl"
+    android:orientation="horizontal"
+    android:textDirection="rtl"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/_20sdp"
+        android:layout_marginEnd="@dimen/_10sdp"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <include
+
+            android:id="@+id/FAJR"
+            layout="@layout/pt_layout"></include>
+
+        <include
+            android:id="@+id/ZUHR"
+            layout="@layout/pt_layout"></include>
+
+        <include
+            android:id="@+id/MAGHRIB"
+            layout="@layout/pt_layout"></include>
+
+
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/_10sdp"
+        android:layout_marginEnd="@dimen/_20sdp"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <include
+            android:id="@+id/SUNRISE"
+            layout="@layout/pt_layout"></include>
+
+        <include
+            android:id="@+id/ASR"
+            layout="@layout/pt_layout"></include>
+
+        <include
+            android:id="@+id/ISHA"
+            layout="@layout/pt_layout"></include>
+    </LinearLayout>
+
+
+</LinearLayout>

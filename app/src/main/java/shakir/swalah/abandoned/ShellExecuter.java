@@ -1,4 +1,4 @@
-package shakir.swalah;
+package shakir.swalah.abandoned;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;

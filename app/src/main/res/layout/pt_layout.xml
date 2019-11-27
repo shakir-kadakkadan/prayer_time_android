@@ -5,9 +5,9 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_marginLeft="@dimen/_20sdp"
+
     android:layout_marginTop="@dimen/_5sdp"
-    android:layout_marginRight="@dimen/_20sdp"
+
     android:layout_marginBottom="@dimen/_5sdp"
     android:background="@drawable/bg_2"
     android:orientation="horizontal"

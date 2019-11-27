@@ -1,5 +1,7 @@
 package shakir.swalah
 
+import android.animation.Animator
+import android.animation.ObjectAnimator
 import android.annotation.SuppressLint
 import android.app.AlarmManager
 import android.app.PendingIntent
@@ -12,13 +14,13 @@ import android.os.Bundle
 import android.view.View
 import android.widget.ArrayAdapter
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.forEachIndexed
 import com.azan.TimeCalculator
 import com.azan.types.AngleCalculationType
 import com.azan.types.PrayersType
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.prayer_time_ll.*
 import kotlinx.android.synthetic.main.pt_layout.view.*
 import shakir.swalah.models.Cord
 import java.text.SimpleDateFormat
@@ -64,8 +66,8 @@ class MainActivity : AppCompatActivity() {
 
             getSharedPreferences("sp", Context.MODE_PRIVATE)
                 .edit()
-                .putDouble("lattt", lattt)
-                .putDouble("longgg", longgg)
+                .putDouble("lattt", latEditText.text.toString().toDoubleOrNull() ?: 0.0)
+                .putDouble("longgg", longEditText.text.toString().toDoubleOrNull() ?: 0.0)
                 .putString("location", "Select City")
                 .apply()
             onGetCordinates(
@@ -92,7 +94,7 @@ class MainActivity : AppCompatActivity() {
             LL_close_refresh.visibility = View.VISIBLE
             sharedPreferences.edit().putInt("locationTV_VISIBILITY", locationTV.visibility).apply()
         }
-        if (sharedPreferences.getInt("locationTV_VISIBILITY", View.GONE) == View.VISIBLE) {
+        if (sharedPreferences.getInt("locationTV_VISIBILITY", View.VISIBLE) == View.VISIBLE) {
             locationTV.visibility = View.VISIBLE
             locationSelector.visibility = View.GONE
             LL_close_refresh.visibility = View.GONE
@@ -113,8 +115,8 @@ class MainActivity : AppCompatActivity() {
         cancelPrevisousPendingInten: Boolean = false
     ) {
 
-        if (cancelPrevisousPendingInten)
-            Util.cancelLastPendingIntent(this)
+        /*if (cancelPrevisousPendingInten)*/ /*todo : test the condetion*/
+
         val array = arrayOf(
             PrayersType.FAJR,
             PrayersType.SUNRISE,
@@ -131,7 +133,9 @@ class MainActivity : AppCompatActivity() {
 
 
         var nextPrayTime: PrayersType? = null
-        prayerTimeLL.forEachIndexed { index, view ->
+
+
+        arrayOf(FAJR, SUNRISE, ZUHR, ASR, MAGHRIB, ISHA).forEachIndexed { index, view ->
             view.prayerName.setText(AppApplication.getArabicNames(array[index].name))
             val prayTime = prayerTimes.getPrayTime(array[index])
             view.prayerTime.text =
@@ -148,7 +152,7 @@ class MainActivity : AppCompatActivity() {
 
         }
 
-        Util.setNextAlarm(this)
+        Util.setNextAlarm(this, true)
         locationAC.setText("")
         locationAC.setHint(l)
         locationTV.setText(l)
@@ -157,6 +161,7 @@ class MainActivity : AppCompatActivity() {
         println("$lattt $longgg $l")
 
     }
+
 
     val TAG = "MainActivityAlarm"
     /*  private fun setAlarm(
@@ -228,9 +233,48 @@ class MainActivity : AppCompatActivity() {
       }*/
 
 
+    private fun animateRotate() {
+        if (isRotationNeed) {
+            ObjectAnimator
+                .ofFloat(refresh, View.ROTATION, 0f, 360f)
+                .setDuration(600)
+                .apply {
+                    repeatCount = 100
+                    addListener(object : Animator.AnimatorListener {
+                        override fun onAnimationRepeat(animation: Animator?) {
+                            if (!isRotationNeed) {
+                                this@apply.cancel()
+                            }
+                        }
+
+                        override fun onAnimationEnd(animation: Animator?) {
+                            if (!isRotationNeed) {
+                                this@apply.cancel()
+                            }
+                        }
+
+                        override fun onAnimationCancel(animation: Animator?) {
+
+                        }
+
+                        override fun onAnimationStart(animation: Animator?) {
+
+                        }
+
+                    })
+                }
+
+                .start()
+        }
+
+    }
+
+    var isRotationNeed = false
+
     @SuppressLint("CheckResult")
     fun getGioIpDb() {
-
+        isRotationNeed = true
+        animateRotate()
         AppApplication.restService.gioIpDB()
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
@@ -248,11 +292,14 @@ class MainActivity : AppCompatActivity() {
                                     .apply()
                                 onGetCordinates(lattt, longgg, it.city, true)
 
+
                             }
+
                         }
                     } catch (e: Exception) {
                         e.printStackTrace()
                     }
+                    isRotationNeed = false;
                 },
                 {
                     it.printStackTrace()
@@ -267,7 +314,7 @@ class MainActivity : AppCompatActivity() {
                         onGetCordinates(lattt, longgg, location, true)
                     }
 
-
+                    isRotationNeed = false;
                 }
             )
 

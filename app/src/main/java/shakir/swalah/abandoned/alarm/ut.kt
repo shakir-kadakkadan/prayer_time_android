@@ -1,4 +1,4 @@
-package shakir.swalah.alarm
+package shakir.swalah.abandoned.alarm
 
 import android.app.AlarmManager
 import android.app.PendingIntent

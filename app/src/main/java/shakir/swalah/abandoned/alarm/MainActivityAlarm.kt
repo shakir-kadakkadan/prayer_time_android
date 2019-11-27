@@ -10,7 +10,7 @@ import androidx.appcompat.app.AppCompatActivity
 import kotlinx.android.synthetic.main.activity_main_alarm_example.*
 import shakir.swalah.R
 import shakir.swalah.BootCompleteReceiver
-import shakir.swalah.alarm.ut
+import shakir.swalah.abandoned.alarm.ut
 import java.text.SimpleDateFormat
 import java.util.*
 

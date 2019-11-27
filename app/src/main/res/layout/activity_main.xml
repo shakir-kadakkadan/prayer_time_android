@@ -5,6 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:animateLayoutChanges="true"
     android:background="@drawable/bg_1"
     android:orientation="vertical"
     android:paddingTop="@dimen/_30sdp"
@@ -12,25 +13,29 @@
 
 
     <LinearLayout
+        android:id="@+id/locationSelector"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/_20sdp"
+        android:layout_marginEnd="@dimen/_20sdp"
+        android:layout_marginBottom="@dimen/_5sdp"
+        android:background="@drawable/bg_2"
         android:orientation="horizontal"
-        android:layout_marginBottom="@dimen/_20sdp"
 
-        >
+        android:padding="10dp">
 
         <LinearLayout
-            android:layout_weight="1"
-            android:id="@+id/locationSelector"
             android:layout_width="0dp"
+
             android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:orientation="vertical">
 
             <AutoCompleteTextView
                 android:id="@+id/locationAC"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/_20sdp"
+
                 android:layout_marginEnd="@dimen/_10sdp"
                 android:layout_marginBottom="@dimen/_10sdp"
                 android:background="@drawable/box_1"
@@ -56,10 +61,9 @@
 
                 <EditText
                     android:id="@+id/latEditText"
-                    android:layout_width="@dimen/_80sdp"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/_20sdp"
-                    android:layout_marginEnd="@dimen/_10sdp"
+                    android:layout_weight="1"
                     android:autoSizeMaxTextSize="@dimen/_16sdp"
                     android:autoSizeTextType="uniform"
                     android:background="@drawable/box_1"
@@ -83,16 +87,17 @@
                     />
 
                 <Space
-                    android:layout_width="0dp"
+                    android:layout_width="10dp"
                     android:layout_height="0dp"
-                    android:layout_weight="1"
+
                     />
 
                 <EditText
                     android:id="@+id/longEditText"
-                    android:layout_width="@dimen/_80sdp"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginEnd="@dimen/_10sdp"
+                    android:layout_weight="1"
+
                     android:autoSizeMaxTextSize="@dimen/_16sdp"
                     android:autoSizeTextType="uniform"
                     android:background="@drawable/box_1"
@@ -117,24 +122,21 @@
 
 
                 <Space
-                    android:layout_width="0dp"
-                    android:layout_height="0dp"
-                    android:layout_weight="1"
-                    />
+                    android:layout_width="10dp"
+                    android:layout_height="0dp" />
 
 
                 <TextView
+
                     android:id="@+id/set"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginEnd="@dimen/_10sdp"
+                    android:layout_weight="1"
                     android:autoSizeMaxTextSize="@dimen/_16sdp"
                     android:autoSizeTextType="uniform"
                     android:background="@drawable/box_1"
-                    android:gravity="center_vertical|start"
-                    android:inputType="numberDecimal"
+                    android:gravity="center"
                     android:maxLines="1"
-
                     android:paddingLeft="16dp"
                     android:paddingTop="8dp"
                     android:paddingRight="16dp"
@@ -151,7 +153,9 @@
 
                     />
 
-
+                <Space
+                    android:layout_width="10dp"
+                    android:layout_height="0dp" />
 
             </LinearLayout>
 
@@ -160,7 +164,7 @@
 
         <LinearLayout
             android:id="@+id/LL_close_refresh"
-            android:layout_marginEnd="@dimen/_20sdp"
+
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_gravity="center"
@@ -170,82 +174,60 @@
             <Space
                 android:layout_width="0dp"
                 android:layout_height="0dp"
-                android:layout_weight="1"
-                />
+                android:layout_weight="1" />
+
             <ImageView
-            android:padding="6dp"
-                android:background="@drawable/bg4"
-                android:tint="@color/green1"
                 android:id="@+id/close"
                 android:layout_width="@dimen/_25sdp"
                 android:layout_height="@dimen/_25sdp"
-
+                android:background="@drawable/bg4"
+                android:padding="6dp"
                 android:src="@android:drawable/ic_menu_close_clear_cancel"
+
+                android:tint="@color/green1"
 
                 />
 
             <Space
                 android:layout_width="0dp"
                 android:layout_height="0dp"
-                android:layout_weight="3"
-                />
+                android:layout_weight="3" />
 
             <ImageView
-                android:padding="6dp"
-                android:background="@drawable/bg4"
-                android:tint="@color/green1"
                 android:id="@+id/refresh"
                 android:layout_width="@dimen/_25sdp"
                 android:layout_height="@dimen/_25sdp"
-
+                android:background="@drawable/bg4"
+                android:padding="6dp"
                 android:src="@android:drawable/ic_menu_rotate"
 
+                android:tint="@color/green1"
+
                 />
+
             <Space
                 android:layout_width="0dp"
                 android:layout_height="0dp"
-                android:layout_weight="1"
-                />
+                android:layout_weight="1" />
         </LinearLayout>
-
-
 
 
     </LinearLayout>
 
     <TextView
-        android:layout_marginBottom="@dimen/_8sdp"
         android:id="@+id/locationTV"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/_20sdp"
+        android:layout_marginTop="@dimen/_5sdp"
+        android:layout_marginBottom="@dimen/_5sdp"
         android:text="Location"
         android:textColor="@color/white"
         android:visibility="gone"
         tools:visibility="visible" />
 
 
-    <LinearLayout
-        android:textDirection="rtl"
-        android:layoutDirection="rtl"
-        android:id="@+id/prayerTimeLL"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
-
-        <include layout="@layout/pt_layout"></include>
-
-        <include layout="@layout/pt_layout"></include>
-
-        <include layout="@layout/pt_layout"></include>
-
-        <include layout="@layout/pt_layout"></include>
-
-        <include layout="@layout/pt_layout"></include>
-
-        <include layout="@layout/pt_layout"></include>
-
-    </LinearLayout>
+    <include layout="@layout/prayer_time_ll" />
 
 
 </LinearLayout>
