@@ -27,7 +27,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : BaseActivity() {
 
     //Lat range = -90 to +90
     //LOng range = -180 to +180
@@ -36,7 +36,7 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-
+        adjustWithSystemWindow(rootViewLL,topSpacer,true)
         val receiver = ComponentName(applicationContext, BootCompleteReceiver::class.java)
         applicationContext.packageManager?.setComponentEnabledSetting(
             receiver,
@@ -80,26 +80,26 @@ class MainActivity : AppCompatActivity() {
         close.setOnClickListener {
             LL_close_refresh.visibility = View.GONE
             locationSelector.visibility = View.GONE
-            locationTV.visibility = View.VISIBLE
-            sharedPreferences.edit().putInt("locationTV_VISIBILITY", locationTV.visibility).apply()
+            locationLL.visibility = View.VISIBLE
+            sharedPreferences.edit().putInt("locationTV_VISIBILITY", locationLL.visibility).apply()
         }
 
         refresh.setOnClickListener {
             getGioIpDb()
         }
 
-        locationTV.setOnClickListener {
+        locationLL.setOnClickListener {
             locationSelector.visibility = View.VISIBLE
-            locationTV.visibility = View.GONE
+            locationLL.visibility = View.GONE
             LL_close_refresh.visibility = View.VISIBLE
-            sharedPreferences.edit().putInt("locationTV_VISIBILITY", locationTV.visibility).apply()
+            sharedPreferences.edit().putInt("locationTV_VISIBILITY", locationLL.visibility).apply()
         }
         if (sharedPreferences.getInt("locationTV_VISIBILITY", View.VISIBLE) == View.VISIBLE) {
-            locationTV.visibility = View.VISIBLE
+            locationLL.visibility = View.VISIBLE
             locationSelector.visibility = View.GONE
             LL_close_refresh.visibility = View.GONE
         } else {
-            locationTV.visibility = View.GONE
+            locationLL.visibility = View.GONE
             locationSelector.visibility = View.VISIBLE
             LL_close_refresh.visibility = View.VISIBLE
         }

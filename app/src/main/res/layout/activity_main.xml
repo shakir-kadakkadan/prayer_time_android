@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-
+android:fitsSystemWindows="false"
+    android:id="@+id/rootViewLL"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -10,6 +11,11 @@
     android:orientation="vertical"
     android:paddingTop="@dimen/_30sdp"
     tools:context=".MainActivity">
+    <Space
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:id="@+id/topSpacer"
+        ></Space>
 
 
     <LinearLayout
@@ -214,17 +220,34 @@
 
     </LinearLayout>
 
+<LinearLayout  android:visibility="gone"
+    tools:visibility="visible"
+    android:id="@+id/locationLL"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:layout_marginStart="@dimen/_20sdp"
+
+    >
+
+    <ImageView
+        android:layout_gravity="center_vertical"
+        android:layout_width="wrap_content"
+        android:layout_height="20dp"
+        android:src="@drawable/ic_my_location_black_24dp" />
+
     <TextView
+        android:layout_gravity="center_vertical"
         android:id="@+id/locationTV"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/_20sdp"
+      android:layout_marginStart="@dimen/_10sdp"
         android:layout_marginTop="@dimen/_5sdp"
         android:layout_marginBottom="@dimen/_5sdp"
         android:text="Location"
         android:textColor="@color/white"
-        android:visibility="gone"
-        tools:visibility="visible" />
+       />
+</LinearLayout>
 
 
     <include layout="@layout/prayer_time_ll" />
