@@ -13,13 +13,13 @@ android {
             keyAlias = 'adhan'
         }
     }
-    compileSdkVersion 28
+    compileSdkVersion 29
     defaultConfig {
         applicationId "shakir.swalah"
         minSdkVersion 17
-        targetSdkVersion 28
-        versionCode 2
-        versionName "1.0"
+        targetSdkVersion 29
+        versionCode 3
+        versionName "1.0.3"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         signingConfig signingConfigs.rel_config
     }
@@ -64,4 +64,5 @@ dependencies {
     implementation 'com.squareup.retrofit2:adapter-rxjava2:2.4.0'
     implementation 'io.reactivex.rxjava2:rxjava:2.2.9'
     implementation 'io.reactivex.rxjava2:rxandroid:2.1.1'
+    implementation 'com.google.android.gms:play-services-location:17.0.0'
 }

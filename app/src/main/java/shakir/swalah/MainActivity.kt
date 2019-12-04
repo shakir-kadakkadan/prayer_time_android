@@ -9,10 +9,12 @@ import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.location.Location
 import android.os.Build
 import android.os.Bundle
 import android.view.View
 import android.widget.ArrayAdapter
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.azan.TimeCalculator
 import com.azan.types.AngleCalculationType
@@ -27,7 +29,11 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 
-class MainActivity : BaseActivity() {
+class MainActivity : MainActivityLocation() {
+
+    override fun onGetLocation(location: Location) {
+        Toast.makeText(this,"${location.latitude} ${location.longitude} ${location.extras} ",Toast.LENGTH_SHORT).show()
+    }
 
     //Lat range = -90 to +90
     //LOng range = -180 to +180
