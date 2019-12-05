@@ -16,6 +16,8 @@ import android.widget.Toast
 import com.azan.TimeCalculator
 import com.azan.types.AngleCalculationType
 import com.azan.types.PrayersType
+import com.crashlytics.android.Crashlytics
+import com.google.firebase.analytics.FirebaseAnalytics
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_main.*
@@ -28,6 +30,14 @@ import kotlin.concurrent.thread
 
 
 class MainActivity : MainActivityLocation() {
+
+    private lateinit var firebaseAnalytics: FirebaseAnalytics
+
+    override fun onStart() {
+        super.onStart()
+        firebaseAnalytics = FirebaseAnalytics.getInstance(this)
+    }
+
 
     override fun onLocationServiceResult(location: Location) {
         thread {
@@ -78,6 +88,21 @@ class MainActivity : MainActivityLocation() {
                     Toast.LENGTH_LONG
                 ).show()
             }
+
+
+            try {
+                val bundle = Bundle()
+                bundle.putString("LocationType", "LocationService")
+                bundle.putDouble("Latitude", latitude)
+                bundle.putDouble("Longitude", longitude)
+                bundle.putString("Locality", locality)
+                bundle.putString("SubLocality", subLocality)
+                bundle.putString("Country", countryName)
+                firebaseAnalytics.logEvent("Location", bundle)
+            } catch (e: Exception) {
+                Crashlytics.logException(e)
+            }
+
         }
 
 
@@ -89,7 +114,6 @@ class MainActivity : MainActivityLocation() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         setContentView(R.layout.activity_main)
         adjustWithSystemWindow(rootViewLL, topSpacer, true)
         val receiver = ComponentName(applicationContext, BootCompleteReceiver::class.java)
@@ -119,13 +143,15 @@ class MainActivity : MainActivityLocation() {
         }
 
         set.setOnClickListener {
-          /*  if (true) {
-                getSharedPreferences("sp", Context.MODE_PRIVATE)
-                    .edit().clear().commit()
-                finish()
-                startActivity(intent)
-                return@setOnClickListener
-            }*/
+
+            /*Crashlytics.getInstance().crash()*/
+            /*  if (true) {
+                  getSharedPreferences("sp", Context.MODE_PRIVATE)
+                      .edit().clear().commit()
+                  finish()
+                  startActivity(intent)
+                  return@setOnClickListener
+              }*/
 
 
             it.hideKeyboardView()
@@ -157,8 +183,26 @@ class MainActivity : MainActivityLocation() {
                 locality,
                 true
             )
+
+            try {
+                val bundle = Bundle()
+
+                bundle.putString("LocationType", "SetFromEditText")
+                bundle.putDouble("Latitude", latitude)
+                bundle.putDouble("Longitude", longitude)
+                bundle.putString("Locality", locality)
+                firebaseAnalytics.logEvent("Location", bundle)
+                firebaseAnalytics.logEvent("click", Bundle().apply { putString("click", "set") })
+            } catch (e: Exception) {
+                Crashlytics.logException(e)
+            }
         }
         close.setOnClickListener {
+            try {
+                firebaseAnalytics.logEvent("click", Bundle().apply { putString("click", "close") })
+            } catch (e: Exception) {
+
+            }
             it.hideKeyboardView()
             LL_close_refresh.visibility = View.GONE
             locationSelector.visibility = View.GONE
@@ -168,6 +212,11 @@ class MainActivity : MainActivityLocation() {
 
         refresh.setOnClickListener {
             requestForGPSLocation()
+            try {
+                firebaseAnalytics.logEvent("click", Bundle().apply { putString("click", "refresh") })
+            } catch (e: Exception) {
+
+            }
         }
 
         locationLL.setOnClickListener {
@@ -175,6 +224,11 @@ class MainActivity : MainActivityLocation() {
             locationLL.visibility = View.GONE
             LL_close_refresh.visibility = View.VISIBLE
             sharedPreferences.edit().putInt("locationTV_VISIBILITY", locationLL.visibility).apply()
+            try {
+                firebaseAnalytics.logEvent("click", Bundle().apply { putString("click", "locationLL") })
+            } catch (e: Exception) {
+
+            }
         }
         if (sharedPreferences.getInt("locationTV_VISIBILITY", View.VISIBLE) == View.VISIBLE) {
             locationLL.visibility = View.VISIBLE
@@ -399,19 +453,30 @@ class MainActivity : MainActivityLocation() {
                 {
                     try {
 
-                        it.latitude?.let { lattt ->
-                            it.longitude?.let { longgg ->
+                        it.latitude?.let { latitude ->
+                            it.longitude?.let { longitude ->
                                 getSharedPreferences("sp", Context.MODE_PRIVATE)
                                     .edit()
-                                    .putDouble("lattt", lattt)
-                                    .putDouble("longgg", longgg)
+                                    .putDouble("lattt", latitude)
+                                    .putDouble("longgg", longitude)
                                     .putString("location", it?.city)
                                     .putBoolean("isLocationSet", false)
                                     .apply()
-                                onGetCordinates(lattt, longgg, it.city, true)
-
+                                onGetCordinates(latitude, longitude, it.city, true)
+                                try {
+                                    val bundle = Bundle()
+                                    bundle.putString("LocationType", "IPLocation")
+                                    bundle.putDouble("Latitude", latitude)
+                                    bundle.putDouble("Longitude", longitude)
+                                    bundle.putString("Locality", it?.city)
+                                    firebaseAnalytics.logEvent("Location", bundle)
+                                } catch (e: Exception) {
+                                    Crashlytics.logException(e)
+                                }
 
                             }
+
+
 
                         }
                     } catch (e: Exception) {
