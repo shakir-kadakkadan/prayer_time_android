@@ -3,19 +3,16 @@ package shakir.swalah
 import android.animation.Animator
 import android.animation.ObjectAnimator
 import android.annotation.SuppressLint
-import android.app.AlarmManager
-import android.app.PendingIntent
 import android.content.ComponentName
 import android.content.Context
-import android.content.Intent
 import android.content.pm.PackageManager
+import android.location.Address
+import android.location.Geocoder
 import android.location.Location
-import android.os.Build
 import android.os.Bundle
 import android.view.View
 import android.widget.ArrayAdapter
 import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
 import com.azan.TimeCalculator
 import com.azan.types.AngleCalculationType
 import com.azan.types.PrayersType
@@ -27,12 +24,63 @@ import kotlinx.android.synthetic.main.pt_layout.view.*
 import shakir.swalah.models.Cord
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.concurrent.thread
 
 
 class MainActivity : MainActivityLocation() {
 
-    override fun onGetLocation(location: Location) {
-        Toast.makeText(this,"${location.latitude} ${location.longitude} ${location.extras} ",Toast.LENGTH_SHORT).show()
+    override fun onLocationServiceResult(location: Location) {
+        thread {
+            val latitude = location.latitude
+            val longitude = location.longitude
+            val geocoder = Geocoder(this, Locale.getDefault())
+            val addresses: List<Address>? = try {
+                geocoder.getFromLocation(latitude, longitude, 1)
+            } catch (e: Exception) {
+                e.printStackTrace()
+                null
+            }
+            var locality: String = try {
+                addresses!![0].locality
+            } catch (e: Exception) {
+                ""
+            }
+
+            val subLocality: String = try {
+                addresses!![0].subLocality
+            } catch (e: Exception) {
+                ""
+            }
+
+            val countryName: String = try {
+                addresses!![0].countryName
+            } catch (e: Exception) {
+                ""
+            }
+            getSharedPreferences("sp", Context.MODE_PRIVATE)
+                .edit()
+                .putDouble("lattt", latitude)
+                .putDouble("longgg", longitude)
+                .putString("location", if (locality.isBlank()) "My Location" else locality)
+                .putBoolean("isLocationSet", true)
+                .commit()
+
+            runOnUiThread {
+
+                onGetCordinates(latitude, longitude, locality, true)
+                isRotationNeed = false
+
+
+
+                Toast.makeText(
+                    this,
+                    "${if (locality.isBlank()) "Unknown Location.\nPlease Check Your Network Settings & Location" else locality}, $subLocality, $countryName\n$latitude,  $longitude",
+                    Toast.LENGTH_LONG
+                ).show()
+            }
+        }
+
+
     }
 
     //Lat range = -90 to +90
@@ -41,8 +89,9 @@ class MainActivity : MainActivityLocation() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         setContentView(R.layout.activity_main)
-        adjustWithSystemWindow(rootViewLL,topSpacer,true)
+        adjustWithSystemWindow(rootViewLL, topSpacer, true)
         val receiver = ComponentName(applicationContext, BootCompleteReceiver::class.java)
         applicationContext.packageManager?.setComponentEnabledSetting(
             receiver,
@@ -53,14 +102,16 @@ class MainActivity : MainActivityLocation() {
         val sharedPreferences = getSharedPreferences("sp", Context.MODE_PRIVATE)
         val lattt = sharedPreferences.getDouble("lattt", INVALID_CORDINATE)
         val longgg = sharedPreferences.getDouble("longgg", INVALID_CORDINATE)
-        val location = sharedPreferences.getString("location", null)
+        var location = sharedPreferences.getString("location", null)
 
 
 
-        if (lattt == INVALID_CORDINATE || longgg == INVALID_CORDINATE) {
+        if (lattt == INVALID_CORDINATE || longgg == INVALID_CORDINATE/*FIRST TIME*/) {
             getGioIpDb()
+        } else if (location.isNullOrBlank()) {
+            requestForGPSLocation()
         } else {
-            onGetCordinates(lattt, longgg, location, false)
+            onGetCordinates(lattt, longgg, location, true)
         }
 
         if (arrayList.size == 0) {
@@ -68,22 +119,47 @@ class MainActivity : MainActivityLocation() {
         }
 
         set.setOnClickListener {
+          /*  if (true) {
+                getSharedPreferences("sp", Context.MODE_PRIVATE)
+                    .edit().clear().commit()
+                finish()
+                startActivity(intent)
+                return@setOnClickListener
+            }*/
 
 
+            it.hideKeyboardView()
+
+            val latitude = latEditText.text.toString().toDoubleOrNull()
+            val longitude = longEditText.text.toString().toDoubleOrNull()
+            var locality = locationAC.text.toString()
+            if (latitude == null || latitude < -90 || latitude > 90) {
+                latEditText.setText("")
+                toast("Invalid Latitude")
+                return@setOnClickListener
+            }
+            if (longitude == null || longitude < -180 || longitude > 180) {
+                longEditText.setText("")
+                toast("Invalid Longitude")
+                return@setOnClickListener
+            }
+            if (locality.isNullOrBlank()) locality = "Custom Location"
             getSharedPreferences("sp", Context.MODE_PRIVATE)
                 .edit()
-                .putDouble("lattt", latEditText.text.toString().toDoubleOrNull() ?: 0.0)
-                .putDouble("longgg", longEditText.text.toString().toDoubleOrNull() ?: 0.0)
-                .putString("location", "Select City")
+                .putDouble("lattt", latitude)
+                .putDouble("longgg", longitude)
+                .putString("location", locality)
+                .putBoolean("isLocationSet", true)
                 .apply()
             onGetCordinates(
-                latEditText.text.toString().toDouble(),
+                latitude,
                 longEditText.text.toString().toDouble(),
-                "Custom Location",
+                locality,
                 true
             )
         }
         close.setOnClickListener {
+            it.hideKeyboardView()
             LL_close_refresh.visibility = View.GONE
             locationSelector.visibility = View.GONE
             locationLL.visibility = View.VISIBLE
@@ -91,7 +167,7 @@ class MainActivity : MainActivityLocation() {
         }
 
         refresh.setOnClickListener {
-            getGioIpDb()
+            requestForGPSLocation()
         }
 
         locationLL.setOnClickListener {
@@ -152,7 +228,7 @@ class MainActivity : MainActivityLocation() {
             }
 
             view.setOnClickListener {
-               /* testAudio(this)*/
+                /* testAudio(this)*/
             }
 
 
@@ -271,6 +347,41 @@ class MainActivity : MainActivityLocation() {
                 }
 
                 .start()
+
+
+
+            ObjectAnimator
+                .ofFloat(locationButton, View.ROTATION, 0f, 360f)
+                .setDuration(600)
+                .apply {
+                    repeatCount = 100
+                    addListener(object : Animator.AnimatorListener {
+                        override fun onAnimationRepeat(animation: Animator?) {
+                            if (!isRotationNeed) {
+                                this@apply.cancel()
+                            }
+                        }
+
+                        override fun onAnimationEnd(animation: Animator?) {
+                            if (!isRotationNeed) {
+                                this@apply.cancel()
+                            }
+                        }
+
+                        override fun onAnimationCancel(animation: Animator?) {
+
+                        }
+
+                        override fun onAnimationStart(animation: Animator?) {
+
+                        }
+
+                    })
+                }
+
+                .start()
+
+
         }
 
     }
@@ -295,6 +406,7 @@ class MainActivity : MainActivityLocation() {
                                     .putDouble("lattt", lattt)
                                     .putDouble("longgg", longgg)
                                     .putString("location", it?.city)
+                                    .putBoolean("isLocationSet", false)
                                     .apply()
                                 onGetCordinates(lattt, longgg, it.city, true)
 
@@ -305,7 +417,7 @@ class MainActivity : MainActivityLocation() {
                     } catch (e: Exception) {
                         e.printStackTrace()
                     }
-                    isRotationNeed = false;
+                    requestForGPSLocation()
                 },
                 {
                     it.printStackTrace()
@@ -320,10 +432,18 @@ class MainActivity : MainActivityLocation() {
                         onGetCordinates(lattt, longgg, location, true)
                     }
 
-                    isRotationNeed = false;
+
+                    requestForGPSLocation()
                 }
             )
 
+    }
+
+    fun requestForGPSLocation() {
+        hideKeyboardView()
+        isRotationNeed = true
+        animateRotate()
+        startLocationServiceInitialisation()
     }
 
 
@@ -353,6 +473,7 @@ class MainActivity : MainActivityLocation() {
                     .putDouble("lattt", get.latitude)
                     .putDouble("longgg", get.longitude)
                     .putString("location", get.name)
+                    .putBoolean("isLocationSet", true)
                     .apply()
                 onGetCordinates(get.latitude, get.longitude, get.name, true)
 

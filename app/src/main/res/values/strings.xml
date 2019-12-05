@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">أَذَان‎</string>
+    <string name="ok">OK</string>
+    <string name="anErrorOccuredPleaseRetry">anErrorOccuredPleaseRetry</string>
+    <string name="cancel">cancel</string>
+    <string name="Retry">Retry</string>
 </resources>

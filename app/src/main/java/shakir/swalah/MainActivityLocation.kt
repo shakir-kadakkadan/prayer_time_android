@@ -4,21 +4,22 @@ import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
+import android.content.IntentSender
 import android.content.pm.PackageManager
 import android.location.Location
 import android.location.LocationManager
-import android.os.Bundle
 import android.os.Looper
 import android.provider.Settings
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
+import com.google.android.gms.common.api.ResolvableApiException
 import com.google.android.gms.location.*
 
 abstract class MainActivityLocation : BaseActivity() {
 
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+
+    fun startLocationServiceInitialisation(){
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
         getLastLocation()
     }
@@ -83,13 +84,35 @@ abstract class MainActivityLocation : BaseActivity() {
                     if (location == null) {
                         requestNewLocationData()
                     } else {
-                        onGetLocation(location)
+                        onLocationServiceResult(location)
                     }
                 }
             } else {
-                Toast.makeText(this, "Turn on location", Toast.LENGTH_LONG).show()
-                val intent = Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
-                startActivity(intent)
+                val builder =
+                    LocationSettingsRequest.Builder().addLocationRequest(requestNewLocationData())
+                builder.setAlwaysShow(true)
+                val result =
+                    LocationServices.getSettingsClient(this).checkLocationSettings(builder.build())
+                result.addOnFailureListener {
+                    if (it is ResolvableApiException) {
+                        // Location settings are not satisfied, but this can be fixed
+                        // by showing the user a dialog.
+                        try {
+                            // Show the dialog by calling startResolutionForResult(),
+                            // and check the result in onActivityResult().
+                            it.startResolutionForResult(this, 1)
+                        } catch (sendEx: IntentSender.SendIntentException) {
+                            // Ignore the error.
+                            sendEx.printStackTrace()
+                        }
+
+                    }
+                }
+                result.addOnSuccessListener {
+
+                }
+
+
             }
         } else {
             requestPermissions()
@@ -98,7 +121,7 @@ abstract class MainActivityLocation : BaseActivity() {
 
 
     @SuppressLint("MissingPermission")
-    private fun requestNewLocationData() {
+    private fun requestNewLocationData(): LocationRequest {
         var mLocationRequest = LocationRequest()
         mLocationRequest.priority = LocationRequest.PRIORITY_HIGH_ACCURACY
         mLocationRequest.interval = 0
@@ -110,12 +133,14 @@ abstract class MainActivityLocation : BaseActivity() {
             mLocationRequest, mLocationCallback,
             Looper.myLooper()
         )
+
+        return mLocationRequest
     }
 
     private val mLocationCallback = object : LocationCallback() {
         override fun onLocationResult(locationResult: LocationResult) {
             var mLastLocation: Location = locationResult.lastLocation
-            onGetLocation(mLastLocation)
+            onLocationServiceResult(mLastLocation)
         }
     }
 
@@ -124,7 +149,12 @@ abstract class MainActivityLocation : BaseActivity() {
     lateinit var mFusedLocationClient: FusedLocationProviderClient
 
 
-    abstract fun onGetLocation(location: Location)
+    abstract fun onLocationServiceResult(location: Location)
 
+    fun gotoLocationSettings() {
+        Toast.makeText(this, "Turn on location", Toast.LENGTH_LONG).show()
+        val intent = Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
+        startActivity(intent)
+    }
 
 }
