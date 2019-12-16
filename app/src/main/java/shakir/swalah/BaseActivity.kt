@@ -6,10 +6,13 @@ import android.os.Bundle
 import android.view.View
 import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
+import shakir.swalah.db.AppDatabase
 
 open class BaseActivity : AppCompatActivity() {
+    lateinit var appDatabase: AppDatabase
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        appDatabase = AppDatabase(this)
 
 
     }

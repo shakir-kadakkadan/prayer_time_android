@@ -23,6 +23,7 @@ import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.prayer_time_ll.*
 import kotlinx.android.synthetic.main.pt_layout.view.*
+import shakir.swalah.db.GeoCoded
 import shakir.swalah.models.Cord
 import java.text.SimpleDateFormat
 import java.util.*
@@ -50,45 +51,10 @@ class MainActivity : MainActivityLocation() {
                 e.printStackTrace()
                 null
             }
-            var locality: String = try {
-                addresses!![0].locality
-            } catch (e: Exception) {
-                ""
-            }
-
-            val subLocality: String = try {
-                addresses!![0].subLocality
-            } catch (e: Exception) {
-                ""
-            }
-
-            val countryName: String = try {
-                addresses!![0].countryName
-            } catch (e: Exception) {
-                ""
-            }
-            getSharedPreferences("sp", Context.MODE_PRIVATE)
-                .edit()
-                .putDouble("lattt", latitude)
-                .putDouble("longgg", longitude)
-                .putString("location", if (locality.isBlank()) "My Location" else locality)
-                .putBoolean("isLocationSet", true)
-                .commit()
-
-            runOnUiThread {
-
-                onGetCordinates(latitude, longitude, locality, true)
-                isRotationNeed = false
-
-
-
-                Toast.makeText(
-                    this,
-                    "${if (locality.isBlank()) "Unknown Location.\nPlease Check Your Network Settings & Location" else locality}, $subLocality, $countryName\n$latitude,  $longitude",
-                    Toast.LENGTH_LONG
-                ).show()
-            }
-
+            var locality = addresses?.getOrNull(0)?.locality ?: ""
+            var subLocality = addresses?.getOrNull(0)?.subLocality ?: ""
+            var countryName = addresses?.getOrNull(0)?.countryName ?: ""
+            var isNear = false
 
             try {
                 val bundle = Bundle()
@@ -103,10 +69,72 @@ class MainActivity : MainActivityLocation() {
                 Crashlytics.logException(e)
             }
 
+            if (locality.isNotBlank()) {
+                appDatabase.GeoCodedDao().insertAll(
+                    GeoCoded(
+                        latitude = latitude,
+                        longitude = longitude,
+                        locality = locality,
+                        subLocality = subLocality,
+                        countryName = countryName
+                    )
+                )
+            } else {
+                var nearest: GeoCoded? = null
+                var nearestMeter: Float? = null
+                val floatArray = FloatArray(5)
+                val km5 = (5 * 1000).toFloat()
+                appDatabase.GeoCodedDao().getAll().forEach {
+                    Location.distanceBetween(
+                        latitude, longitude, it.latitude, it.longitude, floatArray
+                    )
+                    if (floatArray[0] < km5 && (nearestMeter == null || floatArray[0] < nearestMeter!!)) {
+                        nearestMeter = floatArray[0]
+                        nearest = it
+                    }
+
+                }
+
+                if (nearest != null) {
+                    locality = nearest?.locality ?: ""
+                    subLocality = nearest?.subLocality ?: ""
+                    countryName = nearest?.countryName ?: ""
+                    isNear = true
+                } else {
+
+                }
+
+
+
+
+            }
+
+
+            getSharedPreferences("sp", Context.MODE_PRIVATE)
+                .edit()
+                .putDouble("lattt", latitude)
+                .putDouble("longgg", longitude)
+                .putString("location", if (locality.isBlank()) "My Location" else locality)
+                .putBoolean("isLocationSet", true)
+                .commit()
+            runOnUiThread {
+                onGetCordinates(latitude, longitude, locality, true)
+                isRotationNeed = false
+                Toast.makeText(
+                    this,
+                    "${if (locality.isBlank()) "Unknown Location.\nPlease Check Your Network Settings & Location" else {
+                        if (isNear) "Near $locality" else locality
+                    }}, $subLocality, $countryName\n$latitude,  $longitude",
+                    Toast.LENGTH_LONG
+                ).show()
+            }
+
+
         }
-
-
     }
+
+    //@thread
+
 
     //Lat range = -90 to +90
     //LOng range = -180 to +180
@@ -192,14 +220,18 @@ class MainActivity : MainActivityLocation() {
                 bundle.putDouble("Longitude", longitude)
                 bundle.putString("Locality", locality)
                 firebaseAnalytics.logEvent("Location", bundle)
-                firebaseAnalytics.logEvent("click", Bundle().apply { putString("click", "set") })
+                firebaseAnalytics.logEvent(
+                    "click",
+                    Bundle().apply { putString("click", "set") })
             } catch (e: Exception) {
                 Crashlytics.logException(e)
             }
         }
         close.setOnClickListener {
             try {
-                firebaseAnalytics.logEvent("click", Bundle().apply { putString("click", "close") })
+                firebaseAnalytics.logEvent(
+                    "click",
+                    Bundle().apply { putString("click", "close") })
             } catch (e: Exception) {
 
             }
@@ -207,13 +239,16 @@ class MainActivity : MainActivityLocation() {
             LL_close_refresh.visibility = View.GONE
             locationSelector.visibility = View.GONE
             locationLL.visibility = View.VISIBLE
-            sharedPreferences.edit().putInt("locationTV_VISIBILITY", locationLL.visibility).apply()
+            sharedPreferences.edit().putInt("locationTV_VISIBILITY", locationLL.visibility)
+                .apply()
         }
 
         refresh.setOnClickListener {
             requestForGPSLocation()
             try {
-                firebaseAnalytics.logEvent("click", Bundle().apply { putString("click", "refresh") })
+                firebaseAnalytics.logEvent(
+                    "click",
+                    Bundle().apply { putString("click", "refresh") })
             } catch (e: Exception) {
 
             }
@@ -223,9 +258,12 @@ class MainActivity : MainActivityLocation() {
             locationSelector.visibility = View.VISIBLE
             locationLL.visibility = View.GONE
             LL_close_refresh.visibility = View.VISIBLE
-            sharedPreferences.edit().putInt("locationTV_VISIBILITY", locationLL.visibility).apply()
+            sharedPreferences.edit().putInt("locationTV_VISIBILITY", locationLL.visibility)
+                .apply()
             try {
-                firebaseAnalytics.logEvent("click", Bundle().apply { putString("click", "locationLL") })
+                firebaseAnalytics.logEvent(
+                    "click",
+                    Bundle().apply { putString("click", "locationLL") })
             } catch (e: Exception) {
 
             }
@@ -475,7 +513,6 @@ class MainActivity : MainActivityLocation() {
                                 }
 
                             }
-
 
 
                         }

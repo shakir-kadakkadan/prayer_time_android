@@ -1344,7 +1344,7 @@ fun ImageView.loadProfilePicInCircle(
 
 
 fun logCat(any: Any? = null) {
-    Log.d("SHAKIR", "$any")
+    Log.d("SSSKKKRRR", "$any")
 }
 
 /*

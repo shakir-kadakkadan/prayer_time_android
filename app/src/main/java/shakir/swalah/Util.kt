@@ -84,7 +84,7 @@ object Util {
 
                     val uniqueIndexForParayer = getNextUniqueIndex(context)
 
-                    Log.d("dsfghsdfsh", "set $milli $arabicNames $uniqueIndexForParayer")
+
                     val pendingIntent =
                         createPendingIntent(context, milli, arabicNames, uniqueIndexForParayer)
 
