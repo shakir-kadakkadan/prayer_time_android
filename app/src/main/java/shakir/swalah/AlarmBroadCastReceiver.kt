@@ -158,7 +158,7 @@ class AlarmBroadCastReceiver : BroadcastReceiver() {
         }
 
         Handler().postDelayed({
-            context?.let { Util.setNextAlarm(it, true) }
+            context?.let { Util.setNextAlarm(it) }
         }, 2500)
 
 

@@ -5,6 +5,7 @@ import android.animation.ObjectAnimator
 import android.annotation.SuppressLint
 import android.content.ComponentName
 import android.content.Context
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.location.Address
 import android.location.Geocoder
@@ -13,6 +14,8 @@ import android.os.Bundle
 import android.view.View
 import android.widget.ArrayAdapter
 import android.widget.Toast
+import androidx.core.view.isVisible
+/*import androidx.recyclerview.widget.RecyclerView*/
 import com.azan.TimeCalculator
 import com.azan.types.AngleCalculationType
 import com.azan.types.PrayersType
@@ -103,8 +106,6 @@ class MainActivity : MainActivityLocation() {
                 } else {
 
                 }
-
-
 
 
             }
@@ -279,6 +280,13 @@ class MainActivity : MainActivityLocation() {
         }
 
 
+
+        settings.isVisible = isMyTestDevice()
+        settings.setOnClickListener {
+           //startActivity(Intent(this,LogActivity::class.java))
+        }
+
+
     }
 
 
@@ -326,7 +334,7 @@ class MainActivity : MainActivityLocation() {
 
         }
 
-        Util.setNextAlarm(this, true)
+        Util.setNextAlarm(this)
         locationAC.setText("")
         locationAC.setHint(l)
         locationTV.setText(l)

@@ -9,7 +9,7 @@ class BootCompleteReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context?, intent: Intent?) {
 
         if (intent?.action == "android.intent.action.BOOT_COMPLETED") {
-            context?.let { Util.setNextAlarm(it, true) }
+            context?.let { Util.setNextAlarm(it) }
         }
 
     }

@@ -11,7 +11,7 @@ class TimeChangedReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context?, intent: Intent?) {
 
         if (intent?.action == "android.intent.action.TIME_SET") {
-            context?.let { Util.setNextAlarm(it, true) }
+            context?.let { Util.setNextAlarm(it) }
         }
     }
 }

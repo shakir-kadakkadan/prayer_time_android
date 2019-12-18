@@ -164,6 +164,10 @@ object Util {
         arabicNames: String?,
         uniqueIndexForParayer: Int
     ): PendingIntent? {
+        Log.d(
+            "TESTSTSTST",
+            "createPendingIntent() called with: context = [" + context + "], milli = [" + milli + "], arabicNames = [" + arabicNames + "], uniqueIndexForParayer = [" + uniqueIndexForParayer + "]"
+        );
         val broadcastIntent = Intent(context, AlarmBroadCastReceiver::class.java).apply {
             setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
             putExtra("milli", milli)

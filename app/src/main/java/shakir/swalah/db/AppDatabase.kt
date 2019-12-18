@@ -6,12 +6,12 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 
 @Database(
-    entities = [GeoCoded::class/*, GeoCoded::class*/],
+    entities = [GeoCoded::class, Logs::class],
     version = 1
 )
 abstract class AppDatabase : RoomDatabase(){
     abstract fun GeoCodedDao(): GeoCodedDao
-   // abstract fun GeoCodedDao(): GeoCodedDao
+    abstract fun LogDao(): LogDao
 
     companion object {
         @Volatile private var instance: AppDatabase? = null
