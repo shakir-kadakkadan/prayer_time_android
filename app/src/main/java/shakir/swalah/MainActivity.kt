@@ -1,5 +1,6 @@
 package shakir.swalah
 
+/*import androidx.recyclerview.widget.RecyclerView*/
 import android.animation.Animator
 import android.animation.ObjectAnimator
 import android.annotation.SuppressLint
@@ -14,8 +15,6 @@ import android.os.Bundle
 import android.view.View
 import android.widget.ArrayAdapter
 import android.widget.Toast
-import androidx.core.view.isVisible
-/*import androidx.recyclerview.widget.RecyclerView*/
 import com.azan.TimeCalculator
 import com.azan.types.AngleCalculationType
 import com.azan.types.PrayersType
@@ -31,6 +30,8 @@ import shakir.swalah.models.Cord
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.concurrent.thread
+
+val INVALID_CORDINATE = Double.MAX_VALUE
 
 
 class MainActivity : MainActivityLocation() {
@@ -115,6 +116,7 @@ class MainActivity : MainActivityLocation() {
                 .edit()
                 .putDouble("lattt", latitude)
                 .putDouble("longgg", longitude)
+                .putDouble("altitude", location?.altitude)
                 .putString("location", if (locality.isBlank()) "My Location" else locality)
                 .putBoolean("isLocationSet", true)
                 .commit()
@@ -139,7 +141,7 @@ class MainActivity : MainActivityLocation() {
 
     //Lat range = -90 to +90
     //LOng range = -180 to +180
-    val INVALID_CORDINATE = Double.MAX_VALUE
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -280,10 +282,9 @@ class MainActivity : MainActivityLocation() {
         }
 
 
-
-        settings.isVisible = isMyTestDevice()
-        settings.setOnClickListener {
-           //startActivity(Intent(this,LogActivity::class.java))
+        //qibla.isVisible = isMyTestDevice()
+        qibla.setOnClickListener {
+            startActivity(Intent(this, QiblaActivity::class.java))
         }
 
 

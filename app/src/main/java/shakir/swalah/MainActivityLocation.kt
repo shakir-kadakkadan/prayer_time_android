@@ -151,7 +151,7 @@ abstract class MainActivityLocation : BaseActivity() {
 
     abstract fun onLocationServiceResult(location: Location)
 
-    fun gotoLocationSettings() {
+    private fun gotoLocationSettings() {
         Toast.makeText(this, "Turn on location", Toast.LENGTH_LONG).show()
         val intent = Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
         startActivity(intent)

@@ -4,4 +4,10 @@
     <string name="anErrorOccuredPleaseRetry">anErrorOccuredPleaseRetry</string>
     <string name="cancel">cancel</string>
     <string name="Retry">Retry</string>
+    <string name="n">N</string>
+    <string name="e">E</string>
+    <string name="s">S</string>
+    <string name="w">W</string>
+    <string name="compassDesc">compass desc</string>
+    <string name="dummy_button">Dummy Button</string>
 </resources>
