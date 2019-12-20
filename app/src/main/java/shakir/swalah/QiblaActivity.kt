@@ -13,13 +13,25 @@ import java.util.*
 
 class QiblaActivity : MainActivityLocation() {
 
-    override fun onLocationServiceResult(location: Location) {
-        upadteCompassView(location)
+    override fun onLocationCallBack(
+        location: Location,
+        locality: String,
+        near: Boolean,
+        subLocality: String,
+        countryName: String
+    ) {
+        upadteCompassView(location, locality)
     }
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_qibla)
+        adjustWithSystemWindow(rootViewLL, topSpacer, true)
+        locationButton.setOnClickListener {
+           requestForGPSLocationWithRotationAnimation()
+        }
+
     }
 
     override fun onStart() {
@@ -37,11 +49,14 @@ class QiblaActivity : MainActivityLocation() {
                 compassSensorManager = CompassSensorManager(this)
 
                 val sp = getSharedPreferences("sp", Context.MODE_PRIVATE)
-                upadteCompassView( Location("saved").apply {
-                    latitude=sp.getDouble("lattt", INVALID_CORDINATE)
-                    longitude=sp.getDouble("longgg", INVALID_CORDINATE)
-                    altitude=sp.getDouble("altitude", 0.0)
-                })
+                val locality = sp.getString("location", null)
+                upadteCompassView(Location("saved").apply {
+                    latitude = sp.getDouble("lattt", INVALID_CORDINATE)
+                    longitude = sp.getDouble("longgg", INVALID_CORDINATE)
+                    altitude = sp.getDouble("altitude", 0.0)
+                }, locality = locality)
+
+
                 startLocationServiceInitialisation()
             }
         } catch (e: Exception) {
@@ -55,9 +70,10 @@ class QiblaActivity : MainActivityLocation() {
     private var northPoleLoc: Location? = null
 
 
-    private fun upadteCompassView(myLocation: Location?) {
+    private fun upadteCompassView(myLocation: Location?, locality: String?) {
 
         try {
+            locationTV.setText(if (locality.isNullOrBlank()) "My Location" else locality)
             if (myLocation != null && compassSensorManager != null) {
 
                 //CatLogger.d(TAG, "upadteCompassView() called with: myLocation = [" + myLocation + "]");

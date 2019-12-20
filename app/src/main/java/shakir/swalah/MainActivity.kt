@@ -1,17 +1,14 @@
 package shakir.swalah
 
 /*import androidx.recyclerview.widget.RecyclerView*/
-import android.animation.Animator
-import android.animation.ObjectAnimator
 import android.annotation.SuppressLint
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.location.Address
-import android.location.Geocoder
 import android.location.Location
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.ArrayAdapter
 import android.widget.Toast
@@ -19,122 +16,64 @@ import com.azan.TimeCalculator
 import com.azan.types.AngleCalculationType
 import com.azan.types.PrayersType
 import com.crashlytics.android.Crashlytics
-import com.google.firebase.analytics.FirebaseAnalytics
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.prayer_time_ll.*
 import kotlinx.android.synthetic.main.pt_layout.view.*
-import shakir.swalah.db.GeoCoded
 import shakir.swalah.models.Cord
 import java.text.SimpleDateFormat
 import java.util.*
-import kotlin.concurrent.thread
 
 val INVALID_CORDINATE = Double.MAX_VALUE
 
 
 class MainActivity : MainActivityLocation() {
 
-    private lateinit var firebaseAnalytics: FirebaseAnalytics
+    override fun onLocationCallBack(
+        location: Location,
+        locality: String,
+        isNear: Boolean,
+        subLocality: String,
+        countryName: String
+    ) {
+        with(location) {
+            onGetCordinates(latitude, longitude, locality, true)
 
-    override fun onStart() {
-        super.onStart()
-        firebaseAnalytics = FirebaseAnalytics.getInstance(this)
-    }
 
 
-    override fun onLocationServiceResult(location: Location) {
-        thread {
-            val latitude = location.latitude
-            val longitude = location.longitude
-            val geocoder = Geocoder(this, Locale.getDefault())
-            val addresses: List<Address>? = try {
-                geocoder.getFromLocation(latitude, longitude, 1)
-            } catch (e: Exception) {
-                e.printStackTrace()
-                null
-            }
-            var locality = addresses?.getOrNull(0)?.locality ?: ""
-            var subLocality = addresses?.getOrNull(0)?.subLocality ?: ""
-            var countryName = addresses?.getOrNull(0)?.countryName ?: ""
-            var isNear = false
-
-            try {
-                val bundle = Bundle()
-                bundle.putString("LocationType", "LocationService")
-                bundle.putDouble("Latitude", latitude)
-                bundle.putDouble("Longitude", longitude)
-                bundle.putString("Locality", locality)
-                bundle.putString("SubLocality", subLocality)
-                bundle.putString("Country", countryName)
-                firebaseAnalytics.logEvent("Location", bundle)
-            } catch (e: Exception) {
-                Crashlytics.logException(e)
-            }
-
-            if (locality.isNotBlank()) {
-                appDatabase.GeoCodedDao().insertAll(
-                    GeoCoded(
-                        latitude = latitude,
-                        longitude = longitude,
-                        locality = locality,
-                        subLocality = subLocality,
-                        countryName = countryName
-                    )
-                )
+            val s =
+                "${if (locality.isBlank()) "Unknown Location.\nPlease Check Your Network Settings & Location" else {
+                    if (isNear) "Near $locality" else locality
+                }}, $subLocality, $countryName\n$latitude,  $longitude"
+            if (toastText.contains(
+                    "Unknown Location",
+                    true
+                ) && s.contains("Unknown Location") && toast != null
+            ) {
+                //repeated toast
             } else {
-                var nearest: GeoCoded? = null
-                var nearestMeter: Float? = null
-                val floatArray = FloatArray(5)
-                val km5 = (5 * 1000).toFloat()
-                appDatabase.GeoCodedDao().getAll().forEach {
-                    Location.distanceBetween(
-                        latitude, longitude, it.latitude, it.longitude, floatArray
-                    )
-                    if (floatArray[0] < km5 && (nearestMeter == null || floatArray[0] < nearestMeter!!)) {
-                        nearestMeter = floatArray[0]
-                        nearest = it
-                    }
-
+                try {
+                    toast?.cancel()
+                } catch (e: Exception) {
+                    e.printStackTrace()
                 }
-
-                if (nearest != null) {
-                    locality = nearest?.locality ?: ""
-                    subLocality = nearest?.subLocality ?: ""
-                    countryName = nearest?.countryName ?: ""
-                    isNear = true
-                } else {
-
-                }
-
-
-            }
-
-
-            getSharedPreferences("sp", Context.MODE_PRIVATE)
-                .edit()
-                .putDouble("lattt", latitude)
-                .putDouble("longgg", longitude)
-                .putDouble("altitude", location?.altitude)
-                .putString("location", if (locality.isBlank()) "My Location" else locality)
-                .putBoolean("isLocationSet", true)
-                .commit()
-            runOnUiThread {
-                onGetCordinates(latitude, longitude, locality, true)
-                isRotationNeed = false
-                Toast.makeText(
-                    this,
-                    "${if (locality.isBlank()) "Unknown Location.\nPlease Check Your Network Settings & Location" else {
-                        if (isNear) "Near $locality" else locality
-                    }}, $subLocality, $countryName\n$latitude,  $longitude",
+                toastText = s
+                toast = Toast.makeText(
+                    this@MainActivity,
+                    toastText,
                     Toast.LENGTH_LONG
-                ).show()
+                )
+                toast?.show()
             }
-
-
         }
+
+
     }
+
+
+    var toast: Toast? = null
+    var toastText: String = ""
 
     //@thread
 
@@ -157,16 +96,19 @@ class MainActivity : MainActivityLocation() {
         val sharedPreferences = getSharedPreferences("sp", Context.MODE_PRIVATE)
         val lattt = sharedPreferences.getDouble("lattt", INVALID_CORDINATE)
         val longgg = sharedPreferences.getDouble("longgg", INVALID_CORDINATE)
-        var location = sharedPreferences.getString("location", null)
+        var locality = sharedPreferences.getString("location", null)
 
 
 
         if (lattt == INVALID_CORDINATE || longgg == INVALID_CORDINATE/*FIRST TIME*/) {
+            Log.d("hgdhag", "FIRST TIME")
             getGioIpDb()
-        } else if (location.isNullOrBlank()) {
-            requestForGPSLocation()
+        } else if (locality.isNullOrBlank()) {
+            Log.d("hgdhag", "2nd TIME LOCATION BLANK")
+            requestLocationRepeatLoop()
         } else {
-            onGetCordinates(lattt, longgg, location, true)
+            Log.d("hgdhag", "2nd TIME LOCATION HAS VALUE $locality")
+            onGetCordinates(lattt, longgg, locality, true)
         }
 
         if (arrayList.size == 0) {
@@ -247,7 +189,7 @@ class MainActivity : MainActivityLocation() {
         }
 
         refresh.setOnClickListener {
-            requestForGPSLocation()
+            requestForGPSLocationWithRotationAnimation()
             try {
                 firebaseAnalytics.logEvent(
                     "click",
@@ -337,8 +279,8 @@ class MainActivity : MainActivityLocation() {
 
         Util.setNextAlarm(this)
         locationAC.setText("")
-        locationAC.setHint(l)
-        locationTV.setText(l)
+        locationAC.setHint(if (l.isNullOrBlank()) "My Location" else l)
+        locationTV.setText(if (l.isNullOrBlank()) "My Location" else l)
         latEditText.setText(lattt.toString())
         longEditText.setText(longgg.toString())
         println("$lattt $longgg $l")
@@ -416,82 +358,11 @@ class MainActivity : MainActivityLocation() {
       }*/
 
 
-    private fun animateRotate() {
-        if (isRotationNeed) {
-            ObjectAnimator
-                .ofFloat(refresh, View.ROTATION, 0f, 360f)
-                .setDuration(600)
-                .apply {
-                    repeatCount = 100
-                    addListener(object : Animator.AnimatorListener {
-                        override fun onAnimationRepeat(animation: Animator?) {
-                            if (!isRotationNeed) {
-                                this@apply.cancel()
-                            }
-                        }
 
-                        override fun onAnimationEnd(animation: Animator?) {
-                            if (!isRotationNeed) {
-                                this@apply.cancel()
-                            }
-                        }
-
-                        override fun onAnimationCancel(animation: Animator?) {
-
-                        }
-
-                        override fun onAnimationStart(animation: Animator?) {
-
-                        }
-
-                    })
-                }
-
-                .start()
-
-
-
-            ObjectAnimator
-                .ofFloat(locationButton, View.ROTATION, 0f, 360f)
-                .setDuration(600)
-                .apply {
-                    repeatCount = 100
-                    addListener(object : Animator.AnimatorListener {
-                        override fun onAnimationRepeat(animation: Animator?) {
-                            if (!isRotationNeed) {
-                                this@apply.cancel()
-                            }
-                        }
-
-                        override fun onAnimationEnd(animation: Animator?) {
-                            if (!isRotationNeed) {
-                                this@apply.cancel()
-                            }
-                        }
-
-                        override fun onAnimationCancel(animation: Animator?) {
-
-                        }
-
-                        override fun onAnimationStart(animation: Animator?) {
-
-                        }
-
-                    })
-                }
-
-                .start()
-
-
-        }
-
-    }
-
-    var isRotationNeed = false
 
     @SuppressLint("CheckResult")
     fun getGioIpDb() {
-        isRotationNeed = true
+        isIconRotationNeed = true
         animateRotate()
         AppApplication.restService.gioIpDB()
             .subscribeOn(Schedulers.io())
@@ -528,7 +399,7 @@ class MainActivity : MainActivityLocation() {
                     } catch (e: Exception) {
                         e.printStackTrace()
                     }
-                    requestForGPSLocation()
+                    requestForGPSLocationWithRotationAnimation()
                 },
                 {
                     it.printStackTrace()
@@ -544,18 +415,13 @@ class MainActivity : MainActivityLocation() {
                     }
 
 
-                    requestForGPSLocation()
+                    requestForGPSLocationWithRotationAnimation()
                 }
             )
 
     }
 
-    fun requestForGPSLocation() {
-        hideKeyboardView()
-        isRotationNeed = true
-        animateRotate()
-        startLocationServiceInitialisation()
-    }
+
 
 
     val arrayList = arrayListOf<Cord>()

@@ -18,7 +18,9 @@
         tools:ignore="GoogleAppIndexingWarning"
         tools:replace="android:allowBackup">
         <activity android:name=".LogActivity"></activity>
-        <activity android:name=".QiblaActivity"></activity>
+        <activity
+            android:name=".QiblaActivity"
+            android:screenOrientation="portrait"></activity>
         <activity
             android:name=".MainActivity"
             android:theme="@style/coldStart">

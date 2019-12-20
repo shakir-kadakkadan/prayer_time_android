@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.View
 import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
+import com.google.firebase.analytics.FirebaseAnalytics
 import shakir.swalah.db.AppDatabase
 
 open class BaseActivity : AppCompatActivity() {
@@ -17,7 +18,12 @@ open class BaseActivity : AppCompatActivity() {
 
     }
 
+     lateinit var firebaseAnalytics: FirebaseAnalytics
 
+    override fun onStart() {
+        super.onStart()
+        firebaseAnalytics = FirebaseAnalytics.getInstance(this)
+    }
 
 
     fun adjustWithSystemWindow(
