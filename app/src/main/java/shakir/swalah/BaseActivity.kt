@@ -1,5 +1,7 @@
 package shakir.swalah
 
+import android.content.Context
+import android.content.SharedPreferences
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
@@ -11,6 +13,11 @@ import shakir.swalah.db.AppDatabase
 
 open class BaseActivity : AppCompatActivity() {
     lateinit var appDatabase: AppDatabase
+    val sp: SharedPreferences
+        get() {
+            return Util.getMySharedPreference(this)
+        }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         appDatabase = AppDatabase(this)
@@ -18,7 +25,7 @@ open class BaseActivity : AppCompatActivity() {
 
     }
 
-     lateinit var firebaseAnalytics: FirebaseAnalytics
+    lateinit var firebaseAnalytics: FirebaseAnalytics
 
     override fun onStart() {
         super.onStart()

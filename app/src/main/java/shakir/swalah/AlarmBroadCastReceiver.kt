@@ -62,21 +62,21 @@ class AlarmBroadCastReceiver : BroadcastReceiver() {
             )
             val date = GregorianCalendar()
 
-            val sharedPreferences = context.getSharedPreferences("sp", Context.MODE_PRIVATE)
-            val lattt = sharedPreferences
-                .getDouble("lattt", 11.00)
+            val sharedPreferences = Util.getMySharedPreference(context)
+            val latitude = sharedPreferences
+                .getDouble("latitude", 11.00)
 
-            val longgg = sharedPreferences
-                .getDouble("longgg", 76.00)
+            val longitude = sharedPreferences
+                .getDouble("longitude", 76.00)
 
 
             val prayerTimes =
-                TimeCalculator().date(date).location(lattt, longgg, 0.0, 0.0)
+                TimeCalculator().date(date).location(latitude, longitude, 0.0, 0.0)
                     .timeCalculationMethod(AngleCalculationType.KARACHI)
                     .calculateTimes()
 
 
-            Log.d("dgfbdsfjjd", "$lattt $longgg $prayerTimes")
+            Log.d("dgfbdsfjjd", "$latitude $longitude $prayerTimes")
 
 
             /* val intent = Intent(this, AlertDetails::class.java).apply {

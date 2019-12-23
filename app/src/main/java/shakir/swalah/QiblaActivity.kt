@@ -48,11 +48,10 @@ class QiblaActivity : MainActivityLocation() {
             rootViewLL.post {
                 compassSensorManager = CompassSensorManager(this)
 
-                val sp = getSharedPreferences("sp", Context.MODE_PRIVATE)
-                val locality = sp.getString("location", null)
+                val locality = sp.getString("locality", null)
                 upadteCompassView(Location("saved").apply {
-                    latitude = sp.getDouble("lattt", INVALID_CORDINATE)
-                    longitude = sp.getDouble("longgg", INVALID_CORDINATE)
+                    latitude = sp.getDouble("latitude", INVALID_CORDINATE)
+                    longitude = sp.getDouble("longitude", INVALID_CORDINATE)
                     altitude = sp.getDouble("altitude", 0.0)
                 }, locality = locality)
 

@@ -1,3 +1,4 @@
+/*
 package shakir.swalah.abandoned.alarm
 
 import android.app.NotificationChannel
@@ -59,4 +60,4 @@ class NotificationReceiver : BroadcastReceiver() {
         // Show a notification
         am.notify(id.toInt(), mBuilder.build())
     }
-}
+}*/

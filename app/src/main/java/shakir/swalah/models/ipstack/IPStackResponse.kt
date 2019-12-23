@@ -36,7 +36,7 @@ data class IPStackResponse(
     @field:SerializedName("region_name")
 	val regionName: String? = null,
 
-    @field:SerializedName("location")
+    @field:SerializedName("locality")
 	val location: Location? = null,
 
     @field:SerializedName("region_code")

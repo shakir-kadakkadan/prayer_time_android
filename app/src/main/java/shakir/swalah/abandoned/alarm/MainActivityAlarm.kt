@@ -1,3 +1,4 @@
+/*
 package com.example.alarms
 
 import android.app.TimePickerDialog
@@ -72,3 +73,4 @@ class MainActivityAlarm : AppCompatActivity() {
         }
     }
 }
+*/

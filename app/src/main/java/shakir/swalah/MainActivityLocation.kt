@@ -245,13 +245,11 @@ abstract class MainActivityLocation : BaseActivity() {
 
             }
 
-
-            getSharedPreferences("sp", Context.MODE_PRIVATE)
-                .edit()
-                .putDouble("lattt", latitude)
-                .putDouble("longgg", longitude)
+            sp.edit()
+                .putDouble("latitude", latitude)
+                .putDouble("longitude", longitude)
                 .putDouble("altitude", location?.altitude)
-                .putString("location", locality)
+                .putString("locality", locality)
                 .putBoolean("isLocationSet", true)
                 .commit()
 
@@ -370,7 +368,7 @@ abstract class MainActivityLocation : BaseActivity() {
             }
 
 
-            locationButton?.let {locationButton->
+            locationButton?.let { locationButton ->
                 ObjectAnimator
                     .ofFloat(locationButton, View.ROTATION, 0f, 360f)
                     .setDuration(600)
@@ -402,8 +400,6 @@ abstract class MainActivityLocation : BaseActivity() {
 
                     .start()
             }
-
-
 
 
         }

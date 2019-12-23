@@ -4,6 +4,7 @@ import android.app.AlarmManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Build
 import android.util.Log
 import com.azan.TimeCalculator
@@ -14,9 +15,13 @@ import java.util.*
 
 object Util {
 
+    fun getMySharedPreference(context: Context): SharedPreferences {
+        return context.getSharedPreferences(BuildConfig.APPLICATION_ID, Context.MODE_PRIVATE)
+    }
+
 
     fun getNextUniqueIndex(context: Context): Int {
-        val sharedPreferences = context.getSharedPreferences("sp", Context.MODE_PRIVATE)
+        val sharedPreferences = getMySharedPreference(context)
         val currentInt = sharedPreferences.getInt("nextUniqueIndex", 0)
         sharedPreferences.edit().putInt("nextUniqueIndex", currentInt + 1).apply()
         return currentInt
@@ -38,21 +43,21 @@ object Util {
             if (tommorrow)
                 date.add(Calendar.DATE, 1)
 
-            val sharedPreferences = context.getSharedPreferences("sp", Context.MODE_PRIVATE)
-            val lattt = sharedPreferences
-                .getDouble("lattt", 11.00)
+            val sharedPreferences = getMySharedPreference(context)
+            val latitude = sharedPreferences
+                .getDouble("latitude", 11.00)
 
-            val longgg = sharedPreferences
-                .getDouble("longgg", 76.00)
+            val longitude = sharedPreferences
+                .getDouble("longitude", 76.00)
 
 
             val prayerTimes =
-                TimeCalculator().date(date).location(lattt, longgg, 0.0, 0.0)
+                TimeCalculator().date(date).location(latitude, longitude, 0.0, 0.0)
                     .timeCalculationMethod(AngleCalculationType.KARACHI)
                     .calculateTimes()
 
 
-            Log.d("dgfbdsfjjd", "$lattt $longgg $prayerTimes")
+            Log.d("dgfbdsfjjd", "$latitude $longitude $prayerTimes")
 
 
             array.forEachIndexed { index, prayersType ->
@@ -105,7 +110,7 @@ object Util {
                         .edit()
                         .putLong("lastMilli", milli)
                         .putString("lastName", arabicNames)
-                        .putInt("lastuniqueIndexForParayer", uniqueIndexForParayer)
+                        .putInt("lastUniqueIndexForPrayer", uniqueIndexForParayer)
                         .apply()
 
 
@@ -130,11 +135,11 @@ object Util {
     fun cancelLastPendingIntent(context: Context) {
 
         try {
-            val sharedPreferences = context.getSharedPreferences("sp", Context.MODE_PRIVATE)
+            val sharedPreferences = getMySharedPreference(context)
 
             val lastMilli = sharedPreferences.getLong("lastMilli", 0)
             val lastName = sharedPreferences.getString("lastName", null)
-            val lastuniqueIndexForParayer = sharedPreferences.getInt("lastuniqueIndexForParayer", 0)
+            val lastuniqueIndexForParayer = sharedPreferences.getInt("lastUniqueIndexForPrayer", 0)
 
 
             Log.d("dsfghsdfsh", "last $lastMilli $lastName $lastuniqueIndexForParayer")
@@ -150,7 +155,7 @@ object Util {
                 .edit()
                 .remove("lastName")
                 .remove("lastMilli")
-                .remove("lastuniqueIndexForParayer")
+                .remove("lastUniqueIndexForPrayer")
                 .commit()
         } catch (e: Exception) {
             e.printStackTrace()
