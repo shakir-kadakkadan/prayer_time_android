@@ -1,6 +1,5 @@
 package shakir.swalah
 
-import android.content.Context
 import android.location.Geocoder
 import android.location.Location
 import android.os.Bundle
@@ -20,7 +19,7 @@ class QiblaActivity : MainActivityLocation() {
         subLocality: String,
         countryName: String
     ) {
-        upadteCompassView(location, locality)
+        updateCompassView(location, locality)
     }
 
 
@@ -49,7 +48,7 @@ class QiblaActivity : MainActivityLocation() {
                 compassSensorManager = CompassSensorManager(this)
 
                 val locality = sp.getString("locality", null)
-                upadteCompassView(Location("saved").apply {
+                updateCompassView(Location("saved").apply {
                     latitude = sp.getDouble("latitude", INVALID_CORDINATE)
                     longitude = sp.getDouble("longitude", INVALID_CORDINATE)
                     altitude = sp.getDouble("altitude", 0.0)
@@ -69,7 +68,7 @@ class QiblaActivity : MainActivityLocation() {
     private var northPoleLoc: Location? = null
 
 
-    private fun upadteCompassView(myLocation: Location?, locality: String?) {
+    private fun updateCompassView(myLocation: Location?, locality: String?) {
 
         try {
             locationTV.setText(if (locality.isNullOrBlank()) "My Location" else locality)

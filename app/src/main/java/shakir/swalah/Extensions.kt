@@ -16,10 +16,13 @@ import android.text.style.StyleSpan
 import android.util.Log
 import android.util.Patterns
 import android.view.KeyEvent
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.*
+import androidx.annotation.LayoutRes
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import com.google.gson.Gson
@@ -1433,6 +1436,12 @@ fun Activity?.toast(s: Any?) {
 
 fun Fragment?.toast(s: Any?) {
     this?.activity?.toast(s)
+}
+
+
+
+fun ViewGroup.inflate(@LayoutRes layoutRes: Int): View {
+    return LayoutInflater.from(context).inflate(layoutRes, this, false)
 }
 
 

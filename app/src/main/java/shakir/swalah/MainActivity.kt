@@ -1,12 +1,20 @@
 package shakir.swalah
 
 /*import androidx.recyclerview.widget.RecyclerView*/
+
 import android.annotation.SuppressLint
 import android.content.ComponentName
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.location.Location
+import android.media.AudioManager
+import android.media.ToneGenerator
+import android.net.Uri
+import android.os.Build
 import android.os.Bundle
+import android.os.PowerManager
+import android.provider.Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS
 import android.util.Log
 import android.view.View
 import android.widget.ArrayAdapter
@@ -23,6 +31,7 @@ import kotlinx.android.synthetic.main.pt_layout.view.*
 import shakir.swalah.models.Cord
 import java.text.SimpleDateFormat
 import java.util.*
+
 
 val INVALID_CORDINATE = Double.MAX_VALUE
 
@@ -188,6 +197,11 @@ class MainActivity : MainActivityLocation() {
         }
 
 
+        generateTone.setOnClickListener {
+            startActivity(Intent(this, GenerateToneActivity::class.java))
+        }
+
+
     }
 
 
@@ -218,6 +232,8 @@ class MainActivity : MainActivityLocation() {
             locationSelector.visibility = View.VISIBLE
             LL_close_refresh.visibility = View.VISIBLE
         }
+
+        optimization()
     }
 
 
@@ -367,5 +383,21 @@ class MainActivity : MainActivityLocation() {
             }
         }
     }
+
+
+    fun optimization() {
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            val powerManager = getSystemService(Context.POWER_SERVICE) as PowerManager
+            if (!powerManager.isIgnoringBatteryOptimizations(BuildConfig.APPLICATION_ID))
+                startActivity(with(Intent()) {
+                    action = ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS
+                    setData(Uri.parse("package:${BuildConfig.APPLICATION_ID}"))
+                })
+        }
+    }
+
+
+
 
 }

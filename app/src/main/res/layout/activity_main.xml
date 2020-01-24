@@ -259,5 +259,12 @@
 
     <include layout="@layout/prayer_time_ll" />
 
+    <Button
+        android:id="@+id/generateTone"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Generate Tone"
+        ></Button>
+
 
 </LinearLayout>

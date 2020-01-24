@@ -85,7 +85,7 @@ object Util {
                         context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
 
                     // Alarm type
-                    val alarmType = AlarmManager.RTC
+                    val alarmType = AlarmManager.RTC_WAKEUP
 
                     val uniqueIndexForParayer = getNextUniqueIndex(context)
 
@@ -101,7 +101,11 @@ object Util {
                             pendingIntent
                         )
                     } else {
-                        alarmManager.set(alarmType, milli, pendingIntent)
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                            alarmManager.setExact(alarmType, milli, pendingIntent)
+                        }else{
+                            alarmManager.set(alarmType, milli, pendingIntent)
+                        }
                     }
 
 
