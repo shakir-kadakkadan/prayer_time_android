@@ -5,7 +5,7 @@
     android:id="@+id/rootViewLL"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/bg_1"
+    android:background="@drawable/bg_3"
     android:orientation="vertical"
     android:paddingTop="@dimen/_30sdp"
     tools:context=".QiblaActivity">
@@ -28,6 +28,7 @@
         >
 
         <ImageView
+           app:tint="#FF9800"
             android:id="@+id/locationButton"
             android:layout_width="wrap_content"
             android:layout_height="20dp"
@@ -44,7 +45,7 @@
             android:layout_marginBottom="@dimen/_5sdp"
             android:layout_weight="1"
             android:text="Location"
-            android:textColor="@color/white" />
+            android:textColor="#FF9800" />
 
 
 
@@ -128,7 +129,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:layout_margin="32dp"
-                        android:background="@drawable/compass_bg_2"
+                        android:background="@drawable/gold_round"
                         android:scaleType="fitCenter"
 
                         />
@@ -208,7 +209,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:layout_margin="50dp"
-                            android:src="@drawable/compass_needle_2" />
+                            android:src="@drawable/arrow4gold" />
 
 
                     </shakir.swalah.compass.CompassViewFrame>
@@ -236,8 +237,7 @@
                                 android:layout_height="0dp"
                                 android:layout_gravity="center_horizontal|top"
                                 android:layout_margin="16dp"
-                                android:src="@drawable/arrow_2_point_2_kaba_2"
-
+                                android:src="@drawable/kaba_arrow_gold"
                                 app:layout_constraintDimensionRatio="H,2:1.42"
                                 app:layout_constraintEnd_toEndOf="parent"
                                 app:layout_constraintStart_toStartOf="parent"
@@ -255,7 +255,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
-                        android:indeterminateTint="@color/white"
+                        android:indeterminateTint="#FF9800"
                         android:scaleX="2"
                         android:scaleY="2"
 

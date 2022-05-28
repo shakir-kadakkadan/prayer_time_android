@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.leinardi.android.speeddial.sample.MainActivity">
+    <item
+        android:id="@+id/qiblaFAB"
+        android:icon="@drawable/qibla_button"
+        android:orderInCategory="100"
+        android:title="Qibla | قِبْلَة"
+        app:iconTint="@color/white"
+        app:showAsAction="never" />
+
+ <item
+        android:id="@+id/settingsFAB"
+
+        android:icon="@drawable/ic_baseline_settings_24"
+        android:orderInCategory="100"
+        android:title="Settings | الإعدادات"
+        app:showAsAction="never" />
+
+
+ <item
+        android:id="@+id/monthView"
+        android:icon="@drawable/ic_baseline_calendar_today_24"
+        android:orderInCategory="100"
+        android:title="Month View"
+        app:showAsAction="never" />
+
+
+
+
+
+
+
+</menu>

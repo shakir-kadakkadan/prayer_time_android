@@ -185,10 +185,12 @@ object Util {
         }
 
 
+
+
         return PendingIntent.getBroadcast(
             context,
             uniqueIndexForParayer, broadcastIntent,
-            PendingIntent.FLAG_CANCEL_CURRENT
+            pFlagMutable(PendingIntent.FLAG_CANCEL_CURRENT)
         )
     }
 

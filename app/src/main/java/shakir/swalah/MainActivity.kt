@@ -13,6 +13,7 @@ import android.media.ToneGenerator
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.os.Handler
 import android.os.PowerManager
 import android.provider.Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS
 import android.util.Log
@@ -22,15 +23,19 @@ import android.widget.Toast
 import com.azan.TimeCalculator
 import com.azan.types.AngleCalculationType
 import com.azan.types.PrayersType
-import com.crashlytics.android.Crashlytics
+import com.github.msarhan.ummalqura.calendar.UmmalquraCalendar
+import com.google.firebase.crashlytics.FirebaseCrashlytics
+
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.prayer_time_ll.*
 import kotlinx.android.synthetic.main.pt_layout.view.*
 import shakir.swalah.models.Cord
+import java.text.NumberFormat
 import java.text.SimpleDateFormat
 import java.util.*
+import java.util.concurrent.TimeUnit
 
 
 val INVALID_CORDINATE = Double.MAX_VALUE
@@ -50,9 +55,11 @@ class MainActivity : MainActivityLocation() {
 
 
             val s =
-                "${if (locality.isBlank()) "Unknown Location.\nPlease Check Your Network Settings & Location" else {
-                    if (isNear) "Near $locality" else locality
-                }}, $subLocality, $countryName\n$latitude,  $longitude"
+                "${
+                    if (locality.isBlank()) "Unknown Location.\nPlease Check Your Network Settings & Location" else {
+                        if (isNear) "Near $locality" else locality
+                    }
+                }, $subLocality, $countryName\n$latitude,  $longitude"
             if (toastText.contains(
                     "Unknown Location",
                     true
@@ -146,7 +153,7 @@ class MainActivity : MainActivityLocation() {
                     "click",
                     Bundle().apply { putString("click", "set") })
             } catch (e: Exception) {
-                Crashlytics.logException(e)
+                FirebaseCrashlytics.getInstance().recordException(e)
             }
         }
         close.setOnClickListener {
@@ -192,13 +199,37 @@ class MainActivity : MainActivityLocation() {
         }
 
         //qibla.isVisible = isMyTestDevice()
-        qibla.setOnClickListener {
-            startActivity(Intent(this, QiblaActivity::class.java))
-        }
 
 
-        generateTone.setOnClickListener {
-            startActivity(Intent(this, GenerateToneActivity::class.java))
+        /*  generateTone.setOnClickListener {
+              startActivity(Intent(this, GenerateToneActivity::class.java))
+          }*/
+
+
+        hijriDate.setText(UmmalquraCalendar().convertCaledarToDisplayDate_1())
+
+
+
+        speedDial.inflate(R.menu.menu_speed_dial)
+        speedDial.setOnActionSelectedListener {
+            when (it.id) {
+                R.id.qiblaFAB -> {
+                    startActivity(Intent(this, QiblaActivity::class.java))
+                }
+                R.id.settingsFAB -> {
+
+                }
+                R.id.monthView -> {
+                    startActivity(Intent(this, MonthViewActivity::class.java))
+                }
+
+
+            }
+
+
+
+            speedDial.close(true)
+            return@setOnActionSelectedListener true
         }
 
 
@@ -319,7 +350,7 @@ class MainActivity : MainActivityLocation() {
                                     bundle.putString("Locality", it?.city)
                                     firebaseAnalytics.logEvent("Location", bundle)
                                 } catch (e: Exception) {
-                                    Crashlytics.logException(e)
+                                    FirebaseCrashlytics.getInstance().recordException(e)
                                 }
 
                             }
@@ -385,8 +416,12 @@ class MainActivity : MainActivityLocation() {
     }
 
 
-    fun optimization() {
 
+    var optimaizationCalled=false
+    fun optimization() {
+        //todo
+      val bolt=  sp.getLong("BATTERY_OPT_LAST_CALL_TIME",0)
+        //if (System.currentTimeMillis()-bolt>(TimeUnit.DAYS.convert(30,TimeUnit.NANOSECONDS));
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             val powerManager = getSystemService(Context.POWER_SERVICE) as PowerManager
             if (!powerManager.isIgnoringBatteryOptimizations(BuildConfig.APPLICATION_ID))
@@ -398,6 +433,26 @@ class MainActivity : MainActivityLocation() {
     }
 
 
-
-
 }
+
+fun UmmalquraCalendar?.convertCaledarToDisplayDate_1(): String {
+    if (this != null) {
+        val locale = Locale("ar", "KW")
+        val nf = NumberFormat.getInstance(locale)
+        nf.isGroupingUsed = false
+
+        return " ${this.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.LONG, locale)}،  ${
+            nf.format(
+                this[Calendar.DATE]
+            )
+        } ${
+            this.getDisplayName(
+                Calendar.MONTH,
+                Calendar.LONG,
+                Locale("ar")
+            )
+        } ${nf.format(this.get(Calendar.YEAR))} هـ "
+
+    } else return ""
+}
+

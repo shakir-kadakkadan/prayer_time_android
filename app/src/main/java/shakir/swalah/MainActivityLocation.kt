@@ -20,9 +20,9 @@ import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
-import com.crashlytics.android.Crashlytics
 import com.google.android.gms.common.api.ResolvableApiException
 import com.google.android.gms.location.*
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import kotlinx.android.synthetic.main.activity_main.*
 import shakir.swalah.db.GeoCoded
 import java.util.*
@@ -145,7 +145,7 @@ abstract class MainActivityLocation : BaseActivity() {
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
         mFusedLocationClient!!.requestLocationUpdates(
             mLocationRequest, mLocationCallback,
-            Looper.myLooper()
+            Looper.myLooper()!!
         )
 
         return mLocationRequest
@@ -196,7 +196,7 @@ abstract class MainActivityLocation : BaseActivity() {
                 bundle.putString("Country", countryName)
                 firebaseAnalytics.logEvent("Location", bundle)
             } catch (e: Exception) {
-                Crashlytics.logException(e)
+                FirebaseCrashlytics.getInstance().recordException(e)
             }
 
             if (locality.isNotBlank()) {

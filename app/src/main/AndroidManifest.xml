@@ -9,11 +9,12 @@
     <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS" />
 
     <application
+        android:taskAffinity=""
         android:name=".AppApplication"
         android:allowBackup="false"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@mipmap/ic_launcher_gold"
         android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher"
+        android:roundIcon="@mipmap/ic_launcher_gold_round"
         android:supportsRtl="true"
         android:theme="@style/coldStart"
         tools:ignore="GoogleAppIndexingWarning"
@@ -23,6 +24,7 @@
             android:name=".QiblaActivity"
             android:screenOrientation="portrait"></activity>
         <activity
+            android:exported="true"
             android:name=".MainActivity"
             android:theme="@style/coldStart">
             <intent-filter>
@@ -32,6 +34,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".GenerateToneActivity" />
+        <activity android:name=".MonthViewActivity" />
 
         <receiver
             android:name=".AlarmBroadCastReceiver"
@@ -43,14 +46,14 @@
                 <action android:name="android.intent.action.LOCKED_BOOT_COMPLETED" />
             </intent-filter>
         </receiver>
-        <receiver android:name=".TimeChangedReceiver">
+        <receiver android:name=".TimeChangedReceiver" android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.TIME_SET" />
             </intent-filter>
         </receiver>
         <receiver
-            android:name=".BootCompleteReceiver"
-            android:enabled="false">
+            android:name=".BootCompleteReceiver" android:exported="true"
+            android:enabled="true">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>

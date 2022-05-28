@@ -79,82 +79,11 @@ class AlarmBroadCastReceiver : BroadcastReceiver() {
             Log.d("dgfbdsfjjd", "$latitude $longitude $prayerTimes")
 
 
-            /* val intent = Intent(this, AlertDetails::class.java).apply {
-                 flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-             }
-             val pendingIntent: PendingIntent = PendingIntent.getActivity(this, 0, intent, 0)
- */
-
-
-
-
-            createNotificationChannel(context)
-
-            // val alarmSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
-
-
-            val audioManager =
-                context.getSystemService(Context.AUDIO_SERVICE) as AudioManager
-
-            if (audioManager.getStreamVolume(AudioManager.STREAM_ALARM)
-                <
-                (audioManager.getStreamMaxVolume(AudioManager.STREAM_ALARM) * .75)
+            showNoti(
+                context, intent?.getStringExtra("name") + " " +
+                        SimpleDateFormat("H:mm", Locale.ENGLISH).format(milli)
             )
-                audioManager.setStreamVolume(
-                    AudioManager.STREAM_ALARM,
-                    (audioManager.getStreamMaxVolume(AudioManager.STREAM_ALARM) * .75).toInt(),
-                    AudioManager.FLAG_SHOW_UI
-                )
 
-
-            /*   val mediaPlayer = MediaPlayer.create(context, R.raw.message_tone)
-               if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                   mediaPlayer.setAudioAttributes(AudioAttributes.Builder().setUsage(AudioAttributes.USAGE_ALARM).build())
-               }else {
-                  // mediaPlayer.setStreamType(AudioManager.STREAM_ALARM)
-               }
-             //  mediaPlayer.prepareAsync()
-               mediaPlayer.setOnPreparedListener(object :MediaPlayer.OnPreparedListener{
-                   override fun onPrepared(mp: MediaPlayer?) {
-                       mp?.start()
-                   }
-
-               })*/
-
-
-            val path =
-                Uri.parse("android.resource://" + BuildConfig.APPLICATION_ID + "/raw/message_tone.mp3")
-            val ringtone = RingtoneManager.getRingtone(context!!.applicationContext, path)
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                ringtone.setAudioAttributes(AudioAttributes.Builder().setUsage(AudioAttributes.USAGE_ALARM).build())
-            } else {
-                ringtone.setStreamType(AudioManager.STREAM_ALARM)
-            }
-
-            ringtone.play()
-
-
-            var builder = NotificationCompat.Builder(context, CHANNEL_MAME)
-                .setSmallIcon(android.R.drawable.ic_lock_idle_alarm)
-                .setContentTitle(
-                    intent?.getStringExtra("name") + " " +
-                            SimpleDateFormat("H:mm", Locale.ENGLISH).format(milli)
-                )
-                /* .setContentText(textContent)*/
-                //.setContentIntent(pendingIntent)
-                .setPriority(NotificationCompat.PRIORITY_HIGH)
-                .setCategory(NotificationCompat.CATEGORY_ALARM)
-                .setAutoCancel(true)
-                .setVisibility(VISIBILITY_PUBLIC)
-                .setOnlyAlertOnce(true)
-                /*  .setSound(path)*/
-                .setVibrate(longArrayOf(0, 0))
-
-
-            with(NotificationManagerCompat.from(context)) {
-                // notificationId is a unique int for each notification that you must define
-                notify(0, builder.build())
-            }
         }
 
         Handler().postDelayed({
@@ -162,6 +91,85 @@ class AlarmBroadCastReceiver : BroadcastReceiver() {
         }, 2500)
 
 
+    }
+
+    fun showNoti(context: Context, title: String) {
+
+        /* val intent = Intent(this, AlertDetails::class.java).apply {
+     flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+ }
+ val pendingIntent: PendingIntent = PendingIntent.getActivity(this, 0, intent, 0)
+*/
+
+
+
+
+        createNotificationChannel(context)
+
+        // val alarmSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
+
+
+        val audioManager =
+            context.getSystemService(Context.AUDIO_SERVICE) as AudioManager
+
+        if (audioManager.getStreamVolume(AudioManager.STREAM_ALARM)
+            <
+            (audioManager.getStreamMaxVolume(AudioManager.STREAM_ALARM) * .75)
+        )
+            audioManager.setStreamVolume(
+                AudioManager.STREAM_ALARM,
+                (audioManager.getStreamMaxVolume(AudioManager.STREAM_ALARM) * .75).toInt(),
+                AudioManager.FLAG_SHOW_UI
+            )
+
+
+        /*   val mediaPlayer = MediaPlayer.create(context, R.raw.message_tone)
+           if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+               mediaPlayer.setAudioAttributes(AudioAttributes.Builder().setUsage(AudioAttributes.USAGE_ALARM).build())
+           }else {
+              // mediaPlayer.setStreamType(AudioManager.STREAM_ALARM)
+           }
+         //  mediaPlayer.prepareAsync()
+           mediaPlayer.setOnPreparedListener(object :MediaPlayer.OnPreparedListener{
+               override fun onPrepared(mp: MediaPlayer?) {
+                   mp?.start()
+               }
+
+           })*/
+
+
+        val path =
+            Uri.parse("android.resource://" + AppApplication.instance.packageName + "/" + R.raw.message_tone)
+        val ringtone = RingtoneManager.getRingtone(context!!.applicationContext, path)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            ringtone.setAudioAttributes(
+                AudioAttributes.Builder().setUsage(AudioAttributes.USAGE_ALARM).build()
+            )
+        } else {
+            ringtone.setStreamType(AudioManager.STREAM_ALARM)
+        }
+
+        ringtone.play()
+
+
+        var builder = NotificationCompat.Builder(context, CHANNEL_MAME)
+            .setSmallIcon(android.R.drawable.ic_lock_idle_alarm)
+            .setContentTitle(title)
+            /* .setContentText(textContent)*/
+            //.setContentIntent(pendingIntent)
+            .setPriority(NotificationCompat.PRIORITY_HIGH)
+            .setCategory(NotificationCompat.CATEGORY_ALARM)
+            .setAutoCancel(true)
+            .setVisibility(VISIBILITY_PUBLIC)
+            .setOnlyAlertOnce(true)
+            .setSound(null)
+            .setVibrate(longArrayOf(0, 0))
+
+
+        with(NotificationManagerCompat.from(context)) {
+            // notificationId is a unique int for each notification that you must define
+            notify(0, builder.build())
+        }
     }
 
 

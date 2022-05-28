@@ -4,7 +4,7 @@ import android.location.Geocoder
 import android.location.Location
 import android.os.Bundle
 import android.view.View
-import com.crashlytics.android.Crashlytics
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import kotlinx.android.synthetic.main.activity_qibla.*
 import shakir.swalah.compass.CompassSensorManager
 import java.util.*
@@ -58,7 +58,7 @@ class QiblaActivity : MainActivityLocation() {
                 startLocationServiceInitialisation()
             }
         } catch (e: Exception) {
-            Crashlytics.logException(e)
+            FirebaseCrashlytics.getInstance().recordException(e)
         }
     }
 
@@ -94,7 +94,7 @@ class QiblaActivity : MainActivityLocation() {
                 compassSensorManager?.onResume()
             }
         } catch (e: Exception) {
-            Crashlytics.logException(e)
+            FirebaseCrashlytics.getInstance().recordException(e)
         }
 
     }

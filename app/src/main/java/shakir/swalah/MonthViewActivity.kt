@@ -10,5 +10,6 @@ class MonthViewActivity :BaseActivity(){
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_mont_view)
         viewPager2.adapter=MonthAdapter()
+        //todo
     }
 }

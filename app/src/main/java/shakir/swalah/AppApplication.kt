@@ -17,6 +17,7 @@ import java.util.concurrent.TimeUnit
 class AppApplication : Application() {
     override fun onCreate() {
         super.onCreate()
+        instance=this
 
         /*   try {
 
@@ -67,6 +68,7 @@ class AppApplication : Application() {
 
     companion object {
         lateinit var restService: WebServices
+        lateinit var instance: AppApplication
 
         fun getArabicNames(string: String?): String? {
             return when (string?.let { PrayersType.valueOf(it) }) {

@@ -3,10 +3,12 @@ package shakir.swalah
 
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.graphics.Typeface
+import android.os.Build
 import android.os.Bundle
 import android.os.Parcelable
 import android.provider.Settings
@@ -28,7 +30,9 @@ import androidx.fragment.app.Fragment
 import com.google.gson.Gson
 import com.google.gson.JsonObject
 import okhttp3.MediaType
+import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.RequestBody
+import okhttp3.RequestBody.Companion.toRequestBody
 import java.io.File
 import java.io.FileOutputStream
 import java.io.InputStream
@@ -407,64 +411,7 @@ fun String?.bold(): SpannableString {
 }
 
 
-fun View?.isMyTestDevice(): Boolean {
-    return this?.context?.isMyTestDevice() ?: false
-}
 
-fun Fragment?.isMyTestDevice(): Boolean {
-    return this?.activity?.isMyTestDevice() ?: false
-}
-
-
-fun Context?.isMyTestDevice(): Boolean {
-
-    if (!BuildConfig.DEBUG || !BuildConfig.isRunFromStudio) return false
-
-    if (this == null) return false
-    val deviceId = Settings.Secure.getString(this.contentResolver, Settings.Secure.ANDROID_ID)
-    Log.d("deviceId", "deviceId: $deviceId")
-    val IDs = arrayOf(
-        "85ff68722276c8a1",
-        "c257bde1e9a6db7a",
-        "434174ef9f427ec8",
-        "ac6d5785c7415a2e",
-        "28dad5024de5f2c4",
-        "ebb7a2b5c4a8be30",
-        "5cb8f9f7aa03a3b4",
-        "305a8d2b95971360",
-        "c79c0cb2bc3b0e3",
-        "9001467be1ba759d",
-        "d19aecc171bb6cd4",
-        "b807a0851a9f732e",
-        "ebba5fe4500d6f3d", /*"a98e4de55c28e98c"*//*NEXUS 5x*//*,
-                */
-
-        "fb1e2352e5864e5d",
-        "ce7a24f95c01cb62",
-        "ef06ed6d594c9b0a",
-        "f6990b8bd8456a87",
-        "ebba5fe4500d6f3d",
-        "f6990b8bd8456a87",
-        "1ca3fcc2108bb86a",
-        "3bc17a02d51f7165",
-        "aca158757cc4cad",
-        "ebb7a2b5c4a8be30",
-        "94ddcd6fe3e3456d",
-        "758447982b1ae2ec",
-        "40b1d3fb5b9e8d37",
-        "15a73cad7b462f43",
-        "28dad5024de5f2c4"
-
-        ,
-        "5ad8bea2e05fb041",
-        "fb614da348a40e2d",
-        "28dad5024de5f2c4",
-        "d9c77a732513682"
-    )
-
-
-    return deviceId in IDs
-}
 
 
 fun Context?.getDeviceID(): String? {
@@ -553,9 +500,9 @@ val Calendar.isLessThanOrEqual24HoursFromNow: Boolean
 
 fun String?.toRequestBody(): RequestBody {
     if (this == null)
-        return RequestBody.create(MediaType.parse("text/plain"), "")
+        return    "".toRequestBody("text/plain".toMediaType())
     else
-        return RequestBody.create(MediaType.parse("text/plain"), this)
+        return toRequestBody("text/plain".toMediaType())
 }
 
 
@@ -575,7 +522,7 @@ fun HashMap<String, RequestBody>.addImage(
     mime: String = "image/jpeg"
 ): HashMap<String, RequestBody> {
     if (file != null) {
-        val requestFile = RequestBody.create(MediaType.parse(mime), file)
+        val requestFile = RequestBody.create(mime.toMediaType(), file)
         this["$key\"; filename=\"" + file.name + "\""] = requestFile
     }
     return this
@@ -1444,7 +1391,15 @@ fun ViewGroup.inflate(@LayoutRes layoutRes: Int): View {
     return LayoutInflater.from(context).inflate(layoutRes, this, false)
 }
 
+fun pFlagMutable(flag: Int): Int {
 
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+        return (PendingIntent.FLAG_MUTABLE or flag)
+    } else {
+        return flag
+    }
+
+}
 
 
 
