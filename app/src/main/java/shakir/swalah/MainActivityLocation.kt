@@ -73,8 +73,12 @@ abstract class MainActivityLocation : BaseActivity() {
             if ((grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
                 getLastLocation()
             }
+            onLoactionPermissionDialogDone()
         }
     }
+
+
+    abstract fun onLoactionPermissionDialogDone()
 
 
     public fun isLocationEnabled(): Boolean {
@@ -245,13 +249,27 @@ abstract class MainActivityLocation : BaseActivity() {
 
             }
 
+            if (this !is QiblaActivity)
+                sp.edit()
+                    .putDouble("latitude", latitude)
+                    .putDouble("longitude", longitude)
+                    .putDouble("altitude", location?.altitude)
+                    .putString("locality", locality)
+                    .putBoolean("isLocationSet", true)
+                    .commit()
+
+
             sp.edit()
-                .putDouble("latitude", latitude)
-                .putDouble("longitude", longitude)
-                .putDouble("altitude", location?.altitude)
-                .putString("locality", locality)
-                .putBoolean("isLocationSet", true)
+                .putDouble("Qibla_latitude", latitude)
+                .putDouble("Qibla_longitude", longitude)
+                .putDouble("Qibla_altitude", location?.altitude)
+                .putString("Qibla_locality", locality)
+                .putBoolean("Qibla_isLocationSet", true)
                 .commit()
+
+
+
+
 
             runOnUiThread {
                 isIconRotationNeed = false

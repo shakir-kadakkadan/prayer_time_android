@@ -11,6 +11,9 @@ import java.util.*
 
 
 class QiblaActivity : MainActivityLocation() {
+    override fun onLoactionPermissionDialogDone() {
+
+    }
 
     override fun onLocationCallBack(
         location: Location,
@@ -47,11 +50,11 @@ class QiblaActivity : MainActivityLocation() {
             rootViewLL.post {
                 compassSensorManager = CompassSensorManager(this)
 
-                val locality = sp.getString("locality", null)
+                val locality = sp.getString("Qibla_locality", null)
                 updateCompassView(Location("saved").apply {
-                    latitude = sp.getDouble("latitude", INVALID_CORDINATE)
-                    longitude = sp.getDouble("longitude", INVALID_CORDINATE)
-                    altitude = sp.getDouble("altitude", 0.0)
+                    latitude = sp.getDouble("Qibla_latitude", INVALID_CORDINATE)
+                    longitude = sp.getDouble("Qibla_longitude", INVALID_CORDINATE)
+                    altitude = sp.getDouble("Qibla_altitude", 0.0)
                 }, locality = locality)
 
 

@@ -35,12 +35,13 @@ android {
     }
     compileSdkVersion 32
     defaultConfig {
+        multiDexEnabled true
         resConfigs 'ar', 'en'
         applicationId "shakir.swalah"
         minSdkVersion 19
         targetSdkVersion 32
-        versionCode 11
-        versionName "11"
+        versionCode 12
+        versionName "12"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         signingConfig signingConfigs.rel_config
         buildConfigField "boolean", "isRunFromStudio", (gradle.startParameter.projectProperties.get("android.injected.build.api") != null).toString()
@@ -58,13 +59,7 @@ android {
     }
 
 
-    //APK FILE NAME - NEW
-    if (gradle.startParameter.projectProperties.get("android.injected.build.api") == null)
-        setProperty("archivesBaseName", "Adhan  "
-                + ((gradle.startParameter.taskNames[0]).toString().replace(":app:assemble", "").replace("Debug", "").replace("Release", " signed").trim())
-                + " " + ((new Date()).format('d MMM H꞉mm').toString())
-                + " " + "v" + defaultConfig.versionName + " ("
-                + defaultConfig.versionCode + ") ")
+
 
 
 }
@@ -112,6 +107,9 @@ dependencies {
     api 'com.github.msarhan:ummalqura-calendar:1.1.9'
 
     implementation "com.leinardi.android:speed-dial:3.0.0"
+
+
+    implementation "androidx.multidex:multidex:2.0.1"
 
 }
 

@@ -1,6 +1,10 @@
 package shakir.swalah
 
 import android.app.Application
+import android.content.SharedPreferences
+import android.text.format.DateFormat
+import androidx.core.content.edit
+import androidx.multidex.MultiDexApplication
 import com.azan.types.PrayersType
 import com.google.gson.GsonBuilder
 import io.reactivex.internal.functions.Functions
@@ -14,11 +18,13 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 import java.util.concurrent.TimeUnit
 
-class AppApplication : Application() {
+class AppApplication : MultiDexApplication() {
+
+
+
     override fun onCreate() {
         super.onCreate()
         instance=this
-
         /*   try {
 
                ProviderInstaller.installIfNeeded(this)
@@ -81,5 +87,7 @@ class AppApplication : Application() {
                 else ->null
             }
         }
+
+
     }
 }

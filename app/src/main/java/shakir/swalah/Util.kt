@@ -6,6 +6,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Build
+import android.text.format.DateFormat
 import android.util.Log
 import com.azan.TimeCalculator
 import com.azan.types.AngleCalculationType
@@ -103,7 +104,7 @@ object Util {
                     } else {
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
                             alarmManager.setExact(alarmType, milli, pendingIntent)
-                        }else{
+                        } else {
                             alarmManager.set(alarmType, milli, pendingIntent)
                         }
                     }
@@ -193,6 +194,61 @@ object Util {
             pFlagMutable(PendingIntent.FLAG_CANCEL_CURRENT)
         )
     }
+
+
+    fun onConfigChange(){
+        is24Cache=null
+        timeFormatCache=null
+    }
+
+    private var is24Cache: Boolean? = null
+    fun is24HourFormat(): Boolean {
+        if (is24Cache == null) {
+            val sharedPreferences = getMySharedPreference(AppApplication.instance)
+            val is24HourFormat = sharedPreferences.getString("is24HourFormat", "")
+            if (is24HourFormat.isNullOrBlank()) {
+                is24Cache = DateFormat.is24HourFormat(AppApplication.instance)
+            } else {
+                is24Cache = is24HourFormat.toBoolean()
+            }
+        }
+        return is24Cache ?: false
+    }
+
+    private var timeFormatCache: String? = null
+    fun timeFormat(): String {
+        if (timeFormatCache == null) {
+            if (is24HourFormat()) {
+
+                timeFormatCache = "HH:mm"
+            } else {
+                if (isAMPMShow()){
+                    timeFormatCache = "hh:mm a"
+                }
+              else
+                    timeFormatCache = "hh:mm"
+            }
+        }
+
+        return timeFormatCache ?: "hh:mm"
+
+    }
+
+
+    private var isAMPMShowCache: Boolean? = null
+    fun isAMPMShow(): Boolean {
+        if (isAMPMShowCache == null) {
+            val sharedPreferences = getMySharedPreference(AppApplication.instance)
+            val isAMPMShow = sharedPreferences.getString("isAMPMShow", "")
+            if (isAMPMShow.isNullOrBlank()) {
+                isAMPMShowCache = false
+            } else {
+                isAMPMShowCache = isAMPMShow.toBoolean()
+            }
+        }
+        return isAMPMShowCache ?: false
+    }
+
 
 
 }

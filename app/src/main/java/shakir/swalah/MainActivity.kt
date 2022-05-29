@@ -5,6 +5,7 @@ package shakir.swalah
 import android.annotation.SuppressLint
 import android.content.ComponentName
 import android.content.Context
+import android.content.DialogInterface
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.location.Location
@@ -16,10 +17,13 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.PowerManager
 import android.provider.Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS
+import android.text.format.DateFormat
 import android.util.Log
 import android.view.View
 import android.widget.ArrayAdapter
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
+import androidx.core.content.edit
 import com.azan.TimeCalculator
 import com.azan.types.AngleCalculationType
 import com.azan.types.PrayersType
@@ -42,6 +46,11 @@ val INVALID_CORDINATE = Double.MAX_VALUE
 
 
 class MainActivity : MainActivityLocation() {
+
+
+    override fun onLoactionPermissionDialogDone() {
+        optimization()
+    }
 
     override fun onLocationCallBack(
         location: Location,
@@ -99,6 +108,7 @@ class MainActivity : MainActivityLocation() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
         adjustWithSystemWindow(rootViewLL, topSpacer, true)
         val receiver = ComponentName(applicationContext, BootCompleteReceiver::class.java)
         applicationContext.packageManager?.setComponentEnabledSetting(
@@ -264,7 +274,8 @@ class MainActivity : MainActivityLocation() {
             LL_close_refresh.visibility = View.VISIBLE
         }
 
-        optimization()
+        if (hasLocationPermissions())
+            optimization()
     }
 
 
@@ -299,7 +310,7 @@ class MainActivity : MainActivityLocation() {
             view.prayerName.setText(AppApplication.getArabicNames(array[index].name))
             val prayTime = prayerTimes.getPrayTime(array[index])
             view.prayerTime.text =
-                SimpleDateFormat("HH:mm", Locale.ENGLISH).format(prayTime)
+                SimpleDateFormat(Util.timeFormat(), Locale.ENGLISH).format(prayTime)
 
             if (prayTime.time >= System.currentTimeMillis() && nextPrayTime == null) {
                 nextPrayTime = array[index]
@@ -416,20 +427,38 @@ class MainActivity : MainActivityLocation() {
     }
 
 
-
-    var optimaizationCalled=false
+    var optiDialog: AlertDialog? = null
     fun optimization() {
-        //todo
-      val bolt=  sp.getLong("BATTERY_OPT_LAST_CALL_TIME",0)
-        //if (System.currentTimeMillis()-bolt>(TimeUnit.DAYS.convert(30,TimeUnit.NANOSECONDS));
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             val powerManager = getSystemService(Context.POWER_SERVICE) as PowerManager
-            if (!powerManager.isIgnoringBatteryOptimizations(BuildConfig.APPLICATION_ID))
-                startActivity(with(Intent()) {
-                    action = ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS
-                    setData(Uri.parse("package:${BuildConfig.APPLICATION_ID}"))
-                })
+            if (!powerManager.isIgnoringBatteryOptimizations(BuildConfig.APPLICATION_ID)) {
+                if (sp.getBoolean("stopOptimizeBatteryIgnored", false) != true) {
+                    if (optiDialog == null)
+                        optiDialog = AlertDialog.Builder(this, R.style.MyAlertDialogTheme)
+                            .setTitle("Warning")
+                            .setMessage("Battery optimization mode is enabled. It can interrupt Adhan notifications and alarms. Please Allow \"Stop optimising Battery Usage\"")
+                            .setPositiveButton("OK") { dialog, which ->
+                                dialog.dismiss()
+                                startActivity(with(Intent()) {
+                                    action = ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS
+                                    setData(Uri.parse("package:${BuildConfig.APPLICATION_ID}"))
+                                })
+
+                            }
+                            .setNegativeButton("Ignore") { dialog, which ->
+                                dialog.dismiss()
+                                sp.edit { putBoolean("stopOptimizeBatteryIgnored", true) }
+                            }
+                            .create()
+                    optiDialog?.show()
+                }
+
+
+            }
         }
+
+
     }
 
 

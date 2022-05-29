@@ -2,6 +2,7 @@ package shakir.swalah
 
 import android.content.Context
 import android.content.SharedPreferences
+import android.content.res.Configuration
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
@@ -92,5 +93,10 @@ open class BaseActivity : AppCompatActivity() {
 
 
         }
+    }
+
+    override fun onConfigurationChanged(newConfig: Configuration) {
+        super.onConfigurationChanged(newConfig)
+        Util.onConfigChange()
     }
 }
