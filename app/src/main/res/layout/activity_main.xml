@@ -336,7 +336,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="end|bottom"
         android:layout_margin="10dp"
-        android:theme="@style/fab"
+      android:theme="@style/fab"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:sdMainFabClosedSrc="@drawable/menu_fab" />

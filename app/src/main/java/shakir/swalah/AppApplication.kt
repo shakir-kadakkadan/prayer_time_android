@@ -3,6 +3,7 @@ package shakir.swalah
 import android.app.Application
 import android.content.SharedPreferences
 import android.text.format.DateFormat
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.edit
 import androidx.multidex.MultiDexApplication
 import com.azan.types.PrayersType
@@ -25,6 +26,7 @@ class AppApplication : MultiDexApplication() {
     override fun onCreate() {
         super.onCreate()
         instance=this
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
         /*   try {
 
                ProviderInstaller.installIfNeeded(this)

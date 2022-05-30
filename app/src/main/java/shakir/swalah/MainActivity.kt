@@ -227,7 +227,7 @@ class MainActivity : MainActivityLocation() {
                     startActivity(Intent(this, QiblaActivity::class.java))
                 }
                 R.id.settingsFAB -> {
-
+                    startActivity(Intent(this, SettingsActivity::class.java))
                 }
                 R.id.monthView -> {
                     startActivity(Intent(this, MonthViewActivity::class.java))
@@ -305,12 +305,13 @@ class MainActivity : MainActivityLocation() {
 
         var nextPrayTime: PrayersType? = null
 
+        val timeFormat=Util.timeFormat()
 
         arrayOf(FAJR, SUNRISE, ZUHR, ASR, MAGHRIB, ISHA).forEachIndexed { index, view ->
             view.prayerName.setText(AppApplication.getArabicNames(array[index].name))
             val prayTime = prayerTimes.getPrayTime(array[index])
             view.prayerTime.text =
-                SimpleDateFormat(Util.timeFormat(), Locale.ENGLISH).format(prayTime)
+                SimpleDateFormat(timeFormat, Locale.ENGLISH).format(prayTime).ltrEmbed()
 
             if (prayTime.time >= System.currentTimeMillis() && nextPrayTime == null) {
                 nextPrayTime = array[index]
@@ -435,7 +436,7 @@ class MainActivity : MainActivityLocation() {
             if (!powerManager.isIgnoringBatteryOptimizations(BuildConfig.APPLICATION_ID)) {
                 if (sp.getBoolean("stopOptimizeBatteryIgnored", false) != true) {
                     if (optiDialog == null)
-                        optiDialog = AlertDialog.Builder(this, R.style.MyAlertDialogTheme)
+                        optiDialog = AlertDialog.Builder(this/*, R.style.MyAlertDialogTheme*/)
                             .setTitle("Warning")
                             .setMessage("Battery optimization mode is enabled. It can interrupt Adhan notifications and alarms. Please Allow \"Stop optimising Battery Usage\"")
                             .setPositiveButton("OK") { dialog, which ->

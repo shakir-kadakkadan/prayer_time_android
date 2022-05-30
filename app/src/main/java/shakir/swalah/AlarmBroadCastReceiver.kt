@@ -81,7 +81,7 @@ class AlarmBroadCastReceiver : BroadcastReceiver() {
 
             showNoti(
                 context, intent?.getStringExtra("name") + " " +
-                        SimpleDateFormat(Util.timeFormat(), Locale.ENGLISH).format(milli)
+                        SimpleDateFormat(Util.timeFormat(), Locale.ENGLISH).format(milli).ltrEmbed()
             )
 
         }

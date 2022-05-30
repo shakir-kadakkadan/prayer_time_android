@@ -9,6 +9,7 @@
         android:orderInCategory="100"
         android:title="Qibla | قِبْلَة"
         app:iconTint="@color/white"
+        android:iconTint="@color/white"
         app:showAsAction="never" />
 
  <item

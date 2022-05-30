@@ -15,7 +15,7 @@ class MonthViewActivity : BaseActivity() {
         var locality = sp.getString("locality", null)
 
         if (latitude != INVALID_CORDINATE && longitude != INVALID_CORDINATE) {
-            viewPager2.adapter = MonthAdapter(latitude,longitude)
+            viewPager2.adapter = MonthAdapter(latitude,longitude,Util.timeFormat().replace(" a",""))
             viewPager2.setCurrentItem(50,false)
         }
 

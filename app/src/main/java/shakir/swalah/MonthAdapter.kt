@@ -16,7 +16,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.concurrent.thread
 
-class MonthAdapter(var latitude: Double, var longitude: Double) :
+class MonthAdapter(var latitude: Double, var longitude: Double, var timeFormat: String) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
 
@@ -53,8 +53,8 @@ class MonthAdapter(var latitude: Double, var longitude: Double) :
 
                 val list = arrayListOf<String>()
                 list.add("Date ")
-                for (i in 0..5){
-                    list.add(AppApplication.getArabicNames(array[i].name)?:"")
+                for (i in 0..5) {
+                    list.add(AppApplication.getArabicNames(array[i].name) ?: "")
                 }
                 while (cal.get(Calendar.MONTH) == monthIndex) {
                     val date = GregorianCalendar().apply { time = cal.time }
@@ -63,15 +63,12 @@ class MonthAdapter(var latitude: Double, var longitude: Double) :
                             .timeCalculationMethod(AngleCalculationType.KARACHI)
                             .calculateTimes()
                     list.add(cal.get(Calendar.DATE).toString())
-                    for (i in 0 .. 5) {
+                    for (i in 0..5) {
                         list.add(
-                            SimpleDateFormat(
-                                Util.timeFormat(),
-                                Locale.ENGLISH
-                            ).format(prayerTimes.getPrayTime(array[i]))
+                            SimpleDateFormat(timeFormat, Locale.ENGLISH).format(prayerTimes.getPrayTime(array[i]))
                         )
                     }
-                    cal.add(Calendar.DATE,1)
+                    cal.add(Calendar.DATE, 1)
                 }
 
 
@@ -81,9 +78,9 @@ class MonthAdapter(var latitude: Double, var longitude: Double) :
                         tableLayout.forEachIndexed { row, view ->
                             (view as TableRow).forEachIndexed { column, view ->
                                 val tv = (view as TextView)
-                                tv.gravity=Gravity.LEFT
+                                tv.gravity = Gravity.LEFT
 
-                                tv.setText(list.getOrNull( ((row)*7)+(column))?:"")
+                                tv.setText(list.getOrNull(((row) * 7) + (column)) ?: "")
                             }
 
 

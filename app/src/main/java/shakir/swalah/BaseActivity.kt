@@ -97,6 +97,6 @@ open class BaseActivity : AppCompatActivity() {
 
     override fun onConfigurationChanged(newConfig: Configuration) {
         super.onConfigurationChanged(newConfig)
-        Util.onConfigChange()
+
     }
 }

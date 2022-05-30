@@ -19,12 +19,14 @@
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.32211538461538464" />
         <entry key="app/src/main/res/layout/activity_main_alarm_example.xml" value="0.2078125" />
         <entry key="app/src/main/res/layout/activity_mont_view.xml" value="0.2078125" />
+        <entry key="app/src/main/res/layout/activity_notifications.xml" value="0.21195652173913043" />
         <entry key="app/src/main/res/layout/activity_qibla.xml" value="0.335" />
+        <entry key="app/src/main/res/layout/activity_settings.xml" value="0.25" />
         <entry key="app/src/main/res/layout/adapter_month_view.xml" value="0.2078125" />
         <entry key="app/src/main/res/layout/prayer_time_ll.xml" value="0.2078125" />
         <entry key="app/src/main/res/layout/pt_layout.xml" value="0.2078125" />
         <entry key="app/src/main/res/layout/text.xml" value="0.2078125" />
-        <entry key="app/src/main/res/menu/menu_speed_dial.xml" value="0.9861111111111112" />
+        <entry key="app/src/main/res/menu/menu_speed_dial.xml" value="0.1" />
         <entry key="app/src/main/res/mipmap-anydpi-v26/ic_launcher_gold.xml" value="0.2115" />
         <entry key="app/src/main/res/mipmap-anydpi-v26/ic_launcher_gold_round.xml" value="0.2115" />
       </map>
