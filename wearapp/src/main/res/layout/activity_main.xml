@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+
+
+    tools:context=".MainActivity"
+    tools:deviceIds="wear">
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="@dimen/inner_frame_layout_padding"
+        app:layout_boxedEdges="all">
+
+        <ScrollView
+            android:clipToPadding="false"
+            android:padding="30dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:id="@+id/prayerTimeLL"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft=".20dp"
+                android:layout_marginRight=".20dp"
+                android:layoutDirection="rtl"
+                android:orientation="vertical"
+                android:textDirection="rtl">
+
+                <include
+                    android:id="@+id/FAJR"
+                    layout="@layout/pt_layout"></include>
+
+                <include
+                    android:id="@+id/SUNRISE"
+                    layout="@layout/pt_layout"></include>
+
+                <include
+                    android:id="@+id/ZUHR"
+                    layout="@layout/pt_layout"></include>
+
+                <include
+                    android:id="@+id/ASR"
+                    layout="@layout/pt_layout"></include>
+
+                <include
+                    android:id="@+id/MAGHRIB"
+                    layout="@layout/pt_layout"></include>
+
+                <include
+                    android:id="@+id/ISHA"
+                    layout="@layout/pt_layout"></include>
+
+            </LinearLayout>
+
+
+        </ScrollView>
+
+
+        <ProgressBar
+            android:id="@+id/progressBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            />
+
+
+
+    </FrameLayout>
+</FrameLayout>

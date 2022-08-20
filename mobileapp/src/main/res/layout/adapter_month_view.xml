@@ -4,6 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
+
     <TextView
         android:id="@+id/textTest"
         android:layout_width="match_parent"
@@ -11,11 +12,14 @@
         android:layout_gravity="center"
         android:gravity="center"
         android:padding="8dp"
+        android:textSize="@dimen/_13sdp"
         android:textColor="@color/white"
         tools:text="Month Year"></TextView>
+
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
+
         <TableLayout
             android:id="@+id/tableLayout"
             android:layout_width="match_parent"
@@ -26,20 +30,21 @@
                 android:padding="1dp">
 
                 <TextView
-
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                   
                     android:textColor="@color/white"
+
+                    android:textSize="@dimen/_11sdp"
                     tools:text="Date" />
 
                 <TextView
+
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:textColor="@color/white"
+                    android:textSize="@dimen/_11sdp"
                     tools:text="FAJR" />
-
 
 
                 <TextView
@@ -47,6 +52,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:textColor="@color/white"
+                    android:textSize="@dimen/_11sdp"
                     tools:text="SUNRISE" />
 
                 <TextView
@@ -54,6 +60,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:textColor="@color/white"
+                    android:textSize="@dimen/_11sdp"
                     tools:text="DUHR" />
 
                 <TextView
@@ -61,6 +68,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:textColor="@color/white"
+                    android:textSize="@dimen/_11sdp"
                     tools:text="ASR" />
 
                 <TextView
@@ -68,6 +76,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:textColor="@color/white"
+                    android:textSize="@dimen/_11sdp"
                     tools:text="MAGRIB" />
 
                 <TextView
@@ -75,6 +84,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:textColor="@color/white"
+                    android:textSize="@dimen/_11sdp"
                     tools:text="ISHA" />
 
 
@@ -85,12 +95,11 @@
                 android:padding="1dp">
 
 
-
-
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textColor="@color/white"
+                    android:textSize="@dimen/_11sdp"
                     tools:text="00" />
 
 
@@ -99,9 +108,8 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:textColor="@color/white"
+                    android:textSize="@dimen/_11sdp"
                     tools:text="FAJR" />
-
-
 
 
                 <TextView
@@ -109,6 +117,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:textColor="@color/white"
+                    android:textSize="@dimen/_11sdp"
                     tools:text="SUNRISE" />
 
                 <TextView
@@ -116,6 +125,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:textColor="@color/white"
+                    android:textSize="@dimen/_11sdp"
                     tools:text="DUHR" />
 
                 <TextView
@@ -123,6 +133,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:textColor="@color/white"
+                    android:textSize="@dimen/_11sdp"
                     tools:text="ASR" />
 
                 <TextView
@@ -130,6 +141,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:textColor="@color/white"
+                    android:textSize="@dimen/_11sdp"
                     tools:text="MAGRIB" />
 
                 <TextView
@@ -137,6 +149,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:textColor="@color/white"
+                    android:textSize="@dimen/_11sdp"
                     tools:text="ISHA" />
 
 
@@ -145,17 +158,21 @@
             <TableRow
 
                 android:padding="1dp">
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-
                     android:textColor="@color/white"
+
+                    android:textSize="@dimen/_11sdp"
                     tools:text="00" />
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:textColor="@color/white"
+                    android:textSize="@dimen/_11sdp"
                     tools:text="FAJR" />
 
                 <TextView
@@ -163,6 +180,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:textColor="@color/white"
+                    android:textSize="@dimen/_11sdp"
                     tools:text="SUNRISE" />
 
                 <TextView
@@ -170,6 +188,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:textColor="@color/white"
+                    android:textSize="@dimen/_11sdp"
                     tools:text="DUHR" />
 
                 <TextView
@@ -177,6 +196,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:textColor="@color/white"
+                    android:textSize="@dimen/_11sdp"
                     tools:text="ASR" />
 
                 <TextView
@@ -184,6 +204,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:textColor="@color/white"
+                    android:textSize="@dimen/_11sdp"
                     tools:text="MAGRIB" />
 
                 <TextView
@@ -191,6 +212,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:textColor="@color/white"
+                    android:textSize="@dimen/_11sdp"
                     tools:text="ISHA" />
 
 
@@ -199,17 +221,20 @@
             <TableRow
 
                 android:padding="1dp">
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-
                     android:textColor="@color/white"
+                    android:textSize="@dimen/_11sdp"
                     tools:text="00" />
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:textColor="@color/white"
+                    android:textSize="@dimen/_11sdp"
                     tools:text="FAJR" />
 
                 <TextView
@@ -217,6 +242,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:textColor="@color/white"
+                    android:textSize="@dimen/_11sdp"
                     tools:text="SUNRISE" />
 
                 <TextView
@@ -224,6 +250,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:textColor="@color/white"
+                    android:textSize="@dimen/_11sdp"
                     tools:text="DUHR" />
 
                 <TextView
@@ -231,6 +258,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:textColor="@color/white"
+                    android:textSize="@dimen/_11sdp"
                     tools:text="ASR" />
 
                 <TextView
@@ -238,6 +266,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:textColor="@color/white"
+                    android:textSize="@dimen/_11sdp"
                     tools:text="MAGRIB" />
 
                 <TextView
@@ -245,6 +274,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:textColor="@color/white"
+                    android:textSize="@dimen/_11sdp"
                     tools:text="ISHA" />
 
 
@@ -253,17 +283,21 @@
             <TableRow
 
                 android:padding="1dp">
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-
                     android:textColor="@color/white"
+
+                    android:textSize="@dimen/_11sdp"
                     tools:text="00" />
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:textColor="@color/white"
+                    android:textSize="@dimen/_11sdp"
                     tools:text="FAJR" />
 
                 <TextView
@@ -271,6 +305,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:textColor="@color/white"
+                    android:textSize="@dimen/_11sdp"
                     tools:text="SUNRISE" />
 
                 <TextView
@@ -278,6 +313,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:textColor="@color/white"
+                    android:textSize="@dimen/_11sdp"
                     tools:text="DUHR" />
 
                 <TextView
@@ -285,6 +321,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:textColor="@color/white"
+                    android:textSize="@dimen/_11sdp"
                     tools:text="ASR" />
 
                 <TextView
@@ -292,6 +329,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:textColor="@color/white"
+                    android:textSize="@dimen/_11sdp"
                     tools:text="MAGRIB" />
 
                 <TextView
@@ -299,6 +337,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:textColor="@color/white"
+                    android:textSize="@dimen/_11sdp"
                     tools:text="ISHA" />
 
 
@@ -307,17 +346,21 @@
             <TableRow
 
                 android:padding="1dp">
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-
                     android:textColor="@color/white"
+
+                    android:textSize="@dimen/_11sdp"
                     tools:text="00" />
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:textColor="@color/white"
+                    android:textSize="@dimen/_11sdp"
                     tools:text="FAJR" />
 
                 <TextView
@@ -325,6 +368,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:textColor="@color/white"
+                    android:textSize="@dimen/_11sdp"
                     tools:text="SUNRISE" />
 
                 <TextView
@@ -332,6 +376,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:textColor="@color/white"
+                    android:textSize="@dimen/_11sdp"
                     tools:text="DUHR" />
 
                 <TextView
@@ -339,6 +384,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:textColor="@color/white"
+                    android:textSize="@dimen/_11sdp"
                     tools:text="ASR" />
 
                 <TextView
@@ -346,6 +392,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:textColor="@color/white"
+                    android:textSize="@dimen/_11sdp"
                     tools:text="MAGRIB" />
 
                 <TextView
@@ -353,6 +400,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:textColor="@color/white"
+                    android:textSize="@dimen/_11sdp"
                     tools:text="ISHA" />
 
 
@@ -361,17 +409,21 @@
             <TableRow
 
                 android:padding="1dp">
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-
                     android:textColor="@color/white"
+
+                    android:textSize="@dimen/_11sdp"
                     tools:text="00" />
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:textColor="@color/white"
+                    android:textSize="@dimen/_11sdp"
                     tools:text="FAJR" />
 
                 <TextView
@@ -379,6 +431,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:textColor="@color/white"
+                    android:textSize="@dimen/_11sdp"
                     tools:text="SUNRISE" />
 
                 <TextView
@@ -386,27 +439,37 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:textColor="@color/white"
+                    android:textSize="@dimen/_11sdp"
                     tools:text="DUHR" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+
                     android:textColor="@color/white"
+
+                    android:textSize="@dimen/_11sdp"
                     tools:text="ASR" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+
                     android:textColor="@color/white"
+
+                    android:textSize="@dimen/_11sdp"
                     tools:text="MAGRIB" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+
                     android:textColor="@color/white"
+
+                    android:textSize="@dimen/_11sdp"
                     tools:text="ISHA" />
 
 
@@ -415,52 +478,73 @@
             <TableRow
 
                 android:padding="1dp">
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
 
                     android:textColor="@color/white"
+                    android:textSize="@dimen/_11sdp"
                     tools:text="00" />
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+
                     android:textColor="@color/white"
+
+                    android:textSize="@dimen/_11sdp"
                     tools:text="FAJR" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+
                     android:textColor="@color/white"
+
+                    android:textSize="@dimen/_11sdp"
                     tools:text="SUNRISE" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+
                     android:textColor="@color/white"
+
+                    android:textSize="@dimen/_11sdp"
                     tools:text="DUHR" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+
                     android:textColor="@color/white"
+
+                    android:textSize="@dimen/_11sdp"
                     tools:text="ASR" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+
                     android:textColor="@color/white"
+
+                    android:textSize="@dimen/_11sdp"
                     tools:text="MAGRIB" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+
                     android:textColor="@color/white"
+
+                    android:textSize="@dimen/_11sdp"
                     tools:text="ISHA" />
 
 
@@ -469,52 +553,73 @@
             <TableRow
 
                 android:padding="1dp">
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
 
                     android:textColor="@color/white"
+                    android:textSize="@dimen/_11sdp"
                     tools:text="00" />
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+
                     android:textColor="@color/white"
+
+                    android:textSize="@dimen/_11sdp"
                     tools:text="FAJR" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+
                     android:textColor="@color/white"
+
+                    android:textSize="@dimen/_11sdp"
                     tools:text="SUNRISE" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+
                     android:textColor="@color/white"
+
+                    android:textSize="@dimen/_11sdp"
                     tools:text="DUHR" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+
                     android:textColor="@color/white"
+
+                    android:textSize="@dimen/_11sdp"
                     tools:text="ASR" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+
                     android:textColor="@color/white"
+
+                    android:textSize="@dimen/_11sdp"
                     tools:text="MAGRIB" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+
                     android:textColor="@color/white"
+
+                    android:textSize="@dimen/_11sdp"
                     tools:text="ISHA" />
 
 
@@ -523,52 +628,73 @@
             <TableRow
 
                 android:padding="1dp">
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
 
                     android:textColor="@color/white"
+                    android:textSize="@dimen/_11sdp"
                     tools:text="00" />
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+
                     android:textColor="@color/white"
+
+                    android:textSize="@dimen/_11sdp"
                     tools:text="FAJR" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+
                     android:textColor="@color/white"
+
+                    android:textSize="@dimen/_11sdp"
                     tools:text="SUNRISE" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+
                     android:textColor="@color/white"
+
+                    android:textSize="@dimen/_11sdp"
                     tools:text="DUHR" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+
                     android:textColor="@color/white"
+
+                    android:textSize="@dimen/_11sdp"
                     tools:text="ASR" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+
                     android:textColor="@color/white"
+
+                    android:textSize="@dimen/_11sdp"
                     tools:text="MAGRIB" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+
                     android:textColor="@color/white"
+
+                    android:textSize="@dimen/_11sdp"
                     tools:text="ISHA" />
 
 
@@ -577,52 +703,73 @@
             <TableRow
 
                 android:padding="1dp">
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
 
                     android:textColor="@color/white"
+                    android:textSize="@dimen/_11sdp"
                     tools:text="00" />
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+
                     android:textColor="@color/white"
+
+                    android:textSize="@dimen/_11sdp"
                     tools:text="FAJR" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+
                     android:textColor="@color/white"
+
+                    android:textSize="@dimen/_11sdp"
                     tools:text="SUNRISE" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+
                     android:textColor="@color/white"
+
+                    android:textSize="@dimen/_11sdp"
                     tools:text="DUHR" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+
                     android:textColor="@color/white"
+
+                    android:textSize="@dimen/_11sdp"
                     tools:text="ASR" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+
                     android:textColor="@color/white"
+
+                    android:textSize="@dimen/_11sdp"
                     tools:text="MAGRIB" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+
                     android:textColor="@color/white"
+
+                    android:textSize="@dimen/_11sdp"
                     tools:text="ISHA" />
 
 
@@ -631,52 +778,73 @@
             <TableRow
 
                 android:padding="1dp">
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
 
                     android:textColor="@color/white"
+                    android:textSize="@dimen/_11sdp"
                     tools:text="00" />
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+
                     android:textColor="@color/white"
+
+                    android:textSize="@dimen/_11sdp"
                     tools:text="FAJR" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+
                     android:textColor="@color/white"
+
+                    android:textSize="@dimen/_11sdp"
                     tools:text="SUNRISE" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+
                     android:textColor="@color/white"
+
+                    android:textSize="@dimen/_11sdp"
                     tools:text="DUHR" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+
                     android:textColor="@color/white"
+
+                    android:textSize="@dimen/_11sdp"
                     tools:text="ASR" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+
                     android:textColor="@color/white"
+
+                    android:textSize="@dimen/_11sdp"
                     tools:text="MAGRIB" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+
                     android:textColor="@color/white"
+
+                    android:textSize="@dimen/_11sdp"
                     tools:text="ISHA" />
 
 
@@ -685,51 +853,72 @@
             <TableRow
 
                 android:padding="1dp">
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textColor="@color/white"
+                    android:textSize="@dimen/_11sdp"
                     tools:text="00" />
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+
                     android:textColor="@color/white"
+
+                    android:textSize="@dimen/_11sdp"
                     tools:text="FAJR" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+
                     android:textColor="@color/white"
+
+                    android:textSize="@dimen/_11sdp"
                     tools:text="SUNRISE" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+
                     android:textColor="@color/white"
+
+                    android:textSize="@dimen/_11sdp"
                     tools:text="DUHR" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+
                     android:textColor="@color/white"
+
+                    android:textSize="@dimen/_11sdp"
                     tools:text="ASR" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+
                     android:textColor="@color/white"
+
+                    android:textSize="@dimen/_11sdp"
                     tools:text="MAGRIB" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+
                     android:textColor="@color/white"
+
+                    android:textSize="@dimen/_11sdp"
                     tools:text="ISHA" />
 
 
@@ -738,52 +927,73 @@
             <TableRow
 
                 android:padding="1dp">
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
 
                     android:textColor="@color/white"
+                    android:textSize="@dimen/_11sdp"
                     tools:text="00" />
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+
                     android:textColor="@color/white"
+
+                    android:textSize="@dimen/_11sdp"
                     tools:text="FAJR" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+
                     android:textColor="@color/white"
+
+                    android:textSize="@dimen/_11sdp"
                     tools:text="SUNRISE" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+
                     android:textColor="@color/white"
+
+                    android:textSize="@dimen/_11sdp"
                     tools:text="DUHR" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+
                     android:textColor="@color/white"
+
+                    android:textSize="@dimen/_11sdp"
                     tools:text="ASR" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+
                     android:textColor="@color/white"
+
+                    android:textSize="@dimen/_11sdp"
                     tools:text="MAGRIB" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+
                     android:textColor="@color/white"
+
+                    android:textSize="@dimen/_11sdp"
                     tools:text="ISHA" />
 
 
@@ -792,52 +1002,73 @@
             <TableRow
 
                 android:padding="1dp">
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
 
                     android:textColor="@color/white"
+                    android:textSize="@dimen/_11sdp"
                     tools:text="00" />
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+
                     android:textColor="@color/white"
+
+                    android:textSize="@dimen/_11sdp"
                     tools:text="FAJR" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+
                     android:textColor="@color/white"
+
+                    android:textSize="@dimen/_11sdp"
                     tools:text="SUNRISE" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+
                     android:textColor="@color/white"
+
+                    android:textSize="@dimen/_11sdp"
                     tools:text="DUHR" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+
                     android:textColor="@color/white"
+
+                    android:textSize="@dimen/_11sdp"
                     tools:text="ASR" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+
                     android:textColor="@color/white"
+
+                    android:textSize="@dimen/_11sdp"
                     tools:text="MAGRIB" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+
                     android:textColor="@color/white"
+
+                    android:textSize="@dimen/_11sdp"
                     tools:text="ISHA" />
 
 
@@ -846,52 +1077,73 @@
             <TableRow
 
                 android:padding="1dp">
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
 
                     android:textColor="@color/white"
+                    android:textSize="@dimen/_11sdp"
                     tools:text="00" />
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+
                     android:textColor="@color/white"
+
+                    android:textSize="@dimen/_11sdp"
                     tools:text="FAJR" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+
                     android:textColor="@color/white"
+
+                    android:textSize="@dimen/_11sdp"
                     tools:text="SUNRISE" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+
                     android:textColor="@color/white"
+
+                    android:textSize="@dimen/_11sdp"
                     tools:text="DUHR" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+
                     android:textColor="@color/white"
+
+                    android:textSize="@dimen/_11sdp"
                     tools:text="ASR" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+
                     android:textColor="@color/white"
+
+                    android:textSize="@dimen/_11sdp"
                     tools:text="MAGRIB" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+
                     android:textColor="@color/white"
+
+                    android:textSize="@dimen/_11sdp"
                     tools:text="ISHA" />
 
 
@@ -900,52 +1152,73 @@
             <TableRow
 
                 android:padding="1dp">
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
 
                     android:textColor="@color/white"
+                    android:textSize="@dimen/_11sdp"
                     tools:text="00" />
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+
                     android:textColor="@color/white"
+
+                    android:textSize="@dimen/_11sdp"
                     tools:text="FAJR" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+
                     android:textColor="@color/white"
+
+                    android:textSize="@dimen/_11sdp"
                     tools:text="SUNRISE" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+
                     android:textColor="@color/white"
+
+                    android:textSize="@dimen/_11sdp"
                     tools:text="DUHR" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+
                     android:textColor="@color/white"
+
+                    android:textSize="@dimen/_11sdp"
                     tools:text="ASR" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+
                     android:textColor="@color/white"
+
+                    android:textSize="@dimen/_11sdp"
                     tools:text="MAGRIB" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+
                     android:textColor="@color/white"
+
+                    android:textSize="@dimen/_11sdp"
                     tools:text="ISHA" />
 
 
@@ -954,52 +1227,73 @@
             <TableRow
 
                 android:padding="1dp">
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
 
                     android:textColor="@color/white"
+                    android:textSize="@dimen/_11sdp"
                     tools:text="00" />
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+
                     android:textColor="@color/white"
+
+                    android:textSize="@dimen/_11sdp"
                     tools:text="FAJR" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+
                     android:textColor="@color/white"
+
+                    android:textSize="@dimen/_11sdp"
                     tools:text="SUNRISE" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+
                     android:textColor="@color/white"
+
+                    android:textSize="@dimen/_11sdp"
                     tools:text="DUHR" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+
                     android:textColor="@color/white"
+
+                    android:textSize="@dimen/_11sdp"
                     tools:text="ASR" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+
                     android:textColor="@color/white"
+
+                    android:textSize="@dimen/_11sdp"
                     tools:text="MAGRIB" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+
                     android:textColor="@color/white"
+
+                    android:textSize="@dimen/_11sdp"
                     tools:text="ISHA" />
 
 
@@ -1008,52 +1302,73 @@
             <TableRow
 
                 android:padding="1dp">
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
 
                     android:textColor="@color/white"
+                    android:textSize="@dimen/_11sdp"
                     tools:text="00" />
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+
                     android:textColor="@color/white"
+
+                    android:textSize="@dimen/_11sdp"
                     tools:text="FAJR" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+
                     android:textColor="@color/white"
+
+                    android:textSize="@dimen/_11sdp"
                     tools:text="SUNRISE" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+
                     android:textColor="@color/white"
+
+                    android:textSize="@dimen/_11sdp"
                     tools:text="DUHR" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+
                     android:textColor="@color/white"
+
+                    android:textSize="@dimen/_11sdp"
                     tools:text="ASR" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+
                     android:textColor="@color/white"
+
+                    android:textSize="@dimen/_11sdp"
                     tools:text="MAGRIB" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+
                     android:textColor="@color/white"
+
+                    android:textSize="@dimen/_11sdp"
                     tools:text="ISHA" />
 
 
@@ -1062,52 +1377,73 @@
             <TableRow
 
                 android:padding="1dp">
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
 
                     android:textColor="@color/white"
+                    android:textSize="@dimen/_11sdp"
                     tools:text="00" />
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+
                     android:textColor="@color/white"
+
+                    android:textSize="@dimen/_11sdp"
                     tools:text="FAJR" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+
                     android:textColor="@color/white"
+
+                    android:textSize="@dimen/_11sdp"
                     tools:text="SUNRISE" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+
                     android:textColor="@color/white"
+
+                    android:textSize="@dimen/_11sdp"
                     tools:text="DUHR" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+
                     android:textColor="@color/white"
+
+                    android:textSize="@dimen/_11sdp"
                     tools:text="ASR" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+
                     android:textColor="@color/white"
+
+                    android:textSize="@dimen/_11sdp"
                     tools:text="MAGRIB" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+
                     android:textColor="@color/white"
+
+                    android:textSize="@dimen/_11sdp"
                     tools:text="ISHA" />
 
 
@@ -1116,52 +1452,73 @@
             <TableRow
 
                 android:padding="1dp">
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
 
                     android:textColor="@color/white"
+                    android:textSize="@dimen/_11sdp"
                     tools:text="00" />
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+
                     android:textColor="@color/white"
+
+                    android:textSize="@dimen/_11sdp"
                     tools:text="FAJR" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+
                     android:textColor="@color/white"
+
+                    android:textSize="@dimen/_11sdp"
                     tools:text="SUNRISE" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+
                     android:textColor="@color/white"
+
+                    android:textSize="@dimen/_11sdp"
                     tools:text="DUHR" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+
                     android:textColor="@color/white"
+
+                    android:textSize="@dimen/_11sdp"
                     tools:text="ASR" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+
                     android:textColor="@color/white"
+
+                    android:textSize="@dimen/_11sdp"
                     tools:text="MAGRIB" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+
                     android:textColor="@color/white"
+
+                    android:textSize="@dimen/_11sdp"
                     tools:text="ISHA" />
 
 
@@ -1170,51 +1527,72 @@
             <TableRow
 
                 android:padding="1dp">
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textColor="@color/white"
+                    android:textSize="@dimen/_11sdp"
                     tools:text="00" />
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+
                     android:textColor="@color/white"
+
+                    android:textSize="@dimen/_11sdp"
                     tools:text="FAJR" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+
                     android:textColor="@color/white"
+
+                    android:textSize="@dimen/_11sdp"
                     tools:text="SUNRISE" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+
                     android:textColor="@color/white"
+
+                    android:textSize="@dimen/_11sdp"
                     tools:text="DUHR" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+
                     android:textColor="@color/white"
+
+                    android:textSize="@dimen/_11sdp"
                     tools:text="ASR" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+
                     android:textColor="@color/white"
+
+                    android:textSize="@dimen/_11sdp"
                     tools:text="MAGRIB" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+
                     android:textColor="@color/white"
+
+                    android:textSize="@dimen/_11sdp"
                     tools:text="ISHA" />
 
 
@@ -1223,52 +1601,73 @@
             <TableRow
 
                 android:padding="1dp">
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
 
                     android:textColor="@color/white"
+                    android:textSize="@dimen/_11sdp"
                     tools:text="00" />
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+
                     android:textColor="@color/white"
+
+                    android:textSize="@dimen/_11sdp"
                     tools:text="FAJR" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+
                     android:textColor="@color/white"
+
+                    android:textSize="@dimen/_11sdp"
                     tools:text="SUNRISE" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+
                     android:textColor="@color/white"
+
+                    android:textSize="@dimen/_11sdp"
                     tools:text="DUHR" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+
                     android:textColor="@color/white"
+
+                    android:textSize="@dimen/_11sdp"
                     tools:text="ASR" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+
                     android:textColor="@color/white"
+
+                    android:textSize="@dimen/_11sdp"
                     tools:text="MAGRIB" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+
                     android:textColor="@color/white"
+
+                    android:textSize="@dimen/_11sdp"
                     tools:text="ISHA" />
 
 
@@ -1277,51 +1676,72 @@
             <TableRow
 
                 android:padding="1dp">
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textColor="@color/white"
+                    android:textSize="@dimen/_11sdp"
                     tools:text="00" />
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+
                     android:textColor="@color/white"
+
+                    android:textSize="@dimen/_11sdp"
                     tools:text="FAJR" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+
                     android:textColor="@color/white"
+
+                    android:textSize="@dimen/_11sdp"
                     tools:text="SUNRISE" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+
                     android:textColor="@color/white"
+
+                    android:textSize="@dimen/_11sdp"
                     tools:text="DUHR" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+
                     android:textColor="@color/white"
+
+                    android:textSize="@dimen/_11sdp"
                     tools:text="ASR" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+
                     android:textColor="@color/white"
+
+                    android:textSize="@dimen/_11sdp"
                     tools:text="MAGRIB" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+
                     android:textColor="@color/white"
+
+                    android:textSize="@dimen/_11sdp"
                     tools:text="ISHA" />
 
 
@@ -1330,52 +1750,73 @@
             <TableRow
 
                 android:padding="1dp">
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
 
                     android:textColor="@color/white"
+                    android:textSize="@dimen/_11sdp"
                     tools:text="00" />
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+
                     android:textColor="@color/white"
+
+                    android:textSize="@dimen/_11sdp"
                     tools:text="FAJR" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+
                     android:textColor="@color/white"
+
+                    android:textSize="@dimen/_11sdp"
                     tools:text="SUNRISE" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+
                     android:textColor="@color/white"
+
+                    android:textSize="@dimen/_11sdp"
                     tools:text="DUHR" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+
                     android:textColor="@color/white"
+
+                    android:textSize="@dimen/_11sdp"
                     tools:text="ASR" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+
                     android:textColor="@color/white"
+
+                    android:textSize="@dimen/_11sdp"
                     tools:text="MAGRIB" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+
                     android:textColor="@color/white"
+
+                    android:textSize="@dimen/_11sdp"
                     tools:text="ISHA" />
 
 
@@ -1384,52 +1825,73 @@
             <TableRow
 
                 android:padding="1dp">
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
 
                     android:textColor="@color/white"
+                    android:textSize="@dimen/_11sdp"
                     tools:text="00" />
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+
                     android:textColor="@color/white"
+
+                    android:textSize="@dimen/_11sdp"
                     tools:text="FAJR" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+
                     android:textColor="@color/white"
+
+                    android:textSize="@dimen/_11sdp"
                     tools:text="SUNRISE" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+
                     android:textColor="@color/white"
+
+                    android:textSize="@dimen/_11sdp"
                     tools:text="DUHR" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+
                     android:textColor="@color/white"
+
+                    android:textSize="@dimen/_11sdp"
                     tools:text="ASR" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+
                     android:textColor="@color/white"
+
+                    android:textSize="@dimen/_11sdp"
                     tools:text="MAGRIB" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+
                     android:textColor="@color/white"
+
+                    android:textSize="@dimen/_11sdp"
                     tools:text="ISHA" />
 
 
@@ -1438,51 +1900,72 @@
             <TableRow
 
                 android:padding="1dp">
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textColor="@color/white"
+                    android:textSize="@dimen/_11sdp"
                     tools:text="00" />
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+
                     android:textColor="@color/white"
+
+                    android:textSize="@dimen/_11sdp"
                     tools:text="FAJR" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+
                     android:textColor="@color/white"
+
+                    android:textSize="@dimen/_11sdp"
                     tools:text="SUNRISE" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+
                     android:textColor="@color/white"
+
+                    android:textSize="@dimen/_11sdp"
                     tools:text="DUHR" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+
                     android:textColor="@color/white"
+
+                    android:textSize="@dimen/_11sdp"
                     tools:text="ASR" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+
                     android:textColor="@color/white"
+
+                    android:textSize="@dimen/_11sdp"
                     tools:text="MAGRIB" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+
                     android:textColor="@color/white"
+
+                    android:textSize="@dimen/_11sdp"
                     tools:text="ISHA" />
 
 
@@ -1491,51 +1974,72 @@
             <TableRow
 
                 android:padding="1dp">
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textColor="@color/white"
+                    android:textSize="@dimen/_11sdp"
                     tools:text="00" />
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+
                     android:textColor="@color/white"
+
+                    android:textSize="@dimen/_11sdp"
                     tools:text="FAJR" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+
                     android:textColor="@color/white"
+
+                    android:textSize="@dimen/_11sdp"
                     tools:text="SUNRISE" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+
                     android:textColor="@color/white"
+
+                    android:textSize="@dimen/_11sdp"
                     tools:text="DUHR" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+
                     android:textColor="@color/white"
+
+                    android:textSize="@dimen/_11sdp"
                     tools:text="ASR" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+
                     android:textColor="@color/white"
+
+                    android:textSize="@dimen/_11sdp"
                     tools:text="MAGRIB" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+
                     android:textColor="@color/white"
+
+                    android:textSize="@dimen/_11sdp"
                     tools:text="ISHA" />
 
 
@@ -1544,51 +2048,72 @@
             <TableRow
 
                 android:padding="1dp">
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textColor="@color/white"
+                    android:textSize="@dimen/_11sdp"
                     tools:text="00" />
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+
                     android:textColor="@color/white"
+
+                    android:textSize="@dimen/_11sdp"
                     tools:text="FAJR" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+
                     android:textColor="@color/white"
+
+                    android:textSize="@dimen/_11sdp"
                     tools:text="SUNRISE" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+
                     android:textColor="@color/white"
+
+                    android:textSize="@dimen/_11sdp"
                     tools:text="DUHR" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+
                     android:textColor="@color/white"
+
+                    android:textSize="@dimen/_11sdp"
                     tools:text="ASR" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+
                     android:textColor="@color/white"
+
+                    android:textSize="@dimen/_11sdp"
                     tools:text="MAGRIB" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+
                     android:textColor="@color/white"
+
+                    android:textSize="@dimen/_11sdp"
                     tools:text="ISHA" />
 
 
@@ -1597,51 +2122,72 @@
             <TableRow
 
                 android:padding="1dp">
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textColor="@color/white"
+                    android:textSize="@dimen/_11sdp"
                     tools:text="00" />
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+
                     android:textColor="@color/white"
+
+                    android:textSize="@dimen/_11sdp"
                     tools:text="FAJR" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+
                     android:textColor="@color/white"
+
+                    android:textSize="@dimen/_11sdp"
                     tools:text="SUNRISE" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+
                     android:textColor="@color/white"
+
+                    android:textSize="@dimen/_11sdp"
                     tools:text="DUHR" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+
                     android:textColor="@color/white"
+
+                    android:textSize="@dimen/_11sdp"
                     tools:text="ASR" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+
                     android:textColor="@color/white"
+
+                    android:textSize="@dimen/_11sdp"
                     tools:text="MAGRIB" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+
                     android:textColor="@color/white"
+
+                    android:textSize="@dimen/_11sdp"
                     tools:text="ISHA" />
 
 
@@ -1650,51 +2196,72 @@
             <TableRow
 
                 android:padding="1dp">
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textColor="@color/white"
+                    android:textSize="@dimen/_11sdp"
                     tools:text="00" />
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+
                     android:textColor="@color/white"
+
+                    android:textSize="@dimen/_11sdp"
                     tools:text="FAJR" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+
                     android:textColor="@color/white"
+
+                    android:textSize="@dimen/_11sdp"
                     tools:text="SUNRISE" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+
                     android:textColor="@color/white"
+
+                    android:textSize="@dimen/_11sdp"
                     tools:text="DUHR" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+
                     android:textColor="@color/white"
+
+                    android:textSize="@dimen/_11sdp"
                     tools:text="ASR" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+
                     android:textColor="@color/white"
+
+                    android:textSize="@dimen/_11sdp"
                     tools:text="MAGRIB" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+
                     android:textColor="@color/white"
+
+                    android:textSize="@dimen/_11sdp"
                     tools:text="ISHA" />
 
 
@@ -1703,51 +2270,75 @@
             <TableRow
 
                 android:padding="1dp">
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textColor="@color/white"
-                    tools:text="00" />
+                    android:textSize="@dimen/_11sdp"
+                    tools:text="00"
+
+
+                    />
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+
                     android:textColor="@color/white"
+
+                    android:textSize="@dimen/_11sdp"
                     tools:text="FAJR" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+
                     android:textColor="@color/white"
+
+                    android:textSize="@dimen/_11sdp"
                     tools:text="SUNRISE" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+
                     android:textColor="@color/white"
+
+                    android:textSize="@dimen/_11sdp"
                     tools:text="DUHR" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+
                     android:textColor="@color/white"
+
+                    android:textSize="@dimen/_11sdp"
                     tools:text="ASR" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+
                     android:textColor="@color/white"
+
+                    android:textSize="@dimen/_11sdp"
                     tools:text="MAGRIB" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+
                     android:textColor="@color/white"
+
+                    android:textSize="@dimen/_11sdp"
                     tools:text="ISHA" />
 
 
@@ -1755,8 +2346,6 @@
 
         </TableLayout>
     </ScrollView>
-
-
 
 
 </LinearLayout>

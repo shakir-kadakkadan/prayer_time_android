@@ -81,6 +81,10 @@
                         android:layout_weight="1"
                         android:autoSizeMaxTextSize="@dimen/_14sdp"
                         android:autoSizeTextType="uniform"
+                        android:autoSizeMinTextSize="@dimen/_7sdp"
+                        app:autoSizeMinTextSize="@dimen/_7sdp"
+
+
                         android:background="@drawable/box_1"
                         android:gravity="center"
                         android:hint="Latitude"
@@ -93,7 +97,7 @@
                         android:singleLine="true"
                         android:textColor="@color/white"
                         android:textColorHint="#E0D4D4"
-                        android:textSize="@dimen/_10sdp"
+
                         android:textStyle="bold"
                         app:autoSizeMaxTextSize="@dimen/_14sdp"
                         app:autoSizeTextType="uniform"
@@ -113,6 +117,8 @@
                         android:layout_weight="1"
 
                         android:autoSizeMaxTextSize="@dimen/_14sdp"
+                        android:autoSizeMinTextSize="@dimen/_7sdp"
+                        app:autoSizeMinTextSize="@dimen/_7sdp"
                         android:autoSizeTextType="uniform"
                         android:background="@drawable/box_1"
                         android:gravity="center"
@@ -126,7 +132,7 @@
                         android:singleLine="true"
                         android:textColor="@color/white"
                         android:textColorHint="#E0D4D4"
-                        android:textSize="@dimen/_10sdp"
+
                         android:textStyle="bold"
                         app:autoSizeMaxTextSize="@dimen/_14sdp"
                         app:autoSizeTextType="uniform"
@@ -148,6 +154,12 @@
                         android:layout_weight="1"
                         android:autoSizeMaxTextSize="@dimen/_16sdp"
                         android:autoSizeTextType="uniform"
+                        app:autoSizeMaxTextSize="@dimen/_16sdp"
+                        app:autoSizeTextType="uniform"
+                        android:autoSizeMinTextSize="@dimen/_8sdp"
+                        app:autoSizeMinTextSize="@dimen/_8sdp"
+
+
                         android:background="@drawable/box_1"
                         android:gravity="center"
                         android:maxLines="1"
@@ -159,10 +171,9 @@
                         android:text="Set"
                         android:textColor="@color/white"
                         android:textColorHint="#E0D4D4"
-                        android:textSize="@dimen/_12sdp"
+
                         android:textStyle="bold"
-                        app:autoSizeMaxTextSize="@dimen/_16sdp"
-                        app:autoSizeTextType="uniform"
+
 
 
                         />

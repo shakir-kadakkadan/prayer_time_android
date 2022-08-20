@@ -14,7 +14,6 @@ android {
     bundle { language { enableSplit = false } }
 
 
-
     signingConfigs {
         rel_config {
             storeFile file('../KEY_STORE_adhan.jks')
@@ -23,13 +22,12 @@ android {
             keyAlias = 'adhan'
         }
 
-         debug {
+        debug {
             storeFile file('../KEY_STORE_adhan.jks')
             storePassword 'sha@Skr'
             keyPassword 'sha@Skr'
             keyAlias = 'adhan'
         }
-
 
 
     }
@@ -40,8 +38,8 @@ android {
         applicationId "shakir.swalah"
         minSdkVersion 19
         targetSdkVersion 32
-        versionCode 12
-        versionName "12"
+        versionCode ((rootProject.ext.commonversionCode*2)+0)
+        versionName "${ ((rootProject.ext.commonversionCode*2)+0)}"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         signingConfig signingConfigs.rel_config
         buildConfigField "boolean", "isRunFromStudio", (gradle.startParameter.projectProperties.get("android.injected.build.api") != null).toString()
@@ -53,13 +51,10 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
             signingConfig signingConfigs.rel_config
         }
-        debug{
+        debug {
             signingConfig signingConfigs.debug
         }
     }
-
-
-
 
 
 }
@@ -70,9 +65,6 @@ dependencies {
     implementation 'androidx.appcompat:appcompat:1.4.1'
     implementation 'com.google.android.material:material:1.6.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
-
-
-
 
 
     implementation 'com.intuit.sdp:sdp-android:1.0.6'
@@ -92,7 +84,6 @@ dependencies {
     implementation "androidx.room:room-runtime:2.4.2"
     kapt "androidx.room:room-compiler:2.4.2"
     implementation "androidx.viewpager2:viewpager2:1.0.0"
-
 
 
     // Import the BoM for the Firebase platform
