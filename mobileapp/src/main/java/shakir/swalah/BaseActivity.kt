@@ -10,10 +10,10 @@ import android.view.View
 import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.analytics.FirebaseAnalytics
-import shakir.swalah.db.AppDatabase
+
 
 open class BaseActivity : AppCompatActivity() {
-    lateinit var appDatabase: AppDatabase
+//    lateinit var appDatabase: AppDatabase
     val sp: SharedPreferences
         get() {
             return Util.getMySharedPreference(this)
@@ -21,7 +21,7 @@ open class BaseActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        appDatabase = AppDatabase(this)
+//        appDatabase = AppDatabase(this)
 
 
     }

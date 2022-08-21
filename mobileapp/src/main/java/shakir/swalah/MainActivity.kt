@@ -30,8 +30,8 @@ import com.azan.types.PrayersType
 import com.github.msarhan.ummalqura.calendar.UmmalquraCalendar
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.schedulers.Schedulers
+//import io.reactivex.android.schedulers.AndroidSchedulers
+//import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.prayer_time_ll.*
 import kotlinx.android.synthetic.main.pt_layout.view.*
@@ -123,90 +123,7 @@ class MainActivity : MainActivityLocation() {
             getLocationFromCSV()
         }
 
-        set.setOnClickListener {
-            it.hideKeyboardView()
-            val latitude = latEditText.text.toString().toDoubleOrNull()
-            val longitude = longEditText.text.toString().toDoubleOrNull()
-            var locality = locationAC.text.toString()
-            if (latitude == null || latitude < -90 || latitude > 90) {
-                latEditText.setText("")
-                toast("Invalid Latitude")
-                return@setOnClickListener
-            }
-            if (longitude == null || longitude < -180 || longitude > 180) {
-                longEditText.setText("")
-                toast("Invalid Longitude")
-                return@setOnClickListener
-            }
-            if (locality.isNullOrBlank()) locality = "Custom Location"
-            sp.edit()
-                .putDouble("latitude", latitude)
-                .putDouble("longitude", longitude)
-                .putString("locality", locality)
-                .putBoolean("isLocationSet", true)
-                .apply()
-            onGetCordinates(
-                latitude,
-                longEditText.text.toString().toDouble(),
-                locality,
-                true
-            )
 
-            try {
-                val bundle = Bundle()
-                bundle.putString("LocationType", "SetFromEditText")
-                bundle.putDouble("Latitude", latitude)
-                bundle.putDouble("Longitude", longitude)
-                bundle.putString("Locality", locality)
-                firebaseAnalytics.logEvent("Location", bundle)
-                firebaseAnalytics.logEvent(
-                    "click",
-                    Bundle().apply { putString("click", "set") })
-            } catch (e: Exception) {
-                FirebaseCrashlytics.getInstance().recordException(e)
-            }
-        }
-        close.setOnClickListener {
-            try {
-                firebaseAnalytics.logEvent(
-                    "click",
-                    Bundle().apply { putString("click", "close") })
-            } catch (e: Exception) {
-
-            }
-            it.hideKeyboardView()
-            LL_close_refresh.visibility = View.GONE
-            locationSelector.visibility = View.GONE
-            locationLL.visibility = View.VISIBLE
-            sp.edit().putInt("locationTV_VISIBILITY", locationLL.visibility)
-                .apply()
-        }
-
-        refresh.setOnClickListener {
-            requestForGPSLocationWithRotationAnimation()
-            try {
-                firebaseAnalytics.logEvent(
-                    "click",
-                    Bundle().apply { putString("click", "refresh") })
-            } catch (e: Exception) {
-
-            }
-        }
-
-        locationLL.setOnClickListener {
-            locationSelector.visibility = View.VISIBLE
-            locationLL.visibility = View.GONE
-            LL_close_refresh.visibility = View.VISIBLE
-            sp.edit().putInt("locationTV_VISIBILITY", locationLL.visibility)
-                .apply()
-            try {
-                firebaseAnalytics.logEvent(
-                    "click",
-                    Bundle().apply { putString("click", "locationLL") })
-            } catch (e: Exception) {
-
-            }
-        }
 
         //qibla.isVisible = isMyTestDevice()
 
@@ -252,9 +169,10 @@ class MainActivity : MainActivityLocation() {
         val longitude = sp.getDouble("longitude", INVALID_CORDINATE)
         var locality = sp.getString("locality", null)
 
+        println("onResume $latitude $longitude $locality")
+
         if (latitude == INVALID_CORDINATE || longitude == INVALID_CORDINATE/*FIRST TIME*/) {
-            Log.d("hgdhag", "FIRST TIME")
-            getGioIpDb()
+            requestLocationRepeatLoop()
         } else if (locality.isNullOrBlank()) {
             Log.d("hgdhag", "2nd TIME LOCATION BLANK")
             onGetCordinates(latitude, longitude, locality, true)
@@ -264,15 +182,7 @@ class MainActivity : MainActivityLocation() {
             onGetCordinates(latitude, longitude, locality, true)
         }
 
-        if (sp.getInt("locationTV_VISIBILITY", View.VISIBLE) == View.VISIBLE) {
-            locationLL.visibility = View.VISIBLE
-            locationSelector.visibility = View.GONE
-            LL_close_refresh.visibility = View.GONE
-        } else {
-            locationLL.visibility = View.GONE
-            locationSelector.visibility = View.VISIBLE
-            LL_close_refresh.visibility = View.VISIBLE
-        }
+
 
         if (hasLocationPermissions())
             optimization()
@@ -325,74 +235,13 @@ class MainActivity : MainActivityLocation() {
         }
 
         Util.setNextAlarm(this)
-        locationAC.setText("")
-        locationAC.setHint(if (l.isNullOrBlank()) "My Location" else l)
+
         locationTV.setText(if (l.isNullOrBlank()) "My Location" else l)
-        latEditText.setText(latitude.toString())
-        longEditText.setText(longitude.toString())
         println("$latitude $longitude $l")
 
     }
 
-    @SuppressLint("CheckResult")
-    fun getGioIpDb() {
-        isIconRotationNeed = true
-        animateRotate()
-        AppApplication.restService.gioIpDB()
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(
-                {
-                    try {
 
-                        it.latitude?.let { latitude ->
-                            it.longitude?.let { longitude ->
-                                sp.edit()
-                                    .putDouble("latitude", latitude)
-                                    .putDouble("longitude", longitude)
-                                    .putString("locality", it?.city)
-                                    .putBoolean("isLocationSet", false)
-                                    .apply()
-                                onGetCordinates(latitude, longitude, it.city, true)
-                                try {
-                                    val bundle = Bundle()
-                                    bundle.putString("LocationType", "IPLocation")
-                                    bundle.putDouble("Latitude", latitude)
-                                    bundle.putDouble("Longitude", longitude)
-                                    bundle.putString("Locality", it?.city)
-                                    firebaseAnalytics.logEvent("Location", bundle)
-                                } catch (e: Exception) {
-                                    FirebaseCrashlytics.getInstance().recordException(e)
-                                }
-
-                            }
-
-
-                        }
-                    } catch (e: Exception) {
-                        e.printStackTrace()
-                    }
-                    requestForGPSLocationWithRotationAnimation()
-                },
-                {
-                    it.printStackTrace()
-
-
-                    val latitude = sp.getDouble("latitude", INVALID_CORDINATE)
-                    val longitude = sp.getDouble("longitude", INVALID_CORDINATE)
-                    val location = sp.getString("locality", null)
-                    if (latitude == INVALID_CORDINATE && longitude == INVALID_CORDINATE) {
-                        onGetCordinates(11.0, 76.0, "Kerala", true)
-                    } else {
-                        onGetCordinates(latitude, longitude, location, true)
-                    }
-
-
-                    requestForGPSLocationWithRotationAnimation()
-                }
-            )
-
-    }
 
 
     val arrayList = arrayListOf<Cord>()
@@ -405,7 +254,7 @@ class MainActivity : MainActivityLocation() {
                 arrayList.add(Cord(splited[0], splited[1].toDouble(), splited[2].toDouble()))
             }
         }
-        locationAC.setAdapter(
+/*        locationAC.setAdapter(
             ArrayAdapter(
                 this,
                 android.R.layout.simple_list_item_1,
@@ -424,7 +273,7 @@ class MainActivity : MainActivityLocation() {
                     .apply()
                 onGetCordinates(get.latitude, get.longitude, get.name, true)
             }
-        }
+        }*/
     }
 
 

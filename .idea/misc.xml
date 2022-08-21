@@ -31,7 +31,8 @@
         <entry key="app/src/main/res/mipmap-anydpi-v26/ic_launcher_gold.xml" value="0.2115" />
         <entry key="app/src/main/res/mipmap-anydpi-v26/ic_launcher_gold_round.xml" value="0.2115" />
         <entry key="mobileapp/src/main/res/drawable/bg_2.xml" value="0.1985" />
-        <entry key="mobileapp/src/main/res/layout/activity_main.xml" value="0.1" />
+        <entry key="mobileapp/src/main/res/layout/activity_main.xml" value="0.375" />
+        <entry key="mobileapp/src/main/res/layout/activity_settings.xml" value="0.28229166666666666" />
         <entry key="mobileapp/src/main/res/layout/adapter_month_view.xml" value="0.28229166666666666" />
         <entry key="mobileapp/src/main/res/layout/prayer_time_ll.xml" value="0.26666666666666666" />
         <entry key="mobileapp/src/main/res/layout/pt_layout.xml" value="0.26666666666666666" />

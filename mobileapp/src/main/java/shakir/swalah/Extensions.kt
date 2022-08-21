@@ -27,12 +27,12 @@ import android.widget.*
 import androidx.annotation.LayoutRes
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
-import com.google.gson.Gson
-import com.google.gson.JsonObject
-import okhttp3.MediaType
-import okhttp3.MediaType.Companion.toMediaType
-import okhttp3.RequestBody
-import okhttp3.RequestBody.Companion.toRequestBody
+//import com.google.gson.Gson
+//import com.google.gson.JsonObject
+//import okhttp3.MediaType
+//import okhttp3.MediaType.Companion.toMediaType
+//import okhttp3.RequestBody
+//import okhttp3.RequestBody.Companion.toRequestBody
 import java.io.File
 import java.io.FileOutputStream
 import java.io.InputStream
@@ -196,11 +196,13 @@ fun ImageView?.loadProfileImage(url: String?, callback: Callback? = null) {
 }
 */
 
+/*
 
 fun JsonObject.addProperty(s: String, editText: TextView?) {
     addProperty(s, editText?.text?.toString()?.trim())
 
 }
+*/
 
 
 fun isSameDay(cal1: Calendar?, cal2: Calendar?): Boolean {
@@ -498,7 +500,7 @@ val Calendar.isLessThanOrEqual24HoursFromNow: Boolean
     }
 
 
-fun String?.toRequestBody(): RequestBody {
+/*fun String?.toRequestBody(): RequestBody {
     if (this == null)
         return    "".toRequestBody("text/plain".toMediaType())
     else
@@ -513,20 +515,20 @@ val JsonObject.toMultiPart: HashMap<String, RequestBody>
             partRequest[it] = this.get(it).asString.toRequestBody()
         }
         return partRequest
-    }
+    }*/
 
 
-fun HashMap<String, RequestBody>.addImage(
-    file: File?,
-    key: String = "image",
-    mime: String = "image/jpeg"
-): HashMap<String, RequestBody> {
-    if (file != null) {
-        val requestFile = RequestBody.create(mime.toMediaType(), file)
-        this["$key\"; filename=\"" + file.name + "\""] = requestFile
-    }
-    return this
-}
+//fun HashMap<String, RequestBody>.addImage(
+//    file: File?,
+//    key: String = "image",
+//    mime: String = "image/jpeg"
+//): HashMap<String, RequestBody> {
+//    if (file != null) {
+//        val requestFile = RequestBody.create(mime.toMediaType(), file)
+//        this["$key\"; filename=\"" + file.name + "\""] = requestFile
+//    }
+//    return this
+//}
 
 
 public fun Intent.putExtra(s: String, textView: TextView) {
@@ -539,10 +541,10 @@ public fun Bundle.putString(s: String, textView: TextView) {
 }
 
 
-@Throws(Exception::class)
-fun JsonObject?.isStatusSuccess(): Boolean {
-    return this?.get("status")?.asString == "200"
-}
+//@Throws(Exception::class)
+//fun JsonObject?.isStatusSuccess(): Boolean {
+//    return this?.get("status")?.asString == "200"
+//}
 
 
 val RTL_EMBED = "\u202B"
@@ -606,11 +608,16 @@ fun String?.toDisplayDate(): String {
 }
 
 
+/*
 fun JsonObject?.getAPIResponseMessage(): String {
     var message: String? = null
     if (this != null) {
         try {
-            if (/*AppApplication.isArabic*/false/*todo*/) {
+            if (*/
+/*AppApplication.isArabic*//*
+false*/
+/*todo*//*
+) {
                 if (this.has("message_arabic")) {
                     message = this.get("message_arabic").asString
                 } else if (this.has("message_ar")) {
@@ -650,12 +657,15 @@ fun Context?.showAlertDialog(jsonObject: JsonObject?, callback: (() -> Unit)? = 
     }
     return false
 }
+*/
 
 
+/*
 fun Fragment?.showAlertDialog(jsonObject: JsonObject?, callback: (() -> Unit)? = null): Boolean {
     this?.activity?.showAlertDialog(jsonObject, callback)
     return false
 }
+*/
 
 
 fun Context?.showAlertDialog(stringResID: Int, callback: (() -> Unit)? = null): Boolean {
@@ -885,9 +895,11 @@ fun Spinner?.getSelectedIndex(): Int {
 }*/
 
 
+/*
 fun Intent.putExtra(s: String, json: JsonObject) {
     putExtra(s, Gson().toJson(json))
 }
+*/
 
 
 fun Bundle.putData(value: Parcelable?): Bundle {

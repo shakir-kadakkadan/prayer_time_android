@@ -7,15 +7,15 @@ import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.edit
 import androidx.multidex.MultiDexApplication
 import com.azan.types.PrayersType
-import com.google.gson.GsonBuilder
-import io.reactivex.internal.functions.Functions
-import io.reactivex.plugins.RxJavaPlugins
-import okhttp3.Cache
-import okhttp3.OkHttpClient
-import okhttp3.logging.HttpLoggingInterceptor
-import retrofit2.Retrofit
-import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
-import retrofit2.converter.gson.GsonConverterFactory
+//import com.google.gson.GsonBuilder
+//import io.reactivex.internal.functions.Functions
+//import io.reactivex.plugins.RxJavaPlugins
+//import okhttp3.Cache
+//import okhttp3.OkHttpClient
+//import okhttp3.logging.HttpLoggingInterceptor
+//import retrofit2.Retrofit
+//import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
+//import retrofit2.converter.gson.GsonConverterFactory
 
 import java.util.concurrent.TimeUnit
 
@@ -41,36 +41,36 @@ class AppApplication : MultiDexApplication() {
            }
    */
 
-        val cacheSize = 10 * 1024 * 1024 // 10 MB
-        val cache = Cache(cacheDir, cacheSize.toLong())
-
-
-        val logging = HttpLoggingInterceptor()
-        if (BuildConfig.DEBUG || /*isMyTestDevice()*//*TODO : */true)
-            logging.level = HttpLoggingInterceptor.Level.BODY
-        else
-            logging.level = HttpLoggingInterceptor.Level.NONE
-
-        val httpClient = OkHttpClient.Builder()
-            .cache(cache)
-            .connectTimeout(60, TimeUnit.SECONDS)
-            .writeTimeout(60, TimeUnit.SECONDS)
-            .readTimeout(60, TimeUnit.SECONDS)
-
-        httpClient.addInterceptor(logging)
-
-
-        val gsonBuilder = GsonBuilder()
-        gsonBuilder.setLenient()
-        val gson = gsonBuilder.create()
-        var retrofitRx = Retrofit.Builder()
-             .baseUrl("https://example.com/")
-            .addConverterFactory(GsonConverterFactory.create(gson))
-            .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
-            .client(httpClient.build())
-            .build()
-        restService = retrofitRx.create(WebServices::class.java)
-        RxJavaPlugins.setErrorHandler(Functions.emptyConsumer())
+//        val cacheSize = 10 * 1024 * 1024 // 10 MB
+//        val cache = Cache(cacheDir, cacheSize.toLong())
+//
+//
+//        val logging = HttpLoggingInterceptor()
+//        if (BuildConfig.DEBUG || /*isMyTestDevice()*//*TODO : */true)
+//            logging.level = HttpLoggingInterceptor.Level.BODY
+//        else
+//            logging.level = HttpLoggingInterceptor.Level.NONE
+//
+//        val httpClient = OkHttpClient.Builder()
+//            .cache(cache)
+//            .connectTimeout(60, TimeUnit.SECONDS)
+//            .writeTimeout(60, TimeUnit.SECONDS)
+//            .readTimeout(60, TimeUnit.SECONDS)
+//
+//        httpClient.addInterceptor(logging)
+//
+//
+//        val gsonBuilder = GsonBuilder()
+//        gsonBuilder.setLenient()
+//        val gson = gsonBuilder.create()
+//        var retrofitRx = Retrofit.Builder()
+//             .baseUrl("https://example.com/")
+//            .addConverterFactory(GsonConverterFactory.create(gson))
+//            .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+//            .client(httpClient.build())
+//            .build()
+//        restService = retrofitRx.create(WebServices::class.java)
+//        RxJavaPlugins.setErrorHandler(Functions.emptyConsumer())
     }
 
 

@@ -24,7 +24,6 @@ import com.google.android.gms.common.api.ResolvableApiException
 import com.google.android.gms.location.*
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import kotlinx.android.synthetic.main.activity_main.*
-import shakir.swalah.db.GeoCoded
 import java.util.*
 import kotlin.concurrent.thread
 
@@ -157,8 +156,7 @@ abstract class MainActivityLocation : BaseActivity() {
 
     private val mLocationCallback = object : LocationCallback() {
         override fun onLocationResult(locationResult: LocationResult) {
-            var mLastLocation: Location = locationResult.lastLocation
-            onLocationServiceResult(mLastLocation)
+            locationResult.lastLocation?.let { onLocationServiceResult(it) }
         }
     }
 
@@ -205,46 +203,18 @@ abstract class MainActivityLocation : BaseActivity() {
 
             if (locality.isNotBlank()) {
                 isCorrectLocalityFound = true
-                appDatabase.GeoCodedDao().insertAll(
-                    GeoCoded(
-                        latitude = latitude,
-                        longitude = longitude,
-                        locality = locality,
-                        subLocality = subLocality,
-                        countryName = countryName
-                    )
-                )
+//                appDatabase.GeoCodedDao().insertAll(
+//                    GeoCoded(
+//                        latitude = latitude,
+//                        longitude = longitude,
+//                        locality = locality,
+//                        subLocality = subLocality,
+//                        countryName = countryName
+//                    )
+//                )
                 Log.d("hgdhag", "locality.isNotBlank() $locality")
             } else {
 
-                var nearest: GeoCoded? = null
-                var nearestMeter: Float? = null
-                val floatArray = FloatArray(5)
-                val km5 = (5 * 1000).toFloat()
-                appDatabase.GeoCodedDao().getAll().forEach {
-                    Location.distanceBetween(
-                        latitude, longitude, it.latitude, it.longitude, floatArray
-                    )
-                    if (floatArray[0] < km5 && (nearestMeter == null || floatArray[0] < nearestMeter!!)) {
-                        nearestMeter = floatArray[0]
-                        nearest = it
-                    }
-
-                }
-
-                if (nearest != null) {
-                    isCorrectLocalityFound = false
-                    locality = nearest?.locality ?: ""
-                    subLocality = nearest?.subLocality ?: ""
-                    countryName = nearest?.countryName ?: ""
-                    isNear = true
-                    Log.d("hgdhag", "nearest != null $locality")
-                } else {
-
-                    Log.d("hgdhag", "else ")
-                    requestLocationRepeatLoop()
-
-                }
 
 
             }
@@ -345,84 +315,12 @@ abstract class MainActivityLocation : BaseActivity() {
     fun requestForGPSLocationWithRotationAnimation() {
         hideKeyboardView()
         isIconRotationNeed = true
-        animateRotate()
+
         startLocationServiceInitialisation()
     }
 
 
-    fun animateRotate() {
-        if (isIconRotationNeed) {
-            refresh?.let { refresh ->
-                ObjectAnimator
-                    .ofFloat(refresh, View.ROTATION, 0f, 360f)
-                    .setDuration(600)
-                    .apply {
-                        repeatCount = 100
-                        addListener(object : Animator.AnimatorListener {
-                            override fun onAnimationRepeat(animation: Animator?) {
-                                if (!isIconRotationNeed) {
-                                    this@apply.cancel()
-                                }
-                            }
 
-                            override fun onAnimationEnd(animation: Animator?) {
-                                if (!isIconRotationNeed) {
-                                    this@apply.cancel()
-                                }
-                            }
-
-                            override fun onAnimationCancel(animation: Animator?) {
-
-                            }
-
-                            override fun onAnimationStart(animation: Animator?) {
-
-                            }
-
-                        })
-                    }
-
-                    .start()
-            }
-
-
-            locationButton?.let { locationButton ->
-                ObjectAnimator
-                    .ofFloat(locationButton, View.ROTATION, 0f, 360f)
-                    .setDuration(600)
-                    .apply {
-                        repeatCount = 100
-                        addListener(object : Animator.AnimatorListener {
-                            override fun onAnimationRepeat(animation: Animator?) {
-                                if (!isIconRotationNeed) {
-                                    this@apply.cancel()
-                                }
-                            }
-
-                            override fun onAnimationEnd(animation: Animator?) {
-                                if (!isIconRotationNeed) {
-                                    this@apply.cancel()
-                                }
-                            }
-
-                            override fun onAnimationCancel(animation: Animator?) {
-
-                            }
-
-                            override fun onAnimationStart(animation: Animator?) {
-
-                            }
-
-                        })
-                    }
-
-                    .start()
-            }
-
-
-        }
-
-    }
 
     var isIconRotationNeed = false
 

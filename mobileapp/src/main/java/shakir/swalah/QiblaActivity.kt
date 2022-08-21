@@ -82,7 +82,7 @@ class QiblaActivity : MainActivityLocation() {
                     val geocoder = Geocoder(this, Locale.getDefault())
                     val fromLocation =
                         geocoder.getFromLocation(myLocation!!.latitude, myLocation!!.longitude, 1)
-                    myLocationTextView!!.text = fromLocation[0].getAddressLine(0)
+                    myLocationTextView!!.text = fromLocation?.getOrNull(0)?.getAddressLine(0)
                 } catch (e: Exception) {
                     e.printStackTrace()
                 }
