@@ -19,6 +19,7 @@ import androidx.core.app.NotificationManagerCompat
 import com.azan.TimeCalculator
 import com.azan.types.AngleCalculationType
 import com.azan.types.PrayersType
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -30,65 +31,70 @@ class AlarmBroadCastReceiver : BroadcastReceiver() {
     val TAG = "AlarmBroadCastReceiver"
 
     override fun onReceive(context: Context?, intent: Intent?) {
-        val milli = intent?.getLongExtra("milli", 0) ?: 0
-        val currentTimeMillis = System.currentTimeMillis()
-        if (milli <= currentTimeMillis) {
-            Log.d(TAG, "past time")
+        try {
+            val milli = intent?.getLongExtra("milli", 0) ?: 0
+            val currentTimeMillis = System.currentTimeMillis()
+            if (milli <= currentTimeMillis) {
+                Log.d(TAG, "past time")
+            }
+
+            Log.d(
+                TAG,
+
+                "milli" + milli +
+                        "onReceive() called with: context = [" + context + "], intent = [" + intent + "]"
+            );
+
+
+
+
+
+
+
+            if (context != null) {
+
+
+                val array = arrayOf(
+                    PrayersType.FAJR,
+                    PrayersType.SUNRISE,
+                    PrayersType.ZUHR,
+                    PrayersType.ASR,
+                    PrayersType.MAGHRIB,
+                    PrayersType.ISHA
+                )
+                val date = GregorianCalendar()
+
+                val sharedPreferences = Util.getMySharedPreference(context)
+                val latitude = sharedPreferences
+                    .getDouble("latitude", 11.00)
+
+                val longitude = sharedPreferences
+                    .getDouble("longitude", 76.00)
+
+
+                val prayerTimes =
+                    TimeCalculator().date(date).location(latitude, longitude, 0.0, 0.0)
+                        .timeCalculationMethod(AngleCalculationType.KARACHI)
+                        .calculateTimes()
+
+
+                Log.d("dgfbdsfjjd", "$latitude $longitude $prayerTimes")
+
+
+                showNoti(
+                    context, intent?.getStringExtra("name") + " " +
+                            SimpleDateFormat(Util.timeFormat(), Locale.ENGLISH).format(milli).ltrEmbed()
+                )
+
+            }
+
+            Handler().postDelayed({
+                context?.let { Util.setNextAlarm(it) }
+            }, 2500)
+        } catch (e: Exception) {
+            e.report()
+
         }
-
-        Log.d(
-            TAG,
-
-            "milli" + milli +
-                    "onReceive() called with: context = [" + context + "], intent = [" + intent + "]"
-        );
-
-
-
-
-
-
-
-        if (context != null) {
-
-
-            val array = arrayOf(
-                PrayersType.FAJR,
-                PrayersType.SUNRISE,
-                PrayersType.ZUHR,
-                PrayersType.ASR,
-                PrayersType.MAGHRIB,
-                PrayersType.ISHA
-            )
-            val date = GregorianCalendar()
-
-            val sharedPreferences = Util.getMySharedPreference(context)
-            val latitude = sharedPreferences
-                .getDouble("latitude", 11.00)
-
-            val longitude = sharedPreferences
-                .getDouble("longitude", 76.00)
-
-
-            val prayerTimes =
-                TimeCalculator().date(date).location(latitude, longitude, 0.0, 0.0)
-                    .timeCalculationMethod(AngleCalculationType.KARACHI)
-                    .calculateTimes()
-
-
-            Log.d("dgfbdsfjjd", "$latitude $longitude $prayerTimes")
-
-
-            showNoti(
-                context, intent?.getStringExtra("name") + " " +
-                        SimpleDateFormat(Util.timeFormat(), Locale.ENGLISH).format(milli).ltrEmbed()
-            )
-
-        }
-
-        Handler().postDelayed({
-            context?.let { Util.setNextAlarm(it) }
-        }, 2500)
 
 
     }

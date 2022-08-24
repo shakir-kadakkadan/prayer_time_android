@@ -10,9 +10,9 @@ class MonthViewActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_mont_view)
         adjustWithSystemWindow(rootViewLL, topSpacer, true)
-        val latitude = sp.getDouble("latitude", INVALID_CORDINATE)
-        val longitude = sp.getDouble("longitude", INVALID_CORDINATE)
-        var locality = sp.getString("locality", null)
+        val latitude = sp.getDouble("v2_latitude", INVALID_CORDINATE)
+        val longitude = sp.getDouble("v2_longitude", INVALID_CORDINATE)
+        var locality = sp.getString("v2_locality", null)
 
         if (latitude != INVALID_CORDINATE && longitude != INVALID_CORDINATE) {
             viewPager2.adapter = MonthAdapter(latitude,longitude,Util.timeFormat().replace(" a",""))

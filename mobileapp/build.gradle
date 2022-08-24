@@ -31,13 +31,12 @@ android {
 
 
     }
-    compileSdkVersion 33
+    compileSdkVersion 32
     defaultConfig {
         multiDexEnabled true
-        resConfigs 'ar', 'en'
         applicationId "shakir.swalah"
         minSdkVersion 19
-        targetSdkVersion 33
+        targetSdkVersion 32
         versionCode ((rootProject.ext.commonversionCode*2)+0)
         versionName "${ ((rootProject.ext.commonversionCode*2)+0)}"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"

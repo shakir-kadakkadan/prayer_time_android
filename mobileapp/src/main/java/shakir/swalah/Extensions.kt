@@ -27,6 +27,8 @@ import android.widget.*
 import androidx.annotation.LayoutRes
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
+import com.google.firebase.crashlytics.ktx.crashlytics
+import com.google.firebase.ktx.Firebase
 //import com.google.gson.Gson
 //import com.google.gson.JsonObject
 //import okhttp3.MediaType
@@ -411,9 +413,6 @@ fun String?.bold(): SpannableString {
         setSpan(StyleSpan(Typeface.BOLD), 0, length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
     }
 }
-
-
-
 
 
 fun Context?.getDeviceID(): String? {
@@ -1398,7 +1397,6 @@ fun Fragment?.toast(s: Any?) {
 }
 
 
-
 fun ViewGroup.inflate(@LayoutRes layoutRes: Int): View {
     return LayoutInflater.from(context).inflate(layoutRes, this, false)
 }
@@ -1414,6 +1412,16 @@ fun pFlagMutable(flag: Int): Int {
 }
 
 
+fun Throwable?.report() {
+    if (this != null) {
+        try {
+            Firebase.crashlytics.recordException(this)
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+        this.printStackTrace()
+    }
+}
 
 
 

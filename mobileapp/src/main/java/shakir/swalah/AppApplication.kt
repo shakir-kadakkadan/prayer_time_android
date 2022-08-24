@@ -2,11 +2,16 @@ package shakir.swalah
 
 import android.app.Application
 import android.content.SharedPreferences
+import android.os.Handler
 import android.text.format.DateFormat
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.edit
+import androidx.core.os.ConfigurationCompat
 import androidx.multidex.MultiDexApplication
 import com.azan.types.PrayersType
+import com.google.firebase.crashlytics.ktx.crashlytics
+import com.google.firebase.crashlytics.ktx.setCustomKeys
+import com.google.firebase.ktx.Firebase
 //import com.google.gson.GsonBuilder
 //import io.reactivex.internal.functions.Functions
 //import io.reactivex.plugins.RxJavaPlugins
@@ -22,11 +27,13 @@ import java.util.concurrent.TimeUnit
 class AppApplication : MultiDexApplication() {
 
 
-
     override fun onCreate() {
         super.onCreate()
-        instance=this
+        instance = this
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+
+
+
         /*   try {
 
                ProviderInstaller.installIfNeeded(this)
@@ -86,7 +93,7 @@ class AppApplication : MultiDexApplication() {
                 PrayersType.ASR -> "العصر"
                 PrayersType.MAGHRIB -> "المغرب"
                 PrayersType.ISHA -> "العشاء"
-                else ->null
+                else -> null
             }
         }
 

@@ -24,11 +24,15 @@ import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.edit
+import androidx.core.os.ConfigurationCompat
 import com.azan.TimeCalculator
 import com.azan.types.AngleCalculationType
 import com.azan.types.PrayersType
 import com.github.msarhan.ummalqura.calendar.UmmalquraCalendar
 import com.google.firebase.crashlytics.FirebaseCrashlytics
+import com.google.firebase.crashlytics.ktx.crashlytics
+import com.google.firebase.crashlytics.ktx.setCustomKeys
+import com.google.firebase.ktx.Firebase
 
 //import io.reactivex.android.schedulers.AndroidSchedulers
 //import io.reactivex.schedulers.Schedulers
@@ -45,54 +49,7 @@ import java.util.concurrent.TimeUnit
 val INVALID_CORDINATE = Double.MAX_VALUE
 
 
-class MainActivity : MainActivityLocation() {
-
-
-    override fun onLoactionPermissionDialogDone() {
-        optimization()
-    }
-
-    override fun onLocationCallBack(
-        location: Location,
-        locality: String,
-        isNear: Boolean,
-        subLocality: String,
-        countryName: String
-    ) {
-        with(location) {
-            onGetCordinates(latitude, longitude, locality, true)
-
-
-            val s =
-                "${
-                    if (locality.isBlank()) "Unknown Location.\nPlease Check Your Network Settings & Location" else {
-                        if (isNear) "Near $locality" else locality
-                    }
-                }, $subLocality, $countryName\n$latitude,  $longitude"
-            if (toastText.contains(
-                    "Unknown Location",
-                    true
-                ) && s.contains("Unknown Location") && toast != null
-            ) {
-                //repeated toast
-            } else {
-                try {
-                    toast?.cancel()
-                } catch (e: Exception) {
-                    e.printStackTrace()
-                }
-                toastText = s
-                toast = Toast.makeText(
-                    this@MainActivity,
-                    toastText,
-                    Toast.LENGTH_LONG
-                )
-                toast?.show()
-            }
-        }
-
-
-    }
+class MainActivity : BaseActivity() {
 
 
     var toast: Toast? = null
@@ -122,7 +79,6 @@ class MainActivity : MainActivityLocation() {
         if (arrayList.size == 0) {
             getLocationFromCSV()
         }
-
 
 
         //qibla.isVisible = isMyTestDevice()
@@ -160,32 +116,52 @@ class MainActivity : MainActivityLocation() {
         }
 
 
+        locationLL.setOnClickListener {
+            startActivity(Intent(this, LocationSelectorAvtivity::class.java))
+        }
+
+
     }
 
 
     override fun onResume() {
         super.onResume()
-        val latitude = sp.getDouble("latitude", INVALID_CORDINATE)
-        val longitude = sp.getDouble("longitude", INVALID_CORDINATE)
-        var locality = sp.getString("locality", null)
 
-        println("onResume $latitude $longitude $locality")
 
-        if (latitude == INVALID_CORDINATE || longitude == INVALID_CORDINATE/*FIRST TIME*/) {
-            requestLocationRepeatLoop()
-        } else if (locality.isNullOrBlank()) {
-            Log.d("hgdhag", "2nd TIME LOCATION BLANK")
-            onGetCordinates(latitude, longitude, locality, true)
-            requestLocationRepeatLoop()
-        } else {
-            Log.d("hgdhag", "2nd TIME LOCATION HAS VALUE $locality")
-            onGetCordinates(latitude, longitude, locality, true)
+
+        if (sp.getBoolean("v2_set", false) == true) {
+            onGetCordinates(
+                sp.getDouble("v2_latitude",0.0),
+                sp.getDouble("v2_longitude",0.0),
+                sp.getString("v2_locality",""),
+            )
+            optimization()
+        } else{
+            startActivity(Intent(this,LocationSelectorAvtivity::class.java).apply {
+                putExtra("comeBack",true)
+            })
+            finish()
         }
 
 
+    }
 
-        if (hasLocationPermissions())
-            optimization()
+    override fun onStart() {
+        super.onStart()
+        try {
+            window.decorView.postDelayed({
+                try {
+                    val crashlytics = Firebase.crashlytics
+                    crashlytics.setCustomKeys {
+                        key("LanguageTags", ConfigurationCompat.getLocales(getResources().getConfiguration()).toLanguageTags())
+                    }
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
+            }, 3000)
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
     }
 
 
@@ -215,7 +191,7 @@ class MainActivity : MainActivityLocation() {
 
         var nextPrayTime: PrayersType? = null
 
-        val timeFormat=Util.timeFormat()
+        val timeFormat = Util.timeFormat()
 
         arrayOf(FAJR, SUNRISE, ZUHR, ASR, MAGHRIB, ISHA).forEachIndexed { index, view ->
             view.prayerName.setText(AppApplication.getArabicNames(array[index].name))
@@ -240,8 +216,6 @@ class MainActivity : MainActivityLocation() {
         println("$latitude $longitude $l")
 
     }
-
-
 
 
     val arrayList = arrayListOf<Cord>()

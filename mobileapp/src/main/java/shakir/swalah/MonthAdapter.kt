@@ -36,10 +36,10 @@ class MonthAdapter(var latitude: Double, var longitude: Double, var timeFormat: 
 
             val cal = Calendar.getInstance()
                 .apply { add(Calendar.MONTH, position - 50); set(Calendar.DATE, 1) }
-            textTest.setText(SimpleDateFormat("MMMM yyyy").format(cal.time))
+            textTest.setText(SimpleDateFormat("MMMM yyyy", Locale.ENGLISH).format(cal.time))
 
             thread {
-                val dateString = SimpleDateFormat("MMMM yyyy").format(cal.time)
+                val dateString = SimpleDateFormat("MMMM yyyy", Locale.ENGLISH).format(cal.time)
                 val monthIndex = cal.get(Calendar.MONTH)
                 val array = arrayOf(
                     PrayersType.FAJR,

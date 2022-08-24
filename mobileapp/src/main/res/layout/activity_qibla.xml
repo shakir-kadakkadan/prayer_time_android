@@ -33,7 +33,7 @@
             android:layout_width="wrap_content"
             android:layout_height="20dp"
             android:layout_gravity="center_vertical"
-            android:src="@drawable/ic_my_location_black_24dp" />
+            android:src="@drawable/ic_baseline_location_on_24" />
 
         <TextView
             android:id="@+id/locationTV"

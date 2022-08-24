@@ -131,7 +131,7 @@ object Util {
             setNextAlarm(context, tommorrow = true)
 
         } catch (e: Exception) {
-            e.printStackTrace()
+            e.report()
         }
 
 
@@ -164,7 +164,7 @@ object Util {
                 .remove("lastUniqueIndexForPrayer")
                 .commit()
         } catch (e: Exception) {
-            e.printStackTrace()
+            e.report()
         }
     }
 
