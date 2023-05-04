@@ -100,6 +100,13 @@ class SettingsActivity : BaseActivity() {
             startActivity(Intent(this,NotificationsActivity::class.java))
         }
 
+
+        iqama.setOnClickListener {
+            startActivity(Intent(this,IqamaActivity::class.java))
+        }
+
+
+
     }
 
 }

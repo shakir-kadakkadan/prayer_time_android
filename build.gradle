@@ -2,7 +2,7 @@
 
 buildscript {
     ext.kotlin_version = '1.7.10'
-    ext.commonversionCode = 10
+    ext.commonversionCode = 12
 
     repositories {
         google()

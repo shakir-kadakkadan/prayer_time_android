@@ -8,12 +8,12 @@ import android.content.SharedPreferences
 import android.os.Build
 import android.text.format.DateFormat
 import android.util.Log
-import androidx.core.content.edit
 import com.azan.TimeCalculator
 import com.azan.types.AngleCalculationType
 import com.azan.types.PrayersType
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.collections.ArrayList
 
 object Util {
 
@@ -197,7 +197,6 @@ object Util {
     }
 
 
-
     var is_24_hourFormat: Boolean
         get() {
             val sharedPreferences = getMySharedPreference(AppApplication.instance)
@@ -226,4 +225,74 @@ object Util {
     }
 
 
+    private var iqamaSettingsSavedString: String?
+        get() {
+            val sharedPreferences = getMySharedPreference(AppApplication.instance)
+            val iss= sharedPreferences.getString("iqamaSettingsSaved1", null)
+            println("issississ Read\n$iss")
+            return iss
+        }
+        set(value) {
+            val sharedPreferences = getMySharedPreference(AppApplication.instance)
+            sharedPreferences.edit().putString("iqamaSettingsSaved1", value).commit()
+            val iss= sharedPreferences.getString("iqamaSettingsSaved1", null)
+            println("issississ Write\n$iss")
+
+        }
+
+
+    fun getIqamaSettings(): ArrayList<Iqama> {
+        try {
+
+            if (Util.iqamaSettingsSavedString?.isNotBlank() == true) {
+
+                val arrayLis = arrayListOf<Iqama>()
+                val ls = Util.iqamaSettingsSavedString!!.split("\n")
+                for (i in 0..4) {
+                    val ws = ls[i].split(",")
+                    arrayLis.add(Iqama(ws[0].toInt(), ws[1].toBoolean(), ws[2].toInt(), ws[3].toLongOrNull()?:0L))
+                }
+
+                return arrayLis
+
+            }
+
+
+        } catch (e: Exception) {
+            e.printStackTrace()
+
+        }
+        return arrayListOf(
+            Iqama(0, true, 20, 0),
+            Iqama(1, true, 20, 0),
+            Iqama(2, true, 10, 0),
+            Iqama(3, true, 5, 0),
+            Iqama(4, true, 20, 0),
+        )
+
+    }
+
+
+    fun saveIqamaSettings(list: ArrayList<Iqama>) {
+        var s = ""
+        list.forEach {
+            if (s.isNotBlank())
+                s = s + "\n"
+
+            s = s + "${it.index},${it.isAfter},${it.after},${it.fixed}"
+        }
+
+        iqamaSettingsSavedString = s
+
+
+    }
+
+
 }
+
+
+data class Iqama(val index: Int, var isAfter: Boolean = true, var after: Int, var fixed: Long)
+
+
+
+
