@@ -54,31 +54,31 @@ class AlarmBroadCastReceiver : BroadcastReceiver() {
             if (context != null) {
 
 
-                val array = arrayOf(
-                    PrayersType.FAJR,
-                    PrayersType.SUNRISE,
-                    PrayersType.ZUHR,
-                    PrayersType.ASR,
-                    PrayersType.MAGHRIB,
-                    PrayersType.ISHA
-                )
-                val date = GregorianCalendar()
-
-                val sharedPreferences = Util.getMySharedPreference(context)
-                val latitude = sharedPreferences
-                    .getDouble("latitude", 11.00)
-
-                val longitude = sharedPreferences
-                    .getDouble("longitude", 76.00)
-
-
-                val prayerTimes =
-                    TimeCalculator().date(date).location(latitude, longitude, 0.0, 0.0)
-                        .timeCalculationMethod(AngleCalculationType.KARACHI)
-                        .calculateTimes()
-
-
-                Log.d("dgfbdsfjjd", "$latitude $longitude $prayerTimes")
+//                val array = arrayOf(
+//                    PrayersType.FAJR,
+//                    PrayersType.SUNRISE,
+//                    PrayersType.ZUHR,
+//                    PrayersType.ASR,
+//                    PrayersType.MAGHRIB,
+//                    PrayersType.ISHA
+//                )
+//                val date = GregorianCalendar()
+//
+//                val sharedPreferences = Util.getMySharedPreference(context)
+//                val latitude = sharedPreferences
+//                    .getDouble("latitude", 11.00)
+//
+//                val longitude = sharedPreferences
+//                    .getDouble("longitude", 76.00)
+//
+//
+//                val prayerTimes =
+//                    TimeCalculator().date(date).location(latitude, longitude, 0.0, 0.0)
+//                        .timeCalculationMethod(AngleCalculationType.KARACHI)
+//                        .calculateTimes()
+//
+//
+//                Log.d("dgfbdsfjjd", "$latitude $longitude $prayerTimes")
 
 
                 showNoti(
@@ -145,7 +145,16 @@ class AlarmBroadCastReceiver : BroadcastReceiver() {
 
 
         val path =
-            Uri.parse("android.resource://" + AppApplication.instance.packageName + "/" + R.raw.message_tone)
+
+            if (title.contains("الإقامة")){
+                Uri.parse("android.resource://" + AppApplication.instance.packageName + "/" + R.raw.mixkit_access_allowed_tone_2869)
+            }else{
+                Uri.parse("android.resource://" + AppApplication.instance.packageName + "/" + R.raw.message_tone)
+            }
+
+
+
+
         val ringtone = RingtoneManager.getRingtone(context!!.applicationContext, path)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             ringtone.setAudioAttributes(

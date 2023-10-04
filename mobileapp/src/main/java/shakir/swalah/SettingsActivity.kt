@@ -38,7 +38,7 @@ class SettingsActivity : BaseActivity() {
                     if (is_24_hourFormat) {
                         binding.showAMPMKey.alpha = .25f
                     } else {
-                        binding. showAMPMKey.alpha = 1f
+                        binding.showAMPMKey.alpha = 1f
                     }
                     dialog.dismiss()
 
@@ -101,14 +101,23 @@ class SettingsActivity : BaseActivity() {
         }
 
         binding.notifications.setOnClickListener {
-            startActivity(Intent(this,NotificationsActivity::class.java))
+            startActivity(Intent(this, NotificationsActivity::class.java))
         }
 
 
         binding.iqama.setOnClickListener {
-            startActivity(Intent(this,IqamaActivity::class.java))
+            startActivity(Intent(this, IqamaActivity::class.java))
         }
 
+        binding.adhanAlarm.isChecked = Util.isadhanAlarmOn
+        binding.iqamaAlarm.isChecked = Util.isiqamaAlarmOn
+
+        binding.adhanAlarm.setOnCheckedChangeListener { buttonView, isChecked ->
+            Util.isadhanAlarmOn = isChecked
+        }
+        binding.iqamaAlarm.setOnCheckedChangeListener { buttonView, isChecked ->
+            Util.isiqamaAlarmOn = isChecked
+        }
 
 
     }

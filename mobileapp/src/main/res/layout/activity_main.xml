@@ -63,6 +63,20 @@
                 android:textColor="@color/white" />
 
 
+            <TextView
+                android:id="@+id/hijriDate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginStart="16dp"
+                android:gravity="center"
+                android:text="الاحد صَفَر 1436"
+                android:textColor="@color/white"
+                android:textSize="16dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent" />
+
+
             <!--   <ImageView
                    android:paddingTop="8dp"
                    android:paddingBottom="8dp"
@@ -96,20 +110,7 @@
             android:orientation="vertical">
 
 
-            <TextView
-                android:id="@+id/hijriDate"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginLeft="22dp"
-                android:layout_marginRight="@dimen/_20sdp"
-                android:layout_marginBottom="8dp"
-                android:gravity="center"
-                android:text="الاحد صَفَر 1436"
-                android:textColor="@color/white"
-                android:textSize="16dp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent" />
+
 
             <!--   <TextView
                    android:layout_width="wrap_content"

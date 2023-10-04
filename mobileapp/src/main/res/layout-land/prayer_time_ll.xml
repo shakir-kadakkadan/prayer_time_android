@@ -1,81 +1,112 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout android:id="@+id/prayerTimeLL"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/prayerTimeLL"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layoutDirection="rtl"
     android:orientation="vertical"
-    android:textDirection="rtl"
-    xmlns:android="http://schemas.android.com/apk/res/android">
+    android:textDirection="rtl">
 
 
     <androidx.appcompat.widget.LinearLayoutCompat
         android:layout_width="match_parent"
-        android:orientation="horizontal"
-        android:layout_height="wrap_content">
-
-
-
-    <LinearLayout
-        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/_20sdp"
-        android:layout_marginEnd="@dimen/_10sdp"
-        android:layout_weight="1"
-        android:orientation="vertical">
-
-        <include
-
-            android:id="@+id/FAJR"
-            layout="@layout/pt_layout"></include>
-
-        <include
-            android:id="@+id/ZUHR"
-            layout="@layout/pt_layout"></include>
-
-        <include
-            android:id="@+id/MAGHRIB"
-            layout="@layout/pt_layout"></include>
+        android:orientation="horizontal">
 
 
-    </LinearLayout>
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/_20sdp"
+            android:layout_marginEnd="@dimen/_10sdp"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <include
+
+                android:id="@+id/FAJR"
+                layout="@layout/pt_layout"></include>
+
+            <include
+                android:id="@+id/ZUHR"
+                layout="@layout/pt_layout"></include>
+
+            <include
+                android:id="@+id/MAGHRIB"
+                layout="@layout/pt_layout"></include>
 
 
-    <LinearLayout
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/_10sdp"
-        android:layout_marginEnd="@dimen/_20sdp"
-        android:layout_weight="1"
-        android:orientation="vertical">
+        </LinearLayout>
 
-        <include
-            android:id="@+id/SUNRISE"
-            layout="@layout/pt_layout"></include>
 
-        <include
-            android:id="@+id/ASR"
-            layout="@layout/pt_layout"></include>
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/_10sdp"
+            android:layout_marginEnd="@dimen/_20sdp"
+            android:layout_weight="1"
+            android:orientation="vertical">
 
-        <include
-            android:id="@+id/ISHA"
-            layout="@layout/pt_layout"></include>
-    </LinearLayout>
+            <include
+                android:id="@+id/SUNRISE"
+                layout="@layout/pt_layout"></include>
+
+            <include
+                android:id="@+id/ASR"
+                layout="@layout/pt_layout"></include>
+
+            <include
+                android:id="@+id/ISHA"
+                layout="@layout/pt_layout"></include>
+        </LinearLayout>
 
     </androidx.appcompat.widget.LinearLayoutCompat>
 
-    <include
-        android:id="@+id/MIDNIGHT"
-        layout="@layout/pt_night"></include>
+
+    <LinearLayout
+        android:layoutDirection="ltr"
+        android:textDirection="ltr"
+        android:layout_marginStart="@dimen/_20sdp"
+        android:layout_marginEnd="@dimen/_20sdp"
+        android:layout_marginTop="4dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <FrameLayout
+
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1">
+
+            <include
+                android:id="@+id/MIDNIGHT"
+                layout="@layout/pt_night"></include>
 
 
-    <include
-        android:id="@+id/THIRDNIGHT"
-        layout="@layout/pt_night"></include>
+        </FrameLayout>
 
+        <FrameLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1">
 
+            <include
+                android:id="@+id/THIRDNIGHT"
+                layout="@layout/pt_night"></include>
+        </FrameLayout>
 
-    <include
-        android:id="@+id/THIRDNIGHT_ISHA"
-        layout="@layout/pt_night"></include>
+        <FrameLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1">
+
+            <include
+                android:id="@+id/THIRDNIGHT_ISHA"
+                layout="@layout/pt_night"></include>
+        </FrameLayout>
+
+    </LinearLayout>
+
 
 </LinearLayout>

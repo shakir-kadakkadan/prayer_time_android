@@ -99,6 +99,7 @@ class IqamaActivity : BaseActivity() {
                             iqama.after = 5
                         }
                         Util.saveIqamaSettings(iqamaSettins)
+                        Util.setNextAlarm(this@IqamaActivity)
                     }
 
                 }
@@ -122,6 +123,7 @@ class IqamaActivity : BaseActivity() {
                         }.timeInMillis
                         view.atTime.setText(SimpleDateFormat(timeFormat, Locale.ENGLISH).format(Date(iqama.fixed)).ltrEmbed())
                         Util.saveIqamaSettings(iqamaSettins)
+                        Util.setNextAlarm(this@IqamaActivity)
 
                     }.apply {
 
@@ -153,6 +155,7 @@ class IqamaActivity : BaseActivity() {
                 iqama.isAfter = !iqama.isAfter
                 setAfterOrAtText(setAction = true)
                 Util.saveIqamaSettings(iqamaSettins)
+                Util.setNextAlarm(this@IqamaActivity)
             }
 
 
