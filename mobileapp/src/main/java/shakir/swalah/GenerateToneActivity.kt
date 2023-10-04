@@ -5,17 +5,23 @@ import android.media.ToneGenerator
 import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import kotlinx.android.synthetic.main.activity_generate_tone.*
+
+import shakir.swalah.databinding.ActivityGenerateToneBinding
+
 
 class GenerateToneActivity : AppCompatActivity() {
+
+    private lateinit var binding: ActivityGenerateToneBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        binding = ActivityGenerateToneBinding.inflate(layoutInflater)
         setContentView(R.layout.activity_generate_tone)
         var a = -1
-        prev.setOnClickListener {
+        binding.prev.setOnClickListener {
             generateTone(a--)
         }
-        next.setOnClickListener {
+        binding.next.setOnClickListener {
             generateTone(a++)
         }
 
@@ -31,9 +37,9 @@ class GenerateToneActivity : AppCompatActivity() {
         } catch (e: Exception) {
         }
         try {
-            intTone.setText(a.toString())
+            binding.intTone.setText(a.toString())
 
-            toneGen1?.startTone(a, duration.text.toString().toInt());
+            toneGen1?.startTone(a, binding.duration.text.toString().toInt());
         } catch (e: Exception) {
             try {
                 toneGen1?.startTone(a)

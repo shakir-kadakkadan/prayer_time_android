@@ -19,11 +19,12 @@ import com.google.android.gms.common.api.ResolvableApiException
 import com.google.android.gms.location.*
 import com.google.android.gms.tasks.CancellationTokenSource
 import com.google.android.gms.tasks.Task
-import kotlinx.android.synthetic.main.activity_location_selector.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import shakir.swalah.databinding.ActivityLocationSelectorBinding
+import shakir.swalah.databinding.ActivityMainBinding
 import shakir.swalah.models.Cord
 import java.util.*
 import kotlin.math.absoluteValue
@@ -33,9 +34,11 @@ class LocationSelectorAvtivity : BaseActivity() {
 
     val arrayList = arrayListOf<Cord>()
     lateinit var adapter: LocListAdapter
+    private lateinit var binding: ActivityLocationSelectorBinding
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_location_selector)
+        binding = ActivityLocationSelectorBinding.inflate(layoutInflater)
+        setContentView(binding.root)
         assets.open("worldcities.csv").bufferedReader().useLines {
             arrayList.clear()
             it.forEach {
@@ -58,16 +61,16 @@ class LocationSelectorAvtivity : BaseActivity() {
             onBackPressed()
 
         }
-        recyclerView.adapter = adapter
+        binding.recyclerView.adapter = adapter
         notifyRV()
 
 
 
-        editText.doOnTextChanged { text, start, before, count ->
+        binding.editText.doOnTextChanged { text, start, before, count ->
             notifyRV()
         }
-        clear.setOnClickListener {
-            editText.setText("")
+        binding.clear.setOnClickListener {
+            binding.editText.setText("")
         }
 
         requestLocationPermisiion()
@@ -75,21 +78,21 @@ class LocationSelectorAvtivity : BaseActivity() {
 
 
     fun notifyRV() {
-        val key = editText.text.toString()
+        val key = binding.editText.text.toString()
         if (key.isBlank() && locationLastForDistanceCalculation != null) {
             adapter.arrayList.clear()
             adapter.arrayList.addAll(arrayList.sortedBy {
                 locationLastForDistanceCalculation!!.distanceTo(Location("").apply { latitude = it.latitude; longitude = it.longitude }).absoluteValue
             })
             adapter.notifyDataSetChanged()
-            clear.isVisible = false
+            binding. clear.isVisible = false
         } else {
             adapter.arrayList.clear()
             adapter.arrayList.addAll(arrayList.filter { it.name.startsWith(key, ignoreCase = true) }.plus(
                 arrayList.filter { it.name.contains(key, ignoreCase = true) }
             ).distinct())
             adapter.notifyDataSetChanged()
-            clear.isVisible = true
+            binding. clear.isVisible = true
         }
     }
 
@@ -233,8 +236,8 @@ class LocationSelectorAvtivity : BaseActivity() {
                         GlobalScope.launch(Dispatchers.Main) {
                             try {
                                 val localityName = fetchLocality(location)
-                                locationTV.setText("Select Current Location\n$localityName")
-                                locationTV.setOnClickListener {
+                                binding.locationTV.setText("Select Current Location\n$localityName")
+                                binding.locationTV.setOnClickListener {
                                     sp.edit().putString("v2_locality", localityName)
                                         .putDouble("v2_latitude", location.latitude)
                                         .putDouble("v2_longitude", location.longitude)

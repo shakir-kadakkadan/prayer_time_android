@@ -2,6 +2,7 @@ package shakir.swalah
 
 import android.app.Activity
 import android.view.Gravity
+import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TableRow
@@ -11,7 +12,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.azan.TimeCalculator
 import com.azan.types.AngleCalculationType
 import com.azan.types.PrayersType
-import kotlinx.android.synthetic.main.adapter_month_view.view.*
+import shakir.swalah.databinding.AdapterMonthViewBinding
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.concurrent.thread
@@ -20,10 +21,10 @@ class MonthAdapter(var latitude: Double, var longitude: Double, var timeFormat: 
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
 
-    inner class VH(view: View) : RecyclerView.ViewHolder(view)
+    inner class VH(val binding: AdapterMonthViewBinding) : RecyclerView.ViewHolder(binding.root)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-        return VH(parent.inflate(R.layout.adapter_month_view))
+        return VH(AdapterMonthViewBinding.inflate(LayoutInflater.from(parent.context),parent,false))
     }
 
     override fun getItemCount(): Int {
@@ -32,11 +33,12 @@ class MonthAdapter(var latitude: Double, var longitude: Double, var timeFormat: 
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        holder.itemView.apply {
 
+        if (holder is VH){
+            val holder=holder as VH
             val cal = Calendar.getInstance()
                 .apply { add(Calendar.MONTH, position - 50); set(Calendar.DATE, 1) }
-            textTest.setText(SimpleDateFormat("MMMM yyyy", Locale.ENGLISH).format(cal.time))
+            holder.binding.textTest.setText(SimpleDateFormat("MMMM yyyy", Locale.ENGLISH).format(cal.time))
 
             thread {
                 val dateString = SimpleDateFormat("MMMM yyyy", Locale.ENGLISH).format(cal.time)
@@ -73,9 +75,9 @@ class MonthAdapter(var latitude: Double, var longitude: Double, var timeFormat: 
 
 
 
-                (context as? Activity)?.runOnUiThread {
+                (holder.binding.root.context as? Activity)?.runOnUiThread {
                     try {
-                        tableLayout.forEachIndexed { row, view ->
+                        holder.binding. tableLayout.forEachIndexed { row, view ->
                             (view as TableRow).forEachIndexed { column, view ->
                                 val tv = (view as TextView)
                                 tv.gravity = Gravity.LEFT
@@ -85,11 +87,11 @@ class MonthAdapter(var latitude: Double, var longitude: Double, var timeFormat: 
 
 
                         }
-                        textTest.setText(dateString)
+                        holder.binding.textTest.setText(dateString)
                     } catch (e: Exception) {
                         e.printStackTrace()
                         try {
-                            textTest.setText(e.message)
+                            holder.binding.textTest.setText(e.message)
                         } catch (e: Exception) {
                             e.printStackTrace()
                         }
@@ -99,6 +101,7 @@ class MonthAdapter(var latitude: Double, var longitude: Double, var timeFormat: 
 
 
         }
+
     }
 
 

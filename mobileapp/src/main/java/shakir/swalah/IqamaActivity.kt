@@ -5,26 +5,29 @@ import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import androidx.core.view.isVisible
-import androidx.core.widget.doOnTextChanged
 
-import kotlinx.android.synthetic.main.activity_iqama.*
-import kotlinx.android.synthetic.main.iqama_time_item.view.*
+
+
 
 import java.text.SimpleDateFormat
 import java.util.*
 import com.azan.TimeCalculator
 import com.azan.types.AngleCalculationType
 import com.azan.types.PrayersType
+import shakir.swalah.databinding.ActivityIqamaBinding
+import shakir.swalah.databinding.ActivityMainBinding
 import java.util.concurrent.TimeUnit
 
 
 class IqamaActivity : BaseActivity() {
+    private lateinit var binding: ActivityIqamaBinding
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_iqama)
-        adjustWithSystemWindow(rootViewLL, topSpacer, true)
+        binding = ActivityIqamaBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+        adjustWithSystemWindow(binding.rootViewLL, binding.topSpacer, true)
         val arrayView = arrayOf(
-            FAJR, ZUHR, ASR, MAGHRIB, ISHA
+            binding.FAJR, binding.ZUHR, binding.ASR, binding.MAGHRIB, binding.ISHA
         )
         val names = arrayOf(
             "الفجر",

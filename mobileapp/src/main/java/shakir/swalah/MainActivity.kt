@@ -34,11 +34,8 @@ import com.google.firebase.crashlytics.ktx.crashlytics
 import com.google.firebase.crashlytics.ktx.setCustomKeys
 import com.google.firebase.ktx.Firebase
 
-//import io.reactivex.android.schedulers.AndroidSchedulers
-//import io.reactivex.schedulers.Schedulers
-import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.prayer_time_ll.*
-import kotlinx.android.synthetic.main.pt_layout.view.*
+
+import shakir.swalah.databinding.ActivityMainBinding
 import shakir.swalah.models.Cord
 import java.text.NumberFormat
 import java.text.SimpleDateFormat
@@ -62,11 +59,14 @@ class MainActivity : BaseActivity() {
     //LOng range = -180 to +180
 
 
+    private lateinit var binding: ActivityMainBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
-        adjustWithSystemWindow(rootViewLL, topSpacer, true)
+        adjustWithSystemWindow(binding.rootViewLL, binding.topSpacer, true)
         val receiver = ComponentName(applicationContext, BootCompleteReceiver::class.java)
         applicationContext.packageManager?.setComponentEnabledSetting(
             receiver,
@@ -89,19 +89,21 @@ class MainActivity : BaseActivity() {
           }*/
 
 
-        hijriDate.setText(UmmalquraCalendar().convertCaledarToDisplayDate_1())
+        binding.hijriDate.setText(UmmalquraCalendar().convertCaledarToDisplayDate_1())
 
 
 
-        speedDial.inflate(R.menu.menu_speed_dial)
-        speedDial.setOnActionSelectedListener {
+        binding. speedDial.inflate(R.menu.menu_speed_dial)
+        binding. speedDial.setOnActionSelectedListener {
             when (it.id) {
                 R.id.qiblaFAB -> {
                     startActivity(Intent(this, QiblaActivity::class.java))
                 }
+
                 R.id.settingsFAB -> {
                     startActivity(Intent(this, SettingsActivity::class.java))
                 }
+
                 R.id.monthView -> {
                     startActivity(Intent(this, MonthViewActivity::class.java))
                 }
@@ -111,12 +113,12 @@ class MainActivity : BaseActivity() {
 
 
 
-            speedDial.close(true)
+            binding.speedDial.close(true)
             return@setOnActionSelectedListener true
         }
 
 
-        locationLL.setOnClickListener {
+        binding. locationLL.setOnClickListener {
             startActivity(Intent(this, LocationSelectorAvtivity::class.java))
         }
 
@@ -131,14 +133,14 @@ class MainActivity : BaseActivity() {
 
         if (sp.getBoolean("v2_set", false) == true) {
             onGetCordinates(
-                sp.getDouble("v2_latitude",0.0),
-                sp.getDouble("v2_longitude",0.0),
-                sp.getString("v2_locality",""),
+                sp.getDouble("v2_latitude", 0.0),
+                sp.getDouble("v2_longitude", 0.0),
+                sp.getString("v2_locality", ""),
             )
             optimization()
-        } else{
-            startActivity(Intent(this,LocationSelectorAvtivity::class.java).apply {
-                putExtra("comeBack",true)
+        } else {
+            startActivity(Intent(this, LocationSelectorAvtivity::class.java).apply {
+                putExtra("comeBack", true)
             })
             finish()
         }
@@ -183,8 +185,16 @@ class MainActivity : BaseActivity() {
             PrayersType.ISHA
         )
         val date = GregorianCalendar()
+        val dateYest = GregorianCalendar().apply {
+            add(Calendar.DATE,-1)
+        }
         val prayerTimes =
             TimeCalculator().date(date).location(latitude, longitude, 0.0, 0.0)
+                .timeCalculationMethod(AngleCalculationType.KARACHI)
+                .calculateTimes()
+
+        val prayerTimesYest =
+            TimeCalculator().date(dateYest).location(latitude, longitude, 0.0, 0.0)
                 .timeCalculationMethod(AngleCalculationType.KARACHI)
                 .calculateTimes()
 
@@ -193,7 +203,9 @@ class MainActivity : BaseActivity() {
 
         val timeFormat = Util.timeFormat()
 
-        arrayOf(FAJR, SUNRISE, ZUHR, ASR, MAGHRIB, ISHA).forEachIndexed { index, view ->
+        binding.prayerTimeLl.FAJR
+
+        arrayOf(binding.prayerTimeLl.FAJR, binding.prayerTimeLl.SUNRISE, binding.prayerTimeLl.ZUHR, binding.prayerTimeLl.ASR, binding.prayerTimeLl.MAGHRIB, binding.prayerTimeLl.ISHA).forEachIndexed { index, view ->
             view.prayerName.setText(AppApplication.getArabicNames(array[index].name))
             val prayTime = prayerTimes.getPrayTime(array[index])
             view.prayerTime.text =
@@ -203,16 +215,43 @@ class MainActivity : BaseActivity() {
                 nextPrayTime = array[index]
             }
 
-            view.setOnClickListener {
+            view.root.setOnClickListener {
                 /* testAudio(this)*/
             }
 
 
         }
 
+
+
+
+        binding.prayerTimeLl.MIDNIGHT.prayerName.setText("Mid night")
+        binding.prayerTimeLl. THIRDNIGHT.prayerName.setText("Third night(m)")
+        binding.prayerTimeLl.THIRDNIGHTISHA.prayerName.setText("Third night(i)")
+        binding.prayerTimeLl.MIDNIGHT.prayerTime.setText(SimpleDateFormat(timeFormat, Locale.ENGLISH).format(Date(prayerTimes.getPrayTime(array[0]).time.plus(prayerTimesYest.getPrayTime(array[4]).time).div(2))).ltrEmbed())
+        binding.prayerTimeLl.THIRDNIGHT.prayerTime.setText(
+            SimpleDateFormat(timeFormat, Locale.ENGLISH).format(
+                Date(
+                    prayerTimes.getPrayTime(array[0]).time.minus(
+                        prayerTimes.getPrayTime(array[0]).time.minus(prayerTimesYest.getPrayTime(array[4]).time).div(3)
+                    )
+                )
+            ).ltrEmbed()
+        )
+
+        binding.prayerTimeLl.THIRDNIGHTISHA.prayerTime.setText(
+            SimpleDateFormat(timeFormat, Locale.ENGLISH).format(
+                Date(
+                    prayerTimes.getPrayTime(array[0]).time.minus(
+                        prayerTimes.getPrayTime(array[0]).time.minus(prayerTimesYest.getPrayTime(array[5]).time).div(3)
+                    )
+                )
+            ).ltrEmbed()
+        )
+
         Util.setNextAlarm(this)
 
-        locationTV.setText(if (l.isNullOrBlank()) "My Location" else l)
+        binding.locationTV.setText(if (l.isNullOrBlank()) "My Location" else l)
         println("$latitude $longitude $l")
 
     }
@@ -228,26 +267,26 @@ class MainActivity : BaseActivity() {
                 arrayList.add(Cord(splited[0], splited[1].toDouble(), splited[2].toDouble()))
             }
         }
-/*        locationAC.setAdapter(
-            ArrayAdapter(
-                this,
-                android.R.layout.simple_list_item_1,
-                arrayList.map { it.name })
-        )
-        locationAC.threshold = 1
-        locationAC.setOnItemClickListener { parent, view, position, id ->
-            val get = arrayList.find { it.name == locationAC.text.toString() }
-            get?.let {
+        /*        locationAC.setAdapter(
+                    ArrayAdapter(
+                        this,
+                        android.R.layout.simple_list_item_1,
+                        arrayList.map { it.name })
+                )
+                locationAC.threshold = 1
+                locationAC.setOnItemClickListener { parent, view, position, id ->
+                    val get = arrayList.find { it.name == locationAC.text.toString() }
+                    get?.let {
 
-                sp.edit()
-                    .putDouble("latitude", get.latitude)
-                    .putDouble("longitude", get.longitude)
-                    .putString("locality", get.name)
-                    .putBoolean("isLocationSet", true)
-                    .apply()
-                onGetCordinates(get.latitude, get.longitude, get.name, true)
-            }
-        }*/
+                        sp.edit()
+                            .putDouble("latitude", get.latitude)
+                            .putDouble("longitude", get.longitude)
+                            .putString("locality", get.name)
+                            .putBoolean("isLocationSet", true)
+                            .apply()
+                        onGetCordinates(get.latitude, get.longitude, get.name, true)
+                    }
+                }*/
     }
 
 

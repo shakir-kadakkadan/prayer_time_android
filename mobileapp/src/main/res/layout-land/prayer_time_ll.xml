@@ -3,9 +3,17 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layoutDirection="rtl"
-    android:orientation="horizontal"
+    android:orientation="vertical"
     android:textDirection="rtl"
     xmlns:android="http://schemas.android.com/apk/res/android">
+
+
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:layout_width="match_parent"
+        android:orientation="horizontal"
+        android:layout_height="wrap_content">
+
+
 
     <LinearLayout
         android:layout_width="0dp"
@@ -53,5 +61,21 @@
             layout="@layout/pt_layout"></include>
     </LinearLayout>
 
+    </androidx.appcompat.widget.LinearLayoutCompat>
+
+    <include
+        android:id="@+id/MIDNIGHT"
+        layout="@layout/pt_night"></include>
+
+
+    <include
+        android:id="@+id/THIRDNIGHT"
+        layout="@layout/pt_night"></include>
+
+
+
+    <include
+        android:id="@+id/THIRDNIGHT_ISHA"
+        layout="@layout/pt_night"></include>
 
 </LinearLayout>

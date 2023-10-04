@@ -23,7 +23,7 @@ import androidx.core.app.ActivityCompat
 import com.google.android.gms.common.api.ResolvableApiException
 import com.google.android.gms.location.*
 import com.google.firebase.crashlytics.FirebaseCrashlytics
-import kotlinx.android.synthetic.main.activity_main.*
+
 import java.util.*
 import kotlin.concurrent.thread
 

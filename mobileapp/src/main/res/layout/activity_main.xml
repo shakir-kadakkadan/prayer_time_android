@@ -84,7 +84,9 @@
         </LinearLayout>
 
 
-        <include layout="@layout/prayer_time_ll" />
+        <include
+            android:id="@+id/prayer_time_ll"
+            layout="@layout/prayer_time_ll" />
 
 
         <androidx.constraintlayout.widget.ConstraintLayout

@@ -33,4 +33,24 @@
         android:id="@+id/ISHA"
         layout="@layout/pt_layout"></include>
 
+    <include
+        android:id="@+id/MIDNIGHT"
+        layout="@layout/pt_night"></include>
+
+
+     <include
+        android:id="@+id/THIRDNIGHT"
+        layout="@layout/pt_night"></include>
+
+
+
+ <include
+        android:id="@+id/THIRDNIGHT_ISHA"
+        layout="@layout/pt_night"></include>
+
+
+
+
+
+
 </LinearLayout>

@@ -5,8 +5,10 @@ import android.location.Location
 import android.os.Bundle
 import android.view.View
 import com.google.firebase.crashlytics.FirebaseCrashlytics
-import kotlinx.android.synthetic.main.activity_qibla.*
+
 import shakir.swalah.compass.CompassSensorManager
+
+import shakir.swalah.databinding.ActivityQiblaBinding
 import java.util.*
 
 
@@ -26,11 +28,14 @@ class QiblaActivity : MainActivityLocation() {
     }
 
 
+    private lateinit var binding: ActivityQiblaBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_qibla)
-        adjustWithSystemWindow(rootViewLL, topSpacer, true)
-        locationButton.setOnClickListener {
+        binding = ActivityQiblaBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+        adjustWithSystemWindow(binding.rootViewLL, binding.topSpacer, true)
+        binding.locationButton.setOnClickListener {
            requestForGPSLocationWithRotationAnimation()
         }
 
@@ -47,7 +52,7 @@ class QiblaActivity : MainActivityLocation() {
             northPoleLoc = Location("service Provider")
             northPoleLoc!!.latitude = 90.0 //NorthPole latitude setting
             northPoleLoc!!.longitude = 0.0 //NorthPole longitude setting
-            rootViewLL.post {
+            binding.rootViewLL.post {
                 compassSensorManager = CompassSensorManager(this)
 
                 val locality = sp.getString("Qibla_locality", null)
@@ -74,7 +79,7 @@ class QiblaActivity : MainActivityLocation() {
     private fun updateCompassView(myLocation: Location?, locality: String?) {
 
         try {
-            locationTV.setText(if (locality.isNullOrBlank()) "My Location" else locality)
+            binding.locationTV.setText(if (locality.isNullOrBlank()) "My Location" else locality)
             if (myLocation != null && compassSensorManager != null) {
 
                 //CatLogger.d(TAG, "upadteCompassView() called with: myLocation = [" + myLocation + "]");
@@ -82,17 +87,17 @@ class QiblaActivity : MainActivityLocation() {
                     val geocoder = Geocoder(this, Locale.getDefault())
                     val fromLocation =
                         geocoder.getFromLocation(myLocation!!.latitude, myLocation!!.longitude, 1)
-                    myLocationTextView!!.text = fromLocation?.getOrNull(0)?.getAddressLine(0)
+                    binding.myLocationTextView!!.text = fromLocation?.getOrNull(0)?.getAddressLine(0)
                 } catch (e: Exception) {
                     e.printStackTrace()
                 }
 
-                dialFrame?.init(compassSensorManager, myLocation, northPoleLoc)
-                needleFrame?.init(compassSensorManager, myLocation, makkaLoc)
-                if (needleFrame?.visibility != View.VISIBLE) {
-                    needleFrame?.visibility = View.VISIBLE
+                binding.dialFrame?.init(compassSensorManager, myLocation, northPoleLoc)
+                binding.needleFrame?.init(compassSensorManager, myLocation, makkaLoc)
+                if (binding.needleFrame?.visibility != View.VISIBLE) {
+                    binding.needleFrame?.visibility = View.VISIBLE
                 }
-                progress_bar?.visibility = View.GONE
+                binding.progressBar?.visibility = View.GONE
 
                 compassSensorManager?.onResume()
             }

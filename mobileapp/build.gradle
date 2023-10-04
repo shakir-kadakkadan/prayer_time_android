@@ -11,6 +11,10 @@ apply plugin: 'kotlin-kapt'
 
 android {
 
+    buildFeatures {
+        viewBinding true
+    }
+
     bundle { language { enableSplit = false } }
 
 
@@ -31,12 +35,12 @@ android {
 
 
     }
-    compileSdkVersion 32
+    compileSdkVersion 33
     defaultConfig {
         multiDexEnabled true
         applicationId "shakir.swalah"
         minSdkVersion 19
-        targetSdkVersion 32
+        targetSdkVersion 33
         versionCode ((rootProject.ext.commonversionCode*2)+0)
         versionName "${ ((rootProject.ext.commonversionCode*2)+0)}"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"

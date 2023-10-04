@@ -11,30 +11,34 @@ import android.provider.Settings
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.edit
 import androidx.core.view.isVisible
-import kotlinx.android.synthetic.main.activity_settings.*
+
 import shakir.swalah.Util.is_24_hourFormat
+import shakir.swalah.databinding.ActivityMainBinding
+import shakir.swalah.databinding.ActivitySettingsBinding
 import java.text.SimpleDateFormat
 import java.util.*
 
 class SettingsActivity : BaseActivity() {
+    private lateinit var binding: ActivitySettingsBinding
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_settings)
-        adjustWithSystemWindow(rootViewLL, topSpacer, true)
-        hour24Value.setText(if (Util.is_24_hourFormat) "24 Hour" else "12 Hour")
-        showAMPMValue.setText(SimpleDateFormat(Util.timeFormat(), Locale.ENGLISH).format(Date()).ltrEmbed())
-        hour24.setOnClickListener {
+        binding = ActivitySettingsBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+        adjustWithSystemWindow(binding.rootViewLL, binding.topSpacer, true)
+        binding.hour24Value.setText(if (Util.is_24_hourFormat) "24 Hour" else "12 Hour")
+        binding.showAMPMValue.setText(SimpleDateFormat(Util.timeFormat(), Locale.ENGLISH).format(Date()).ltrEmbed())
+        binding.hour24.setOnClickListener {
             val selected = if (Util.is_24_hourFormat) 1 else 0
             AlertDialog.Builder(this@SettingsActivity)
-                .setTitle(hour24key.text.toString())
+                .setTitle(binding.hour24key.text.toString())
                 .setSingleChoiceItems(arrayOf("12 Hour", "24 Hour"), selected) { dialog, which ->
                     Util.is_24_hourFormat = if (which == 0) false else true
-                    hour24Value.setText(if (Util.is_24_hourFormat) "24 Hour" else "12 Hour")
-                    showAMPMValue.setText(SimpleDateFormat(Util.timeFormat(), Locale.ENGLISH).format(Date()).ltrEmbed())
+                    binding.hour24Value.setText(if (Util.is_24_hourFormat) "24 Hour" else "12 Hour")
+                    binding.showAMPMValue.setText(SimpleDateFormat(Util.timeFormat(), Locale.ENGLISH).format(Date()).ltrEmbed())
                     if (is_24_hourFormat) {
-                        showAMPMKey.alpha = .25f
+                        binding.showAMPMKey.alpha = .25f
                     } else {
-                        showAMPMKey.alpha = 1f
+                        binding. showAMPMKey.alpha = 1f
                     }
                     dialog.dismiss()
 
@@ -43,18 +47,18 @@ class SettingsActivity : BaseActivity() {
         }
 
         if (is_24_hourFormat) {
-            showAMPMKey.alpha = .25f
+            binding.showAMPMKey.alpha = .25f
         } else {
-            showAMPMKey.alpha = 1f
+            binding.showAMPMKey.alpha = 1f
         }
-        showAMPM.setOnClickListener {
+        binding.showAMPM.setOnClickListener {
             if (!is_24_hourFormat) {
                 val selected = if (Util.isAMPMShow) 0 else 1
                 AlertDialog.Builder(this@SettingsActivity)
-                    .setTitle(showAMPMKey.text.toString())
+                    .setTitle(binding.showAMPMKey.text.toString())
                     .setSingleChoiceItems(arrayOf("Show", "Hide"), selected) { dialog, which ->
                         Util.isAMPMShow = if (which == 0) true else false
-                        showAMPMValue.setText(SimpleDateFormat(Util.timeFormat(), Locale.ENGLISH).format(Date()).ltrEmbed())
+                        binding.showAMPMValue.setText(SimpleDateFormat(Util.timeFormat(), Locale.ENGLISH).format(Date()).ltrEmbed())
                         dialog.dismiss()
                     }
                     .show()
@@ -67,9 +71,9 @@ class SettingsActivity : BaseActivity() {
 
 
 
-        battery.isVisible = Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && !(getSystemService(Context.POWER_SERVICE) as PowerManager).isIgnoringBatteryOptimizations(BuildConfig.APPLICATION_ID)
-        batteryLine.isVisible = battery.isVisible
-        battery.setOnClickListener {
+        binding.battery.isVisible = Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && !(getSystemService(Context.POWER_SERVICE) as PowerManager).isIgnoringBatteryOptimizations(BuildConfig.APPLICATION_ID)
+        binding.batteryLine.isVisible = binding.battery.isVisible
+        binding.battery.setOnClickListener {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 val powerManager = getSystemService(Context.POWER_SERVICE) as PowerManager
                 if (!powerManager.isIgnoringBatteryOptimizations(BuildConfig.APPLICATION_ID)) {
@@ -96,12 +100,12 @@ class SettingsActivity : BaseActivity() {
 
         }
 
-        notifications.setOnClickListener {
+        binding.notifications.setOnClickListener {
             startActivity(Intent(this,NotificationsActivity::class.java))
         }
 
 
-        iqama.setOnClickListener {
+        binding.iqama.setOnClickListener {
             startActivity(Intent(this,IqamaActivity::class.java))
         }
 
