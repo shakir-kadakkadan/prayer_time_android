@@ -43,6 +43,7 @@ class MainActivity : FragmentActivity() {
                 onLocationRefresh(lat.toDouble(), longgg.toDouble())
 
         }
+
     }
 
 

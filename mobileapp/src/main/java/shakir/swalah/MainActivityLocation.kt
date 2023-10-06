@@ -161,6 +161,7 @@ abstract class MainActivityLocation : BaseActivity() {
     }
 
 
+
     val PERMISSION_ID = 42
     lateinit var mFusedLocationClient: FusedLocationProviderClient
 

@@ -2,6 +2,7 @@ package shakir.swalah
 
 /*import androidx.recyclerview.widget.RecyclerView*/
 
+import android.Manifest
 import android.annotation.SuppressLint
 import android.content.ComponentName
 import android.content.Context
@@ -23,6 +24,8 @@ import android.view.View
 import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.core.content.edit
 import androidx.core.os.ConfigurationCompat
 import com.azan.TimeCalculator
@@ -93,8 +96,8 @@ class MainActivity : BaseActivity() {
 
 
 
-        binding. speedDial.inflate(R.menu.menu_speed_dial)
-        binding. speedDial.setOnActionSelectedListener {
+        binding.speedDial.inflate(R.menu.menu_speed_dial)
+        binding.speedDial.setOnActionSelectedListener {
             when (it.id) {
                 R.id.qiblaFAB -> {
                     startActivity(Intent(this, QiblaActivity::class.java))
@@ -118,7 +121,7 @@ class MainActivity : BaseActivity() {
         }
 
 
-        binding. locationLL.setOnClickListener {
+        binding.locationLL.setOnClickListener {
             startActivity(Intent(this, LocationSelectorAvtivity::class.java))
         }
 
@@ -131,6 +134,8 @@ class MainActivity : BaseActivity() {
 
 
 
+
+
         if (sp.getBoolean("v2_set", false) == true) {
             onGetCordinates(
                 sp.getDouble("v2_latitude", 0.0),
@@ -138,6 +143,7 @@ class MainActivity : BaseActivity() {
                 sp.getString("v2_locality", ""),
             )
             optimization()
+            notification()
         } else {
             startActivity(Intent(this, LocationSelectorAvtivity::class.java).apply {
                 putExtra("comeBack", true)
@@ -157,6 +163,12 @@ class MainActivity : BaseActivity() {
                     crashlytics.setCustomKeys {
                         key("LanguageTags", ConfigurationCompat.getLocales(getResources().getConfiguration()).toLanguageTags())
                     }
+
+                    notification()
+
+
+
+
                 } catch (e: Exception) {
                     e.printStackTrace()
                 }
@@ -186,7 +198,7 @@ class MainActivity : BaseActivity() {
         )
         val date = GregorianCalendar()
         val dateYest = GregorianCalendar().apply {
-            add(Calendar.DATE,-1)
+            add(Calendar.DATE, -1)
         }
         val prayerTimes =
             TimeCalculator().date(date).location(latitude, longitude, 0.0, 0.0)
@@ -226,7 +238,7 @@ class MainActivity : BaseActivity() {
 
 
         binding.prayerTimeLl.MIDNIGHT.prayerName.setText("Mid night")
-        binding.prayerTimeLl. THIRDNIGHT.prayerName.setText("Third night(m)")
+        binding.prayerTimeLl.THIRDNIGHT.prayerName.setText("Third night(m)")
         binding.prayerTimeLl.THIRDNIGHTISHA.prayerName.setText("Third night(i)")
         binding.prayerTimeLl.MIDNIGHT.prayerTime.setText(SimpleDateFormat(timeFormat, Locale.ENGLISH).format(Date(prayerTimes.getPrayTime(array[0]).time.plus(prayerTimesYest.getPrayTime(array[4]).time).div(2))).ltrEmbed())
         binding.prayerTimeLl.THIRDNIGHT.prayerTime.setText(
@@ -323,6 +335,8 @@ class MainActivity : BaseActivity() {
 
 
     }
+
+
 
 
 }
