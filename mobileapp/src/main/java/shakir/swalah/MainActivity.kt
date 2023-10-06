@@ -142,8 +142,29 @@ class MainActivity : BaseActivity() {
                 sp.getDouble("v2_longitude", 0.0),
                 sp.getString("v2_locality", ""),
             )
+
+            try {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                    if (ContextCompat.checkSelfPermission(this,
+                            Manifest.permission.POST_NOTIFICATIONS
+                        ) != PackageManager.PERMISSION_GRANTED
+                    ) {
+                        requestPermissions(arrayOf(Manifest.permission.POST_NOTIFICATIONS), 16)
+                    }else{
+                        ask_optimization_condetion_2_notification = true
+                        optimization()
+                    }
+                }else{
+                    ask_optimization_condetion_2_notification = true
+                    optimization()
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+
+            ask_optimization_condetion_1_location = true
             optimization()
-            notification()
+
         } else {
             startActivity(Intent(this, LocationSelectorAvtivity::class.java).apply {
                 putExtra("comeBack", true)
@@ -151,6 +172,13 @@ class MainActivity : BaseActivity() {
             finish()
         }
 
+
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        ask_optimization_condetion_2_notification = true
+        optimization()
 
     }
 
@@ -163,10 +191,6 @@ class MainActivity : BaseActivity() {
                     crashlytics.setCustomKeys {
                         key("LanguageTags", ConfigurationCompat.getLocales(getResources().getConfiguration()).toLanguageTags())
                     }
-
-                    notification()
-
-
 
 
                 } catch (e: Exception) {
@@ -303,40 +327,42 @@ class MainActivity : BaseActivity() {
 
 
     var optiDialog: AlertDialog? = null
+    var ask_optimization_condetion_1_location = false
+    var ask_optimization_condetion_2_notification = false
     fun optimization() {
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            val powerManager = getSystemService(Context.POWER_SERVICE) as PowerManager
-            if (!powerManager.isIgnoringBatteryOptimizations(BuildConfig.APPLICATION_ID)) {
-                if (sp.getBoolean("stopOptimizeBatteryIgnored", false) != true) {
-                    if (optiDialog == null)
-                        optiDialog = AlertDialog.Builder(this/*, R.style.MyAlertDialogTheme*/)
-                            .setTitle("Warning")
-                            .setMessage("Battery optimization mode is enabled. It can interrupt Adhan notifications and alarms. Please Allow \"Stop optimising Battery Usage\"")
-                            .setPositiveButton("OK") { dialog, which ->
-                                dialog.dismiss()
-                                startActivity(with(Intent()) {
-                                    action = ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS
-                                    setData(Uri.parse("package:${BuildConfig.APPLICATION_ID}"))
-                                })
+        if (ask_optimization_condetion_1_location && ask_optimization_condetion_2_notification) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                val powerManager = getSystemService(Context.POWER_SERVICE) as PowerManager
+                if (!powerManager.isIgnoringBatteryOptimizations(BuildConfig.APPLICATION_ID)) {
+                    if (sp.getBoolean("stopOptimizeBatteryIgnored", false) != true) {
+                        if (optiDialog == null)
+                            optiDialog = AlertDialog.Builder(this/*, R.style.MyAlertDialogTheme*/)
+                                .setTitle("Warning")
+                                .setMessage("Battery optimization mode is enabled. It can interrupt Adhan notifications and alarms. Please Allow \"Stop optimising Battery Usage\"")
+                                .setPositiveButton("OK") { dialog, which ->
+                                    dialog.dismiss()
+                                    startActivity(with(Intent()) {
+                                        action = ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS
+                                        setData(Uri.parse("package:${BuildConfig.APPLICATION_ID}"))
+                                    })
 
-                            }
-                            .setNegativeButton("Ignore") { dialog, which ->
-                                dialog.dismiss()
-                                sp.edit { putBoolean("stopOptimizeBatteryIgnored", true) }
-                            }
-                            .create()
-                    optiDialog?.show()
+                                }
+                                .setNegativeButton("Ignore") { dialog, which ->
+                                    dialog.dismiss()
+                                    sp.edit { putBoolean("stopOptimizeBatteryIgnored", true) }
+                                }
+                                .create()
+                        optiDialog?.show()
+                    }
+
+
                 }
-
-
             }
         }
 
 
     }
-
-
 
 
 }

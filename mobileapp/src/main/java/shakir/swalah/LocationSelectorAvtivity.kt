@@ -78,21 +78,33 @@ class LocationSelectorAvtivity : BaseActivity() {
 
 
     fun notifyRV() {
-        val key = binding.editText.text.toString()
-        if (key.isBlank() && locationLastForDistanceCalculation != null) {
-            adapter.arrayList.clear()
-            adapter.arrayList.addAll(arrayList.sortedBy {
-                locationLastForDistanceCalculation!!.distanceTo(Location("").apply { latitude = it.latitude; longitude = it.longitude }).absoluteValue
-            })
-            adapter.notifyDataSetChanged()
-            binding. clear.isVisible = false
-        } else {
-            adapter.arrayList.clear()
-            adapter.arrayList.addAll(arrayList.filter { it.name.startsWith(key, ignoreCase = true) }.plus(
-                arrayList.filter { it.name.contains(key, ignoreCase = true) }
-            ).distinct())
-            adapter.notifyDataSetChanged()
-            binding. clear.isVisible = true
+        println("LocationSelectorAvtivity : notifyRV() called locationLastForDistanceCalculation ${locationLastForDistanceCalculation}")
+        Throwable().printStackTrace()
+        try {
+            runOnUiThread {
+                try {
+                    val key = binding.editText.text.toString()
+                    if (key.isBlank() && locationLastForDistanceCalculation != null) {
+                        adapter.arrayList.clear()
+                        adapter.arrayList.addAll(arrayList.sortedBy {
+                            locationLastForDistanceCalculation!!.distanceTo(Location("").apply { latitude = it.latitude; longitude = it.longitude }).absoluteValue
+                        })
+                        adapter.notifyDataSetChanged()
+                        binding. clear.isVisible = false
+                    } else {
+                        adapter.arrayList.clear()
+                        adapter.arrayList.addAll(arrayList.filter { it.name.startsWith(key, ignoreCase = true) }.plus(
+                            arrayList.filter { it.name.contains(key, ignoreCase = true) }
+                        ).distinct())
+                        adapter.notifyDataSetChanged()
+                        binding. clear.isVisible = true
+                    }
+                } catch (e: Exception) {
+                  e.printStackTrace()
+                }
+            }
+        } catch (e: Exception) {
+          e.printStackTrace()
         }
     }
 
@@ -245,10 +257,11 @@ class LocationSelectorAvtivity : BaseActivity() {
                                         .commit()
                                     onBackPressed()
                                 }
+                                locationLastForDistanceCalculation = location
                                 runOnUiThread {
                                     notifyRV()
                                 }
-                                locationLastForDistanceCalculation = location
+
                             } catch (e: Exception) {
                                 e.printStackTrace()
                             }

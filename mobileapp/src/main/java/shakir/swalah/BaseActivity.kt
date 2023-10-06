@@ -105,21 +105,7 @@ open class BaseActivity : AppCompatActivity() {
 
 
 
-    fun notification() {
-        try {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                if (ContextCompat.checkSelfPermission(
-                        this,
-                        Manifest.permission.POST_NOTIFICATIONS
-                    ) != PackageManager.PERMISSION_GRANTED
-                ) {
-                    requestPermissions(arrayOf(Manifest.permission.POST_NOTIFICATIONS), 16)
-                }
-            }
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
-    }
+
 
 
 
