@@ -2,7 +2,7 @@ apply plugin: 'com.android.application'
 
 apply plugin: 'kotlin-android'
 
-apply plugin: 'kotlin-android-extensions'
+//apply plugin: 'kotlin-android-extensions'
 
 apply plugin: 'com.google.firebase.crashlytics'
 
@@ -10,6 +10,18 @@ apply plugin: 'kotlin-kapt'
 
 
 android {
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+
+    kotlinOptions {
+        jvmTarget = "17"
+    }
+
+
+
 
     buildFeatures {
         viewBinding true
@@ -35,14 +47,14 @@ android {
 
 
     }
-    compileSdkVersion 33
+    compileSdkVersion 34
     defaultConfig {
         multiDexEnabled true
         applicationId "shakir.swalah"
         minSdkVersion 19
-        targetSdkVersion 33
-        versionCode 102
-        versionName "30.0.2"
+        targetSdkVersion 34
+        versionCode 104
+        versionName "30.0.3"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         signingConfig signingConfigs.rel_config
         buildConfigField "boolean", "isRunFromStudio", (gradle.startParameter.projectProperties.get("android.injected.build.api") != null).toString()
@@ -58,24 +70,25 @@ android {
             signingConfig signingConfigs.debug
         }
     }
+    namespace 'shakir.swalah'
 
 
 }
 
 dependencies {
 
-    implementation 'androidx.core:core-ktx:1.8.0'
-    implementation 'androidx.appcompat:appcompat:1.5.0'
-    implementation 'com.google.android.material:material:1.6.1'
+    implementation 'androidx.core:core-ktx:1.12.0'
+    implementation 'androidx.appcompat:appcompat:1.6.1'
+    implementation 'com.google.android.material:material:1.11.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
 
 
-    implementation 'com.intuit.sdp:sdp-android:1.0.6'
+    implementation 'com.intuit.sdp:sdp-android:1.1.0'
     implementation 'com.github.ahmedeltaher:Azan:2.1'
 
 
 
-    implementation 'com.google.android.gms:play-services-location:20.0.0'
+    implementation 'com.google.android.gms:play-services-location:21.1.0'
 
 
     implementation "androidx.viewpager2:viewpager2:1.0.0"

@@ -110,6 +110,10 @@ object Util {
                            val uniqueIndexForParayer = getNextUniqueIndex(context)
 
 
+//                           if (BuildConfig.isRunFromStudio)
+//                               milli=System.currentTimeMillis()+TimeUnit.MINUTES.toMillis(1)
+
+
                            val pendingIntent =
                                createPendingIntent(context, milli, arabicNames, uniqueIndexForParayer)
 
@@ -196,7 +200,7 @@ object Util {
         milli: Long,
         arabicNames: String?,
         uniqueIndexForParayer: Int
-    ): PendingIntent? {
+    ): PendingIntent {
         Log.d(
             "TESTSTSTST",
             "createPendingIntent() called with: context = [" + context + "], milli = [" + milli + "], arabicNames = [" + arabicNames + "], uniqueIndexForParayer = [" + uniqueIndexForParayer + "]"

@@ -2,29 +2,19 @@ package shakir.swalah
 
 /*import androidx.recyclerview.widget.RecyclerView*/
 
+
 import android.Manifest
-import android.annotation.SuppressLint
 import android.content.ComponentName
 import android.content.Context
-import android.content.DialogInterface
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.location.Location
-import android.media.AudioManager
-import android.media.ToneGenerator
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.os.Handler
 import android.os.PowerManager
 import android.provider.Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS
-import android.text.format.DateFormat
-import android.util.Log
-import android.view.View
-import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
-import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.edit
 import androidx.core.os.ConfigurationCompat
@@ -32,18 +22,17 @@ import com.azan.TimeCalculator
 import com.azan.types.AngleCalculationType
 import com.azan.types.PrayersType
 import com.github.msarhan.ummalqura.calendar.UmmalquraCalendar
-import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.google.firebase.crashlytics.ktx.crashlytics
 import com.google.firebase.crashlytics.ktx.setCustomKeys
 import com.google.firebase.ktx.Firebase
-
-
 import shakir.swalah.databinding.ActivityMainBinding
 import shakir.swalah.models.Cord
 import java.text.NumberFormat
 import java.text.SimpleDateFormat
-import java.util.*
-import java.util.concurrent.TimeUnit
+import java.util.Calendar
+import java.util.Date
+import java.util.GregorianCalendar
+import java.util.Locale
 
 
 val INVALID_CORDINATE = Double.MAX_VALUE
@@ -126,6 +115,7 @@ class MainActivity : BaseActivity() {
         }
 
 
+
     }
 
 
@@ -145,16 +135,17 @@ class MainActivity : BaseActivity() {
 
             try {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                    if (ContextCompat.checkSelfPermission(this,
+                    if (ContextCompat.checkSelfPermission(
+                            this,
                             Manifest.permission.POST_NOTIFICATIONS
                         ) != PackageManager.PERMISSION_GRANTED
                     ) {
                         requestPermissions(arrayOf(Manifest.permission.POST_NOTIFICATIONS), 16)
-                    }else{
+                    } else {
                         ask_optimization_condetion_2_notification = true
                         optimization()
                     }
-                }else{
+                } else {
                     ask_optimization_condetion_2_notification = true
                     optimization()
                 }
