@@ -11,7 +11,7 @@
     android:background="@drawable/bg_3"
     android:fitsSystemWindows="false"
     android:orientation="vertical"
-    android:paddingTop="@dimen/_30sdp"
+    android:paddingTop="@dimen/paddingTopPortAndLand"
     tools:context=".MainActivity">
 
 

@@ -53,8 +53,8 @@ android {
         applicationId "shakir.swalah"
         minSdkVersion 19
         targetSdkVersion 34
-        versionCode 104
-        versionName "30.0.3"
+        versionCode 106
+        versionName "2014.4.16"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         signingConfig signingConfigs.rel_config
         buildConfigField "boolean", "isRunFromStudio", (gradle.startParameter.projectProperties.get("android.injected.build.api") != null).toString()
