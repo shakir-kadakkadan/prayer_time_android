@@ -11,6 +11,7 @@ import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.os.CountDownTimer
 import android.os.PowerManager
 import android.provider.Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS
 import android.widget.Toast
@@ -119,8 +120,52 @@ class MainActivity : BaseActivity() {
     }
 
 
+    fun millisecondsToHMS(milliseconds: Long): String {
+        val totalSeconds = milliseconds / 1000
+        val hours = totalSeconds / 3600
+        val minutes = (totalSeconds % 3600) / 60
+        val seconds = totalSeconds % 60
+
+        return String.format("%02d:%02d:%02d", hours, minutes, seconds)
+    }
+
+
+    fun updateCountdownTextView(){
+        val sharedPreferences = Util.getMySharedPreference(this)
+        val lastMilli=sharedPreferences.getLong("lastMilli",0L)
+        val lastName=sharedPreferences.getString("lastName","")
+        binding.prayerTimeLl.countdown?.countdownTV?.setText(millisecondsToHMS(lastMilli-System.currentTimeMillis()))
+        binding.prayerTimeLl.countdown?.countdownTVName?.setText(lastName)
+
+    }
+
+    var lastUpdatedMinuteSinceEpoch=0L
+    val countDownTimer: CountDownTimer = object : CountDownTimer(Long.MAX_VALUE, 1000) {
+        override fun onTick(millisUntilFinished: Long) {
+            var epochMinute=System.currentTimeMillis()/(1000 * 60)
+            if (epochMinute!=lastUpdatedMinuteSinceEpoch){
+
+            }
+            lastUpdatedMinuteSinceEpoch=epochMinute
+            updateCountdownTextView()
+
+        }
+
+        override fun onFinish() {
+
+        }
+    }
+
+
+    override fun onPause() {
+        super.onPause()
+        countDownTimer.cancel()
+
+    }
+
     override fun onResume() {
         super.onResume()
+        countDownTimer.start()
 
 
 
@@ -162,7 +207,7 @@ class MainActivity : BaseActivity() {
             })
             finish()
         }
-
+        updateCountdownTextView()
 
     }
 

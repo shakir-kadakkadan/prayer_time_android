@@ -108,5 +108,9 @@
 
     </LinearLayout>
 
+    <include
+        android:id="@+id/countdown"
+        layout="@layout/countdown"></include>
+
 
 </LinearLayout>

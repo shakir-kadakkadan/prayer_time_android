@@ -12,13 +12,15 @@ import com.azan.TimeCalculator
 import com.azan.types.AngleCalculationType
 import com.azan.types.PrayersType
 import java.text.SimpleDateFormat
-import java.util.*
+import java.util.Calendar
+import java.util.Date
+import java.util.GregorianCalendar
+import java.util.Locale
 import java.util.concurrent.TimeUnit
-import kotlin.collections.ArrayList
 
 object Util {
 
-    const val iqamaSettingsSaved_PREF_KEY="iqamaSettingsSaved3"
+    const val iqamaSettingsSaved_PREF_KEY = "iqamaSettingsSaved3"
 
     fun getMySharedPreference(context: Context): SharedPreferences {
         return context.getSharedPreferences(BuildConfig.APPLICATION_ID, Context.MODE_PRIVATE)
@@ -66,95 +68,96 @@ object Util {
 
 
             array.forEachIndexed { index, prayersType ->
-               arrayOf(false,true).forEach {_isIqama->
-                   val isIqama=_isIqama&&index!=1
+                arrayOf(false, true).forEach { _isIqama ->
+                    val isIqama = _isIqama && index != 1
 
-                   if ((isIqama&&Util.isiqamaAlarmOn)||(!isIqama&&Util.isadhanAlarmOn) ) {
-                       var milli = prayerTimes.getPrayTime(array[index]).time
-                       if (isIqama) {
-                           val iqsettings = Util.getIqamaSettings().get(if (index == 0) 0 else index - 1)
-                           if (iqsettings.isAfter) {
-                               milli = milli + (TimeUnit.MINUTES.toMillis(iqsettings.after.toLong()))
-                           } else {
-                               milli = iqsettings.fixed
-                           }
+                    if ((isIqama && Util.isiqamaAlarmOn) || (!isIqama && Util.isadhanAlarmOn)) {
+                        var milli = prayerTimes.getPrayTime(array[index]).time
+                        if (isIqama) {
+                            val iqsettings = Util.getIqamaSettings().get(if (index == 0) 0 else index - 1)
+                            if (iqsettings.isAfter) {
+                                milli = milli + (TimeUnit.MINUTES.toMillis(iqsettings.after.toLong()))
+                            } else {
+                                milli = iqsettings.fixed
+                            }
 
-                       }
-                       if (milli >= System.currentTimeMillis()) {
+                        }
+                        if (milli >= System.currentTimeMillis()) {
 
-                           var arabicNames = AppApplication.getArabicNames(array[index].name)
-                           if (isIqama) {
-                               arabicNames =arabicNames+ " " + "(الإقامة)"
-                           }
-
-
-                           val lastMilli = sharedPreferences
-                               .getLong("lastMilli", 0)
-
-                           val lastName = sharedPreferences
-                               .getString("lastName", null)
-
-                           if (lastMilli == milli && lastName == arabicNames) {
-                               Log.d("dsfghsdfsh", "set return@setNextAlarm")
-                               return@setNextAlarm
-                           }
+                            var arabicNames = AppApplication.getArabicNames(array[index].name)
+                            if (isIqama) {
+                                arabicNames = arabicNames + " " + "(الإقامة)"
+                            }
 
 
-                           SimpleDateFormat("HH:mm", Locale.ENGLISH).format(Date(milli))
-                           val alarmManager =
-                               context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+                            val lastMilli = sharedPreferences
+                                .getLong("lastMilli", 0)
 
-                           // Alarm type
-                           val alarmType = AlarmManager.RTC_WAKEUP
+                            val lastName = sharedPreferences
+                                .getString("lastName", null)
 
-                           val uniqueIndexForParayer = getNextUniqueIndex(context)
+                            if (lastMilli == milli && lastName == arabicNames) {
+                                Log.d("dsfghsdfsh", "set return@setNextAlarm")
+                                return@setNextAlarm
+                            }
+
+
+                            SimpleDateFormat("HH:mm", Locale.ENGLISH).format(Date(milli))
+                            val alarmManager =
+                                context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+
+                            // Alarm type
+                            val alarmType = AlarmManager.RTC_WAKEUP
+
+                            val uniqueIndexForParayer = 4444
 
 
 //                           if (BuildConfig.isRunFromStudio)
 //                               milli=System.currentTimeMillis()+TimeUnit.MINUTES.toMillis(1)
 
 
-                           val pendingIntent =
-                               createPendingIntent(context, milli, arabicNames, uniqueIndexForParayer)
+                            val pendingIntent =
+                                createPendingIntent(context, milli, arabicNames, uniqueIndexForParayer)
 
 
-                           if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                               alarmManager.setExactAndAllowWhileIdle(
-                                   alarmType,
-                                   milli,
-                                   pendingIntent
-                               )
-                           } else {
-                               if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-                                   alarmManager.setExact(alarmType, milli, pendingIntent)
-                               } else {
-                                   alarmManager.set(alarmType, milli, pendingIntent)
-                               }
-                           }
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                                alarmManager.setExactAndAllowWhileIdle(
+                                    alarmType,
+                                    milli,
+                                    pendingIntent
+                                )
+                            } else {
+                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                                    alarmManager.setExact(alarmType, milli, pendingIntent)
+                                } else {
+                                    alarmManager.set(alarmType, milli, pendingIntent)
+                                }
+                            }
 
 
 
-                           println("settttttt milli $milli arabicNames $arabicNames uniqueIndexForParayer $uniqueIndexForParayer $isIqama")
+                            println("settttttt milli $milli arabicNames $arabicNames uniqueIndexForParayer $uniqueIndexForParayer $isIqama")
 
-                           sharedPreferences
-                               .edit()
-                               .putLong("lastMilli", milli)
-                               .putString("lastName", arabicNames)
-                               .putInt("lastUniqueIndexForPrayer", uniqueIndexForParayer)
-                               .apply()
+                            sharedPreferences
+                                .edit()
+                                .putLong("lastMilli", milli)
+                                .putString("lastName", arabicNames)
+                                .putInt("lastUniqueIndexForPrayer", uniqueIndexForParayer)
+                                .apply()
 
 
-                           return@setNextAlarm
-                       }
-                   }
-               }
+                            return@setNextAlarm
+                        }
+                    }
+                }
 
             }
 
             //if execution reached here . it means
             //no alarm set because no more prayer today
             //set alarm for next date
-            setNextAlarm(context, tommorrow = true)
+            if (!tommorrow)
+                setNextAlarm(context, tommorrow = true)
 
         } catch (e: Exception) {
             e.report()
@@ -244,9 +247,7 @@ object Util {
         }
 
 
-
-
-    var isadhanAlarmOn : Boolean
+    var isadhanAlarmOn: Boolean
         get() {
             val sharedPreferences = getMySharedPreference(AppApplication.instance)
             return sharedPreferences.getString("isadhanAlarmOn", "true").toBoolean()
@@ -257,7 +258,7 @@ object Util {
         }
 
 
-     var isiqamaAlarmOn : Boolean
+    var isiqamaAlarmOn: Boolean
         get() {
             val sharedPreferences = getMySharedPreference(AppApplication.instance)
             return sharedPreferences.getString("isiqamaAlarmOn", "false").toBoolean()
@@ -266,12 +267,6 @@ object Util {
             val sharedPreferences = getMySharedPreference(AppApplication.instance)
             sharedPreferences.edit().putString("isiqamaAlarmOn", value.toString()).commit()
         }
-
-
-
-
-
-
 
 
     fun timeFormat(): String {
@@ -284,14 +279,14 @@ object Util {
     private var iqamaSettingsSavedString: String?
         get() {
             val sharedPreferences = getMySharedPreference(AppApplication.instance)
-            val iss= sharedPreferences.getString(iqamaSettingsSaved_PREF_KEY, null)
+            val iss = sharedPreferences.getString(iqamaSettingsSaved_PREF_KEY, null)
             println("issississ Read\n$iss")
             return iss
         }
         set(value) {
             val sharedPreferences = getMySharedPreference(AppApplication.instance)
             sharedPreferences.edit().putString(iqamaSettingsSaved_PREF_KEY, value).commit()
-            val iss= sharedPreferences.getString(iqamaSettingsSaved_PREF_KEY, null)
+            val iss = sharedPreferences.getString(iqamaSettingsSaved_PREF_KEY, null)
             println("issississ Write\n$iss")
 
         }
@@ -306,7 +301,7 @@ object Util {
                 val ls = Util.iqamaSettingsSavedString!!.split("\n")
                 for (i in 0..4) {
                     val ws = ls[i].split(",")
-                    arrayLis.add(Iqama(ws[0].toInt(), ws[1].toBoolean(), ws[2].toInt(), ws[3].toLongOrNull()?:0L))
+                    arrayLis.add(Iqama(ws[0].toInt(), ws[1].toBoolean(), ws[2].toInt(), ws[3].toLongOrNull() ?: 0L))
                 }
 
                 return arrayLis
@@ -339,8 +334,6 @@ object Util {
         }
 
         iqamaSettingsSavedString = s
-
-
 
 
     }

@@ -38,19 +38,18 @@
         layout="@layout/pt_night"></include>
 
 
-     <include
+    <include
         android:id="@+id/THIRDNIGHT"
         layout="@layout/pt_night"></include>
 
 
-
- <include
+    <include
         android:id="@+id/THIRDNIGHT_ISHA"
         layout="@layout/pt_night"></include>
 
-
-
-
+    <include
+        android:id="@+id/countdown"
+        layout="@layout/countdown"></include>
 
 
 </LinearLayout>
