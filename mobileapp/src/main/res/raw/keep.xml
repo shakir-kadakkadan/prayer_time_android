@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools"
     tools:shrinkMode="strict"
-    tools:keep="@layout/"
+    tools:keep="@layout/,@raw/complete_quest_requirement,@raw/message_tone,@raw/mixkit_access_allowed_tone_2869"
 
     />

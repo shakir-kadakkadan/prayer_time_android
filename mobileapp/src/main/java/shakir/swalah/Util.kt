@@ -138,10 +138,23 @@ object Util {
 
                             println("settttttt milli $milli arabicNames $arabicNames uniqueIndexForParayer $uniqueIndexForParayer $isIqama")
 
+
+
+                            var lastMilli_prev=sharedPreferences.getLong("lastMilli_copy",0L)
+                            var lastName_prev=sharedPreferences.getString("lastName_copy","")
+
                             sharedPreferences
                                 .edit()
                                 .putLong("lastMilli", milli)
+                                .putLong("lastMilli_copy", milli)
                                 .putString("lastName", arabicNames)
+                                .putString("lastName_copy", arabicNames)
+                                .apply {
+                                    if (lastMilli_prev!=0L&&lastMilli_prev!=milli){
+                                        putLong("lastMilli_prev", lastMilli_prev)
+                                        putString("lastName_prev", lastName_prev)
+                                    }
+                                }
                                 .putInt("lastUniqueIndexForPrayer", uniqueIndexForParayer)
                                 .apply()
 

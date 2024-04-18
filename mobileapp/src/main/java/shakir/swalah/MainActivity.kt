@@ -34,6 +34,8 @@ import java.util.Calendar
 import java.util.Date
 import java.util.GregorianCalendar
 import java.util.Locale
+import java.util.concurrent.TimeUnit
+import kotlin.math.absoluteValue
 
 
 val INVALID_CORDINATE = Double.MAX_VALUE
@@ -116,37 +118,47 @@ class MainActivity : BaseActivity() {
         }
 
 
-
     }
 
 
     fun millisecondsToHMS(milliseconds: Long): String {
-        val totalSeconds = milliseconds / 1000
+        val totalSeconds = milliseconds.absoluteValue / 1000
         val hours = totalSeconds / 3600
         val minutes = (totalSeconds % 3600) / 60
         val seconds = totalSeconds % 60
 
-        return String.format("%02d:%02d:%02d", hours, minutes, seconds)
+        return ((if (milliseconds<0) "-" else "") +String.format("%02d:%02d:%02d", hours, minutes, seconds)).ltrEmbed()
     }
 
 
-    fun updateCountdownTextView(){
+    fun updateCountdownTextView() {
         val sharedPreferences = Util.getMySharedPreference(this)
-        val lastMilli=sharedPreferences.getLong("lastMilli",0L)
-        val lastName=sharedPreferences.getString("lastName","")
-        binding.prayerTimeLl.countdown?.countdownTV?.setText(millisecondsToHMS(lastMilli-System.currentTimeMillis()))
-        binding.prayerTimeLl.countdown?.countdownTVName?.setText(lastName)
+        val lastMilli = sharedPreferences.getLong("lastMilli", 0L)
+        val lastMilli_prev = sharedPreferences.getLong("lastMilli_prev", 0L)
+        val lastName = sharedPreferences.getString("lastName", "")
+        val lastName_prev = sharedPreferences.getString("lastName_prev", "")
+        if (lastMilli_prev != 0L && System.currentTimeMillis() - lastMilli_prev <= TimeUnit.MINUTES.toMillis(10) &&
+            TimeUnit.MILLISECONDS.toMinutes(lastMilli - System.currentTimeMillis()) > 30
+
+        ) {
+            binding.prayerTimeLl.countdown?.countdownTV?.setText(millisecondsToHMS(lastMilli_prev - System.currentTimeMillis()))
+            binding.prayerTimeLl.countdown?.countdownTVName?.setText(lastName_prev)
+        } else {
+            binding.prayerTimeLl.countdown?.countdownTV?.setText(millisecondsToHMS(lastMilli - System.currentTimeMillis()))
+            binding.prayerTimeLl.countdown?.countdownTVName?.setText(lastName)
+        }
+
 
     }
 
-    var lastUpdatedMinuteSinceEpoch=0L
+    var lastUpdatedMinuteSinceEpoch = 0L
     val countDownTimer: CountDownTimer = object : CountDownTimer(Long.MAX_VALUE, 1000) {
         override fun onTick(millisUntilFinished: Long) {
-            var epochMinute=System.currentTimeMillis()/(1000 * 60)
-            if (epochMinute!=lastUpdatedMinuteSinceEpoch){
+            var epochMinute = System.currentTimeMillis() / (1000 * 60)
+            if (epochMinute != lastUpdatedMinuteSinceEpoch) {
 
             }
-            lastUpdatedMinuteSinceEpoch=epochMinute
+            lastUpdatedMinuteSinceEpoch = epochMinute
             updateCountdownTextView()
 
         }
