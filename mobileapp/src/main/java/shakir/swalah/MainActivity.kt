@@ -28,7 +28,6 @@ import com.github.msarhan.ummalqura.calendar.UmmalquraCalendar
 import com.google.firebase.crashlytics.ktx.crashlytics
 import com.google.firebase.crashlytics.ktx.setCustomKeys
 import com.google.firebase.ktx.Firebase
-import shakir.swalah.Util.isadhanAlarmOn
 import shakir.swalah.Util.isiqamaAlarmOn
 import shakir.swalah.databinding.ActivityMainBinding
 import shakir.swalah.models.Cord
@@ -163,7 +162,7 @@ class MainActivity : BaseActivity() {
                 onMinuteUpdate()
                 Handler().postDelayed({
                     onMinuteUpdate()
-                },1000)
+                }, 1000)
             }
             lastUpdatedMinuteSinceEpoch = epochMinute
             onSecondUpdate()
@@ -175,7 +174,7 @@ class MainActivity : BaseActivity() {
         }
     }
 
-    fun onMinuteUpdate() {
+    fun onMinuteUpdate(isOnResume: Boolean = false) {
         try {
             if (sp.getBoolean("v2_set", false) == true) {
                 onGetCordinates(
@@ -184,41 +183,45 @@ class MainActivity : BaseActivity() {
                     sp.getString("v2_locality", ""),
                 )
 
-                try {
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                        if (ContextCompat.checkSelfPermission(
-                                this,
-                                Manifest.permission.POST_NOTIFICATIONS
-                            ) != PackageManager.PERMISSION_GRANTED
-                        ) {
-                            requestPermissions(arrayOf(Manifest.permission.POST_NOTIFICATIONS), 16)
+                if (isOnResume) {
+                    try {
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                            if (ContextCompat.checkSelfPermission(
+                                    this,
+                                    Manifest.permission.POST_NOTIFICATIONS
+                                ) != PackageManager.PERMISSION_GRANTED
+                            ) {
+                                requestPermissions(arrayOf(Manifest.permission.POST_NOTIFICATIONS), 16)
+                            } else {
+                                ask_optimization_condetion_2_notification = true
+                                optimization()
+                            }
                         } else {
                             ask_optimization_condetion_2_notification = true
                             optimization()
                         }
-                    } else {
-                        ask_optimization_condetion_2_notification = true
-                        optimization()
+                    } catch (e: Exception) {
+                        e.printStackTrace()
                     }
-                } catch (e: Exception) {
-                    e.printStackTrace()
+
+                    ask_optimization_condetion_1_location = true
+                    optimization()
                 }
 
-                ask_optimization_condetion_1_location = true
-                optimization()
-
             } else {
-                startActivity(Intent(this, LocationSelectorAvtivity::class.java).apply {
-                    putExtra("comeBack", true)
-                })
-                finish()
+                if (isOnResume) {
+                    startActivity(Intent(this, LocationSelectorAvtivity::class.java).apply {
+                        putExtra("comeBack", true)
+                    })
+                    finish()
+                }
             }
 
 
             currentIqamaMilli = null
             countdownDestinationMilii = null
             countdownColor = Color.WHITE
-            if (currentPrayTime != null &&currentPrayTime!!.second!=1 && isiqamaAlarmOn) {
+            if (currentPrayTime != null && currentPrayTime!!.second != 1 && isiqamaAlarmOn) {
                 val iqsettings = Util.getIqamaSettings().get(if (currentPrayTime!!.second == 0) 0 else currentPrayTime!!.second - 1)
                 if (iqsettings.isAfter) {
                     currentIqamaMilli = currentPrayTime!!.first.time + (TimeUnit.MINUTES.toMillis(iqsettings.after.toLong()))
@@ -236,7 +239,7 @@ class MainActivity : BaseActivity() {
                 PrayersType.ISHA
             )
 
-            val redMinuteAdhan=if (currentPrayTime!!.second==1) 10L else 20L
+            val redMinuteAdhan = if (currentPrayTime!!.second == 1) 10L else 20L
 
             if (currentIqamaMilli != null && System.currentTimeMillis() > currentIqamaMilli!! && System.currentTimeMillis() <= (currentIqamaMilli!! + TimeUnit.MINUTES.toMillis(10))) {
                 countdownColor = Color.RED
@@ -259,7 +262,7 @@ class MainActivity : BaseActivity() {
 
             onSecondUpdate()
         } catch (e: Exception) {
-         e.report()
+            e.report()
         }
     }
 
@@ -278,7 +281,7 @@ class MainActivity : BaseActivity() {
                 binding.prayerTimeLl.countdown?.countdownTVName?.setText("")
             }
         } catch (e: Exception) {
-           e.report()
+            e.report()
         }
     }
 
@@ -292,7 +295,7 @@ class MainActivity : BaseActivity() {
     override fun onResume() {
         super.onResume()
         countDownTimer.start()
-        onMinuteUpdate()
+        onMinuteUpdate(isOnResume = true)
 
     }
 
@@ -377,17 +380,18 @@ class MainActivity : BaseActivity() {
         nextPrayTime = null
 
 
-        (0..5).map { prayerTimes.getPrayTime(array[it]) to it }
-            .plus(
-                (0..5).map { prayerTimesTomorrow.getPrayTime(array[it]) to it }
-            ).forEach {
-                if (nextPrayTime == null && it.first.after(Date())) {
-                    nextPrayTime = it
-                }
-                if (it.first.before(Date())) {
-                    currentPrayTime = it
-                }
+        arrayListOf(
+            (0..5).map { prayerTimesYest.getPrayTime(array[it]) to it },
+            (0..5).map { prayerTimes.getPrayTime(array[it]) to it },
+            (0..5).map { prayerTimesTomorrow.getPrayTime(array[it]) to it },
+        ).flatMap { it }.forEach {
+            if (nextPrayTime == null && it.first.after(Date())) {
+                nextPrayTime = it
             }
+            if (it.first.before(Date())) {
+                currentPrayTime = it
+            }
+        }
 
 
         val timeFormat = Util.timeFormat()
