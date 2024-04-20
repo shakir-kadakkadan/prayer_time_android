@@ -8,10 +8,12 @@ import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.Color
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.CountDownTimer
+import android.os.Handler
 import android.os.PowerManager
 import android.provider.Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS
 import android.widget.Toast
@@ -26,6 +28,8 @@ import com.github.msarhan.ummalqura.calendar.UmmalquraCalendar
 import com.google.firebase.crashlytics.ktx.crashlytics
 import com.google.firebase.crashlytics.ktx.setCustomKeys
 import com.google.firebase.ktx.Firebase
+import shakir.swalah.Util.isadhanAlarmOn
+import shakir.swalah.Util.isiqamaAlarmOn
 import shakir.swalah.databinding.ActivityMainBinding
 import shakir.swalah.models.Cord
 import java.text.NumberFormat
@@ -127,44 +131,154 @@ class MainActivity : BaseActivity() {
         val minutes = (totalSeconds % 3600) / 60
         val seconds = totalSeconds % 60
 
-        return ((if (milliseconds<0) "-" else "") +String.format("%02d:%02d:%02d", hours, minutes, seconds)).ltrEmbed()
+        return ((if (milliseconds < 0) "" else "") + String.format("%02d:%02d:%02d", hours, minutes, seconds)).ltrEmbed()
     }
 
 
-    fun updateCountdownTextView() {
-        val sharedPreferences = Util.getMySharedPreference(this)
-        val lastMilli = sharedPreferences.getLong("lastMilli", 0L)
-        val lastMilli_prev = sharedPreferences.getLong("lastMilli_prev", 0L)
-        val lastName = sharedPreferences.getString("lastName", "")
-        val lastName_prev = sharedPreferences.getString("lastName_prev", "")
-        if (lastMilli_prev != 0L && System.currentTimeMillis() - lastMilli_prev <= TimeUnit.MINUTES.toMillis(10) &&
-            TimeUnit.MILLISECONDS.toMinutes(lastMilli - System.currentTimeMillis()) > 30
-
-        ) {
-            binding.prayerTimeLl.countdown?.countdownTV?.setText(millisecondsToHMS(lastMilli_prev - System.currentTimeMillis()))
-            binding.prayerTimeLl.countdown?.countdownTVName?.setText(lastName_prev)
-        } else {
-            binding.prayerTimeLl.countdown?.countdownTV?.setText(millisecondsToHMS(lastMilli - System.currentTimeMillis()))
-            binding.prayerTimeLl.countdown?.countdownTVName?.setText(lastName)
-        }
-
-
-    }
+//    fun updateCountdownTextView() {
+//        val sharedPreferences = Util.getMySharedPreference(this)
+//        val lastMilli = sharedPreferences.getLong("lastMilli", 0L)
+//        val lastMilli_prev = sharedPreferences.getLong("lastMilli_prev", 0L)
+//        val lastName = sharedPreferences.getString("lastName", "")
+//        val lastName_prev = sharedPreferences.getString("lastName_prev", "")
+//        if (lastMilli_prev != 0L && System.currentTimeMillis() - lastMilli_prev <= TimeUnit.MINUTES.toMillis(10) &&
+//            TimeUnit.MILLISECONDS.toMinutes(lastMilli - System.currentTimeMillis()) > 30
+//
+//        ) {
+//            binding.prayerTimeLl.countdown?.countdownTV?.setText(millisecondsToHMS(lastMilli_prev - System.currentTimeMillis()))
+//            binding.prayerTimeLl.countdown?.countdownTVName?.setText(lastName_prev)
+//        } else {
+//            binding.prayerTimeLl.countdown?.countdownTV?.setText(millisecondsToHMS(lastMilli - System.currentTimeMillis()))
+//            binding.prayerTimeLl.countdown?.countdownTVName?.setText(lastName)
+//        }
+//
+//
+//    }
 
     var lastUpdatedMinuteSinceEpoch = 0L
     val countDownTimer: CountDownTimer = object : CountDownTimer(Long.MAX_VALUE, 1000) {
         override fun onTick(millisUntilFinished: Long) {
             var epochMinute = System.currentTimeMillis() / (1000 * 60)
             if (epochMinute != lastUpdatedMinuteSinceEpoch) {
-
+                onMinuteUpdate()
+                Handler().postDelayed({
+                    onMinuteUpdate()
+                },1000)
             }
             lastUpdatedMinuteSinceEpoch = epochMinute
-            updateCountdownTextView()
+            onSecondUpdate()
 
         }
 
         override fun onFinish() {
 
+        }
+    }
+
+    fun onMinuteUpdate() {
+        try {
+            if (sp.getBoolean("v2_set", false) == true) {
+                onGetCordinates(
+                    sp.getDouble("v2_latitude", 0.0),
+                    sp.getDouble("v2_longitude", 0.0),
+                    sp.getString("v2_locality", ""),
+                )
+
+                try {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                        if (ContextCompat.checkSelfPermission(
+                                this,
+                                Manifest.permission.POST_NOTIFICATIONS
+                            ) != PackageManager.PERMISSION_GRANTED
+                        ) {
+                            requestPermissions(arrayOf(Manifest.permission.POST_NOTIFICATIONS), 16)
+                        } else {
+                            ask_optimization_condetion_2_notification = true
+                            optimization()
+                        }
+                    } else {
+                        ask_optimization_condetion_2_notification = true
+                        optimization()
+                    }
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
+
+                ask_optimization_condetion_1_location = true
+                optimization()
+
+            } else {
+                startActivity(Intent(this, LocationSelectorAvtivity::class.java).apply {
+                    putExtra("comeBack", true)
+                })
+                finish()
+            }
+
+
+            currentIqamaMilli = null
+            countdownDestinationMilii = null
+            countdownColor = Color.WHITE
+            if (currentPrayTime != null &&currentPrayTime!!.second!=1 && isiqamaAlarmOn) {
+                val iqsettings = Util.getIqamaSettings().get(if (currentPrayTime!!.second == 0) 0 else currentPrayTime!!.second - 1)
+                if (iqsettings.isAfter) {
+                    currentIqamaMilli = currentPrayTime!!.first.time + (TimeUnit.MINUTES.toMillis(iqsettings.after.toLong()))
+                } else {
+                    currentIqamaMilli = iqsettings.fixed
+                }
+            }
+
+            val array = arrayOf(
+                PrayersType.FAJR,
+                PrayersType.SUNRISE,
+                PrayersType.ZUHR,
+                PrayersType.ASR,
+                PrayersType.MAGHRIB,
+                PrayersType.ISHA
+            )
+
+            val redMinuteAdhan=if (currentPrayTime!!.second==1) 10L else 20L
+
+            if (currentIqamaMilli != null && System.currentTimeMillis() > currentIqamaMilli!! && System.currentTimeMillis() <= (currentIqamaMilli!! + TimeUnit.MINUTES.toMillis(10))) {
+                countdownColor = Color.RED
+                countdownDestinationMilii = currentIqamaMilli!!
+                countdownNameString = AppApplication.getArabicNames(array[currentPrayTime!!.second].name) + " (الإقامة) "
+            } else if (currentIqamaMilli != null && System.currentTimeMillis() <= currentIqamaMilli!!) {
+                countdownColor = Color.GREEN
+                countdownDestinationMilii = currentIqamaMilli
+                countdownNameString = AppApplication.getArabicNames(array[currentPrayTime!!.second].name) + " (الإقامة) "
+            } else if (currentPrayTime != null && System.currentTimeMillis() <= currentPrayTime!!.first.time + TimeUnit.MINUTES.toMillis(redMinuteAdhan)) {
+                countdownColor = Color.RED
+                countdownDestinationMilii = currentPrayTime!!.first.time
+                countdownNameString = AppApplication.getArabicNames(array[currentPrayTime!!.second].name)
+            } else {
+                countdownColor = Color.WHITE
+                countdownDestinationMilii = nextPrayTime!!.first.time
+                countdownNameString = AppApplication.getArabicNames(array[nextPrayTime!!.second].name)
+            }
+
+
+            onSecondUpdate()
+        } catch (e: Exception) {
+         e.report()
+        }
+    }
+
+    fun onSecondUpdate() {
+
+        try {//1713598080000 1713597628969
+
+
+            if (countdownDestinationMilii != null) {
+                binding.prayerTimeLl.countdown?.countdownTV?.setText(millisecondsToHMS((countdownDestinationMilii!! - System.currentTimeMillis())))
+                binding.prayerTimeLl.countdown?.countdownTVName?.setText(countdownNameString)
+                binding.prayerTimeLl.countdown?.countdownTV?.setTextColor(countdownColor)
+                binding.prayerTimeLl.countdown?.countdownTVName?.setTextColor(countdownColor)
+            } else {
+                binding.prayerTimeLl.countdown?.countdownTV?.setText("")
+                binding.prayerTimeLl.countdown?.countdownTVName?.setText("")
+            }
+        } catch (e: Exception) {
+           e.report()
         }
     }
 
@@ -178,48 +292,7 @@ class MainActivity : BaseActivity() {
     override fun onResume() {
         super.onResume()
         countDownTimer.start()
-
-
-
-
-
-        if (sp.getBoolean("v2_set", false) == true) {
-            onGetCordinates(
-                sp.getDouble("v2_latitude", 0.0),
-                sp.getDouble("v2_longitude", 0.0),
-                sp.getString("v2_locality", ""),
-            )
-
-            try {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                    if (ContextCompat.checkSelfPermission(
-                            this,
-                            Manifest.permission.POST_NOTIFICATIONS
-                        ) != PackageManager.PERMISSION_GRANTED
-                    ) {
-                        requestPermissions(arrayOf(Manifest.permission.POST_NOTIFICATIONS), 16)
-                    } else {
-                        ask_optimization_condetion_2_notification = true
-                        optimization()
-                    }
-                } else {
-                    ask_optimization_condetion_2_notification = true
-                    optimization()
-                }
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
-
-            ask_optimization_condetion_1_location = true
-            optimization()
-
-        } else {
-            startActivity(Intent(this, LocationSelectorAvtivity::class.java).apply {
-                putExtra("comeBack", true)
-            })
-            finish()
-        }
-        updateCountdownTextView()
+        onMinuteUpdate()
 
     }
 
@@ -250,6 +323,13 @@ class MainActivity : BaseActivity() {
         }
     }
 
+    var nextPrayTime: Pair<Date, Int>? = null
+    var currentPrayTime: Pair<Date, Int>? = null
+    var currentIqamaMilli: Long? = null
+    var countdownColor = Color.WHITE
+    var countdownDestinationMilii: Long? = null
+    var countdownNameString: String? = null
+
 
     fun onGetCordinates(
         latitude: Double,
@@ -272,6 +352,12 @@ class MainActivity : BaseActivity() {
         val dateYest = GregorianCalendar().apply {
             add(Calendar.DATE, -1)
         }
+
+        val dateTomorrow = GregorianCalendar().apply {
+            add(Calendar.DATE, 1)
+        }
+
+
         val prayerTimes =
             TimeCalculator().date(date).location(latitude, longitude, 0.0, 0.0)
                 .timeCalculationMethod(AngleCalculationType.KARACHI)
@@ -282,28 +368,35 @@ class MainActivity : BaseActivity() {
                 .timeCalculationMethod(AngleCalculationType.KARACHI)
                 .calculateTimes()
 
+        val prayerTimesTomorrow =
+            TimeCalculator().date(dateTomorrow).location(latitude, longitude, 0.0, 0.0)
+                .timeCalculationMethod(AngleCalculationType.KARACHI)
+                .calculateTimes()
 
-        var nextPrayTime: PrayersType? = null
+
+        nextPrayTime = null
+
+
+        (0..5).map { prayerTimes.getPrayTime(array[it]) to it }
+            .plus(
+                (0..5).map { prayerTimesTomorrow.getPrayTime(array[it]) to it }
+            ).forEach {
+                if (nextPrayTime == null && it.first.after(Date())) {
+                    nextPrayTime = it
+                }
+                if (it.first.before(Date())) {
+                    currentPrayTime = it
+                }
+            }
+
 
         val timeFormat = Util.timeFormat()
-
-        binding.prayerTimeLl.FAJR
 
         arrayOf(binding.prayerTimeLl.FAJR, binding.prayerTimeLl.SUNRISE, binding.prayerTimeLl.ZUHR, binding.prayerTimeLl.ASR, binding.prayerTimeLl.MAGHRIB, binding.prayerTimeLl.ISHA).forEachIndexed { index, view ->
             view.prayerName.setText(AppApplication.getArabicNames(array[index].name))
             val prayTime = prayerTimes.getPrayTime(array[index])
             view.prayerTime.text =
                 SimpleDateFormat(timeFormat, Locale.ENGLISH).format(prayTime).ltrEmbed()
-
-            if (prayTime.time >= System.currentTimeMillis() && nextPrayTime == null) {
-                nextPrayTime = array[index]
-            }
-
-            view.root.setOnClickListener {
-                /* testAudio(this)*/
-            }
-
-
         }
 
 

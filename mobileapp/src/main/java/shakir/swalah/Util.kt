@@ -274,11 +274,11 @@ object Util {
     var isiqamaAlarmOn: Boolean
         get() {
             val sharedPreferences = getMySharedPreference(AppApplication.instance)
-            return sharedPreferences.getString("isiqamaAlarmOn", "false").toBoolean()
+            return sharedPreferences.getString("isiqamaAlarmOn_v2", "true").toBoolean()
         }
         set(value) {
             val sharedPreferences = getMySharedPreference(AppApplication.instance)
-            sharedPreferences.edit().putString("isiqamaAlarmOn", value.toString()).commit()
+            sharedPreferences.edit().putString("isiqamaAlarmOn_v2", value.toString()).commit()
         }
 
 
@@ -328,10 +328,10 @@ object Util {
         }
         return arrayListOf(
             Iqama(0, true, 20, 0),
-            Iqama(1, true, 10, 0),
-            Iqama(2, true, 10, 0),
+            Iqama(1, true, 20, 0),
+            Iqama(2, true, 20, 0),
             Iqama(3, true, 5, 0),
-            Iqama(4, true, 15, 0),
+            Iqama(4, true, 20, 0),
         )
 
     }
