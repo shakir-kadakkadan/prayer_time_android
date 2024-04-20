@@ -1,7 +1,6 @@
 package shakir.swalah
 
 import android.content.Context
-import android.content.DialogInterface
 import android.content.Intent
 import android.net.Uri
 import android.os.Build
@@ -9,14 +8,12 @@ import android.os.Bundle
 import android.os.PowerManager
 import android.provider.Settings
 import androidx.appcompat.app.AlertDialog
-import androidx.core.content.edit
 import androidx.core.view.isVisible
-
 import shakir.swalah.Util.is_24_hourFormat
-import shakir.swalah.databinding.ActivityMainBinding
 import shakir.swalah.databinding.ActivitySettingsBinding
 import java.text.SimpleDateFormat
-import java.util.*
+import java.util.Date
+import java.util.Locale
 
 class SettingsActivity : BaseActivity() {
     private lateinit var binding: ActivitySettingsBinding
@@ -118,6 +115,18 @@ class SettingsActivity : BaseActivity() {
         binding.iqamaAlarm.setOnCheckedChangeListener { buttonView, isChecked ->
             Util.isiqamaAlarmOn = isChecked
         }
+
+
+         binding.contactUs.setOnClickListener {
+             val url = "https://wa.me/918129625121?text=This message is regarding أَذَان app"
+             val intent = Intent(Intent.ACTION_VIEW)
+             intent.data = Uri.parse(url)
+             startActivity(intent)
+
+         }
+
+
+
 
 
     }

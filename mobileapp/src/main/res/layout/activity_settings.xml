@@ -247,6 +247,36 @@
             android:layout_height="1px"
             android:background="#FF9800" />
 
+         <LinearLayout
+             android:id="@+id/contactUs"
+            android:layout_width="match_parent"
+            android:orientation="horizontal"
+            android:layout_height="wrap_content">
+
+            <TextView
+
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:padding="16dp"
+                android:text="Contact Us, Inform a bug/Error, Request a feature "
+                android:textColor="@color/white"
+                android:textSize="16dp" />
+
+
+
+
+        </LinearLayout>
+        <View
+
+            android:layout_width="match_parent"
+            android:layout_height="1px"
+            android:background="#FF9800" />
+
+
+
+
+
     </LinearLayout>
 
 

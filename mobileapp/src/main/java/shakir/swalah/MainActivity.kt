@@ -31,6 +31,10 @@ import com.google.firebase.ktx.Firebase
 import shakir.swalah.Util.isiqamaAlarmOn
 import shakir.swalah.databinding.ActivityMainBinding
 import shakir.swalah.models.Cord
+import java.io.BufferedReader
+import java.io.InputStreamReader
+import java.net.HttpURLConnection
+import java.net.URL
 import java.text.NumberFormat
 import java.text.SimpleDateFormat
 import java.util.Calendar
@@ -38,6 +42,7 @@ import java.util.Date
 import java.util.GregorianCalendar
 import java.util.Locale
 import java.util.concurrent.TimeUnit
+import kotlin.concurrent.thread
 import kotlin.math.absoluteValue
 
 
@@ -119,6 +124,8 @@ class MainActivity : BaseActivity() {
         binding.locationLL.setOnClickListener {
             startActivity(Intent(this, LocationSelectorAvtivity::class.java))
         }
+
+
 
 
     }
@@ -292,11 +299,74 @@ class MainActivity : BaseActivity() {
 
     }
 
+
     override fun onResume() {
         super.onResume()
         countDownTimer.start()
         onMinuteUpdate(isOnResume = true)
+        updator()
 
+
+    }
+
+    var updateDialog: AlertDialog? = null
+    fun updator() {
+        thread {
+            try {
+                val version_last_checked = sp.getLong("version_last_checked", 0L)
+                if (System.currentTimeMillis() - version_last_checked > TimeUnit.DAYS.toMillis(1)) {
+
+
+                    var apiVersion = sendGetRequest("https://install4-default-rtdb.asia-southeast1.firebasedatabase.app/adhan_app_version.json")?.replace("\"", "")?.toIntOrNull() ?: 0
+                    println("apiVersion $apiVersion")
+
+                    sp.edit {
+                        putLong("version_last_checked", System.currentTimeMillis())
+                    }
+
+                    if (apiVersion > BuildConfig.VERSION_CODE) {
+                        try {
+                            runOnUiThread {
+                                try {
+                                    val version_shown_time = sp.getLong("version_shown_time", 0)
+                                    val version_shown = sp.getInt("version_shown", 0)
+                                    if (System.currentTimeMillis() - version_shown_time >= TimeUnit.DAYS.toMillis(1) || version_shown != apiVersion) {
+                                        if (updateDialog == null)
+                                            updateDialog = AlertDialog.Builder(this/*, R.style.MyAlertDialogTheme*/)
+                                                .setTitle("Update")
+                                                .setMessage("Update Available: A new version of the app is now available. Please update to enjoy the latest features and improvements.")
+                                                .setPositiveButton("Update") { dialog, which ->
+                                                    dialog.dismiss()
+                                                    val url = "market://details?id=shakir.swalah"
+                                                    val intent = Intent(Intent.ACTION_VIEW)
+                                                    intent.data = Uri.parse(url)
+                                                    startActivity(intent)
+
+                                                }
+                                                .setNegativeButton("Later") { dialog, which ->
+                                                    dialog.dismiss()
+                                                    sp.edit {
+                                                        putInt("version_shown", apiVersion)
+                                                        putLong("version_shown_time", System.currentTimeMillis())
+                                                    }
+                                                }
+                                                .create()
+                                        updateDialog?.show()
+                                    }
+                                } catch (e: Exception) {
+                                    e.printStackTrace()
+                                }
+                            }
+                        } catch (e: Exception) {
+                            e.printStackTrace()
+                        }
+                    }
+                }
+            } catch (e: Exception) {
+                println("apiVersion $e")
+                e.printStackTrace()
+            }
+        }
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
@@ -531,5 +601,45 @@ fun UmmalquraCalendar?.convertCaledarToDisplayDate_1(): String {
         } ${nf.format(this.get(Calendar.YEAR))} هـ "
 
     } else return ""
+
+
 }
+
+
+fun sendGetRequest(urlString: String): String? {
+    val connection: HttpURLConnection?
+    var response: String? = null
+
+    try {
+        // Create URL object
+        val url = URL(urlString)
+
+        // Open connection
+        connection = url.openConnection() as HttpURLConnection
+
+        // Set request method
+        connection.requestMethod = "GET"
+
+        // Connect to the server
+        connection.connect()
+
+        // Read the response
+        val inputStream = connection.inputStream
+        val reader = BufferedReader(InputStreamReader(inputStream))
+        response = reader.readText()
+        reader.close()
+        connection.disconnect()
+
+    } catch (e: Exception) {
+        e.printStackTrace()
+    }
+
+    return response
+}
+
+
+
+
+
+
 
