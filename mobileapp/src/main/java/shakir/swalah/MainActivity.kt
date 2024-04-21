@@ -21,9 +21,12 @@ import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import androidx.core.content.edit
 import androidx.core.os.ConfigurationCompat
-import com.azan.TimeCalculator
-import com.azan.types.AngleCalculationType
-import com.azan.types.PrayersType
+import com.azan.Azan
+import com.azan.Method
+
+import com.azan.astrologicalCalc.Location
+import com.azan.astrologicalCalc.SimpleDate
+
 import com.github.msarhan.ummalqura.calendar.UmmalquraCalendar
 import com.google.firebase.crashlytics.ktx.crashlytics
 import com.google.firebase.crashlytics.ktx.setCustomKeys
@@ -41,6 +44,7 @@ import java.util.Calendar
 import java.util.Date
 import java.util.GregorianCalendar
 import java.util.Locale
+import java.util.TimeZone
 import java.util.concurrent.TimeUnit
 import kotlin.concurrent.thread
 import kotlin.math.absoluteValue
@@ -237,33 +241,26 @@ class MainActivity : BaseActivity() {
                 }
             }
 
-            val array = arrayOf(
-                PrayersType.FAJR,
-                PrayersType.SUNRISE,
-                PrayersType.ZUHR,
-                PrayersType.ASR,
-                PrayersType.MAGHRIB,
-                PrayersType.ISHA
-            )
+
 
             val redMinuteAdhan = if (currentPrayTime!!.second == 1) 10L else 20L
 
             if (currentIqamaMilli != null && System.currentTimeMillis() > currentIqamaMilli!! && System.currentTimeMillis() <= (currentIqamaMilli!! + TimeUnit.MINUTES.toMillis(10))) {
                 countdownColor = Color.RED
                 countdownDestinationMilii = currentIqamaMilli!!
-                countdownNameString = AppApplication.getArabicNames(array[currentPrayTime!!.second].name) + " (الإقامة) "
+                countdownNameString = AppApplication.getArabicNames(currentPrayTime!!.second) + " (الإقامة) "
             } else if (currentIqamaMilli != null && System.currentTimeMillis() <= currentIqamaMilli!!) {
                 countdownColor = Color.GREEN
                 countdownDestinationMilii = currentIqamaMilli
-                countdownNameString = AppApplication.getArabicNames(array[currentPrayTime!!.second].name) + " (الإقامة) "
+                countdownNameString = AppApplication.getArabicNames(currentPrayTime!!.second) + " (الإقامة) "
             } else if (currentPrayTime != null && System.currentTimeMillis() <= currentPrayTime!!.first.time + TimeUnit.MINUTES.toMillis(redMinuteAdhan)) {
                 countdownColor = Color.RED
                 countdownDestinationMilii = currentPrayTime!!.first.time
-                countdownNameString = AppApplication.getArabicNames(array[currentPrayTime!!.second].name)
+                countdownNameString = AppApplication.getArabicNames(currentPrayTime!!.second)
             } else {
                 countdownColor = Color.WHITE
                 countdownDestinationMilii = nextPrayTime!!.first.time
-                countdownNameString = AppApplication.getArabicNames(array[nextPrayTime!!.second].name)
+                countdownNameString = AppApplication.getArabicNames(nextPrayTime!!.second)
             }
 
 
@@ -305,6 +302,9 @@ class MainActivity : BaseActivity() {
         countDownTimer.start()
         onMinuteUpdate(isOnResume = true)
         updator()
+
+
+
 
 
     }
@@ -413,48 +413,26 @@ class MainActivity : BaseActivity() {
 
         /*if (cancelPrevisousPendingInten)*/ /*todo : test the condetion*/
 
-        val array = arrayOf(
-            PrayersType.FAJR,
-            PrayersType.SUNRISE,
-            PrayersType.ZUHR,
-            PrayersType.ASR,
-            PrayersType.MAGHRIB,
-            PrayersType.ISHA
-        )
-        val date = GregorianCalendar()
-        val dateYest = GregorianCalendar().apply {
+
+        val today = SimpleDate(GregorianCalendar())
+        val dateYest = SimpleDate(GregorianCalendar().apply {
             add(Calendar.DATE, -1)
-        }
-
-        val dateTomorrow = GregorianCalendar().apply {
+        })
+        val dateTomorrow = SimpleDate(GregorianCalendar().apply {
             add(Calendar.DATE, 1)
-        }
-
-
-        val prayerTimes =
-            TimeCalculator().date(date).location(latitude, longitude, 0.0, 0.0)
-                .timeCalculationMethod(AngleCalculationType.KARACHI)
-                .calculateTimes()
-
-        val prayerTimesYest =
-            TimeCalculator().date(dateYest).location(latitude, longitude, 0.0, 0.0)
-                .timeCalculationMethod(AngleCalculationType.KARACHI)
-                .calculateTimes()
-
-        val prayerTimesTomorrow =
-            TimeCalculator().date(dateTomorrow).location(latitude, longitude, 0.0, 0.0)
-                .timeCalculationMethod(AngleCalculationType.KARACHI)
-                .calculateTimes()
-
+        })
+        val azan = getAthanObj(latitude, longitude)
+        val prayerTimes = azan.getPrayerTimes(today).times.map { Date(today.year-1900,today.month-1,today.day,it.hour,it.minute,it.second) }
+        val prayerTimesYest = azan.getPrayerTimes(dateYest).times.map { Date(dateYest.year-1900,dateYest.month-1,dateYest.day,it.hour,it.minute,it.second) }
+        val prayerTimesTomorrow = azan.getPrayerTimes(dateTomorrow).times.map { Date(dateTomorrow.year-1900,dateTomorrow.month-1,dateTomorrow.day,it.hour,it.minute,it.second) }
 
         nextPrayTime = null
-
-
         arrayListOf(
-            (0..5).map { prayerTimesYest.getPrayTime(array[it]) to it },
-            (0..5).map { prayerTimes.getPrayTime(array[it]) to it },
-            (0..5).map { prayerTimesTomorrow.getPrayTime(array[it]) to it },
+            (0..5).map { prayerTimesYest[it] to it },
+            (0..5).map { prayerTimes[it] to it },
+            (0..5).map { prayerTimesTomorrow[it] to it },
         ).flatMap { it }.forEach {
+            println("nextPrayTimenextPrayTime ${it.first} ${it.second}")
             if (nextPrayTime == null && it.first.after(Date())) {
                 nextPrayTime = it
             }
@@ -467,8 +445,8 @@ class MainActivity : BaseActivity() {
         val timeFormat = Util.timeFormat()
 
         arrayOf(binding.prayerTimeLl.FAJR, binding.prayerTimeLl.SUNRISE, binding.prayerTimeLl.ZUHR, binding.prayerTimeLl.ASR, binding.prayerTimeLl.MAGHRIB, binding.prayerTimeLl.ISHA).forEachIndexed { index, view ->
-            view.prayerName.setText(AppApplication.getArabicNames(array[index].name))
-            val prayTime = prayerTimes.getPrayTime(array[index])
+            view.prayerName.setText(AppApplication.getArabicNames(index))
+            val prayTime = prayerTimes[index]
             view.prayerTime.text =
                 SimpleDateFormat(timeFormat, Locale.ENGLISH).format(prayTime).ltrEmbed()
         }
@@ -479,12 +457,12 @@ class MainActivity : BaseActivity() {
         binding.prayerTimeLl.MIDNIGHT.prayerName.setText("Mid night")
         binding.prayerTimeLl.THIRDNIGHT.prayerName.setText("Third night(m)")
         binding.prayerTimeLl.THIRDNIGHTISHA.prayerName.setText("Third night(i)")
-        binding.prayerTimeLl.MIDNIGHT.prayerTime.setText(SimpleDateFormat(timeFormat, Locale.ENGLISH).format(Date(prayerTimes.getPrayTime(array[0]).time.plus(prayerTimesYest.getPrayTime(array[4]).time).div(2))).ltrEmbed())
+        binding.prayerTimeLl.MIDNIGHT.prayerTime.setText(SimpleDateFormat(timeFormat, Locale.ENGLISH).format(Date(prayerTimes[0].time.plus(prayerTimesYest[4].time).div(2))).ltrEmbed())
         binding.prayerTimeLl.THIRDNIGHT.prayerTime.setText(
             SimpleDateFormat(timeFormat, Locale.ENGLISH).format(
                 Date(
-                    prayerTimes.getPrayTime(array[0]).time.minus(
-                        prayerTimes.getPrayTime(array[0]).time.minus(prayerTimesYest.getPrayTime(array[4]).time).div(3)
+                    prayerTimes[0].time.minus(
+                        prayerTimes[0].time.minus(prayerTimesYest[4].time).div(3)
                     )
                 )
             ).ltrEmbed()
@@ -493,8 +471,8 @@ class MainActivity : BaseActivity() {
         binding.prayerTimeLl.THIRDNIGHTISHA.prayerTime.setText(
             SimpleDateFormat(timeFormat, Locale.ENGLISH).format(
                 Date(
-                    prayerTimes.getPrayTime(array[0]).time.minus(
-                        prayerTimes.getPrayTime(array[0]).time.minus(prayerTimesYest.getPrayTime(array[5]).time).div(3)
+                    prayerTimes[0].time.minus(
+                        prayerTimes[0].time.minus(prayerTimesYest[5].time).div(3)
                     )
                 )
             ).ltrEmbed()
@@ -635,6 +613,27 @@ fun sendGetRequest(urlString: String): String? {
     }
 
     return response
+}
+
+fun getAthanObj(latitude: Double, longitude: Double): Azan {
+    val defaultTimeZone: TimeZone = TimeZone.getDefault()
+    var dstOffsetInHours: Int=0
+    dstOffsetInHours = if (defaultTimeZone.useDaylightTime()) {
+        val dstOffsetInMillis = defaultTimeZone.dstSavings
+        TimeUnit.MILLISECONDS.toHours(dstOffsetInMillis.toLong()).toInt()
+    } else {
+        0
+    }
+    val sp=Util.getMySharedPreference(AppApplication.instance)
+    var tm = sp.getInt("timeMethods", 0)
+
+
+    val gmtOffsetInMillis= defaultTimeZone.getRawOffset()/(3600000.0)
+    val calendar = Calendar.getInstance(defaultTimeZone)
+    //val isDST = defaultTimeZone.inDaylightTime(calendar.getTime())
+    val location = Location(latitude, longitude, gmtOffsetInMillis, dstOffsetInHours)
+    val azan = Azan(location, timeMethods[tm].first,)
+    return azan
 }
 
 

@@ -8,9 +8,8 @@ import android.content.SharedPreferences
 import android.os.Build
 import android.text.format.DateFormat
 import android.util.Log
-import com.azan.TimeCalculator
-import com.azan.types.AngleCalculationType
-import com.azan.types.PrayersType
+import com.azan.astrologicalCalc.SimpleDate
+
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
@@ -38,41 +37,24 @@ object Util {
     fun setNextAlarm(context: Context, tommorrow: Boolean = false) {
         try {
             Util.cancelLastPendingIntent(context)
-            val array = arrayOf(
-                PrayersType.FAJR,
-                PrayersType.SUNRISE,
-                PrayersType.ZUHR,
-                PrayersType.ASR,
-                PrayersType.MAGHRIB,
-                PrayersType.ISHA
-            )
-            val date = GregorianCalendar()
-            if (tommorrow)
-                date.add(Calendar.DATE, 1)
-
             val sharedPreferences = getMySharedPreference(context)
             val latitude = sharedPreferences
                 .getDouble("v2_latitude", 11.00)
 
             val longitude = sharedPreferences
                 .getDouble("v2_longitude", 76.00)
-
-
-            val prayerTimes =
-                TimeCalculator().date(date).location(latitude, longitude, 0.0, 0.0)
-                    .timeCalculationMethod(AngleCalculationType.KARACHI)
-                    .calculateTimes()
-
-
-            Log.d("dgfbdsfjjd", "$latitude $longitude $prayerTimes")
-
-
-            array.forEachIndexed { index, prayersType ->
+            val date = GregorianCalendar()
+            if (tommorrow)
+                date.add(Calendar.DATE, 1)
+            val dateS = SimpleDate(date)
+            val azan = getAthanObj(latitude, longitude)
+            val prayerTimes = azan.getPrayerTimes(dateS).times.map { Date(dateS.year-1900,dateS.month-1,dateS.day,it.hour,it.minute,it.second) }
+            (0..5).forEachIndexed { index, prayersType ->
                 arrayOf(false, true).forEach { _isIqama ->
                     val isIqama = _isIqama && index != 1
 
                     if ((isIqama && Util.isiqamaAlarmOn) || (!isIqama && Util.isadhanAlarmOn)) {
-                        var milli = prayerTimes.getPrayTime(array[index]).time
+                        var milli = prayerTimes[prayersType].time
                         if (isIqama) {
                             val iqsettings = Util.getIqamaSettings().get(if (index == 0) 0 else index - 1)
                             if (iqsettings.isAfter) {
@@ -84,7 +66,7 @@ object Util {
                         }
                         if (milli >= System.currentTimeMillis()) {
 
-                            var arabicNames = AppApplication.getArabicNames(array[index].name)
+                            var arabicNames = AppApplication.getArabicNames(prayersType)
                             if (isIqama) {
                                 arabicNames = arabicNames + " " + "(الإقامة)"
                             }

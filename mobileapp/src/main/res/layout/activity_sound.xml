@@ -28,7 +28,7 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             android:padding="16dp"
-            android:text="Settings"
+            android:text="Sound Settings"
             android:textColor="@color/white"
             android:textSize="18dp">
 
@@ -36,77 +36,46 @@
         </TextView>
 
 
-        <TextView
-            android:id="@+id/adhanTimeSettings"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="16dp"
-            android:text="Adhan Time Settings"
-            android:textColor="@color/white"
-            android:textSize="16dp"
-            android:visibility="visible" />
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1px"
-            android:background="#FF9800"
-            android:visibility="visible" />
-
-
-        <TextView
-            android:id="@+id/battery"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="16dp"
-            android:text="Stop Battery Optimisation"
-            android:textColor="@color/white"
-            android:textSize="16dp" />
-
-        <View
-            android:id="@+id/batteryLine"
-            android:layout_width="match_parent"
-            android:layout_height="1px"
-            android:background="#FF9800" />
-
-        <TextView
-
-            android:id="@+id/iqama"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="16dp"
-            android:text="Iqama Time (وقت الإقامة)"
-            android:textColor="@color/white"
-            android:textSize="16dp" />
-
-        <View
-            android:id="@+id/iqamaLine"
-            android:layout_width="match_parent"
-            android:layout_height="1px"
-            android:background="#FF9800" />
-
-
         <LinearLayout
+
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
 
             <TextView
 
-
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:padding="16dp"
-                android:text="Adhan Reminder (تذكير الأذان)"
+                android:text="Volume Type"
                 android:textColor="@color/white"
                 android:textSize="16dp" />
 
-
-            <Switch
-                android:id="@+id/adhanAlarm"
+            <RadioGroup
+                android:id="@+id/soundType"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:checked="true" />
+                android:orientation="horizontal">
+
+                <RadioButton
+                    android:id="@+id/alarm"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingEnd="8dp"
+                    android:text="Alarm"
+                    android:textColor="@color/white"
+                    android:textSize="16dp" />
+
+                <RadioButton
+                    android:id="@+id/notification"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingEnd="8dp"
+                    android:text="Notification"
+                    android:textColor="@color/white"
+                    android:textSize="16dp" />
+            </RadioGroup>
 
 
         </LinearLayout>
@@ -118,51 +87,29 @@
             android:background="#FF9800" />
 
         <LinearLayout
+            android:id="@+id/alarmVolumeLL"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center"
             android:orientation="horizontal">
 
             <TextView
 
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:padding="16dp"
-                android:text="Iqama Reminder (تذكير الإقامة)"
-                android:textColor="@color/white"
-                android:textSize="16dp" />
-
-            <Switch
-                android:id="@+id/iqamaAlarm"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:checked="false" />
-
-
-        </LinearLayout>
-
-        <View
-
-            android:layout_width="match_parent"
-            android:layout_height="1px"
-            android:background="#FF9800" />
-
-        <LinearLayout
-            android:id="@+id/sound"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-
-            <TextView
-
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
                 android:padding="16dp"
-                android:text="Sound Settings"
+                android:text="Alarm Volume"
                 android:textColor="@color/white"
                 android:textSize="16dp" />
 
+            <SeekBar
+                android:id="@+id/alarmVolumeSeekBar"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="16dp"
+                android:layout_weight="1" />
+
 
         </LinearLayout>
 
@@ -172,23 +119,33 @@
             android:layout_height="1px"
             android:background="#FF9800" />
 
-
         <LinearLayout
-            android:id="@+id/share"
+            android:id="@+id/adhanSound"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_gravity="start|center_vertical"
+            android:gravity="start|center_vertical"
             android:orientation="horizontal">
 
             <TextView
 
-                android:layout_width="0dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:padding="16dp"
-                android:text="Share this app"
+                android:text="Adhan Audio"
                 android:textColor="@color/white"
                 android:textSize="16dp" />
 
+            <TextView
+                android:id="@+id/adhanSoundAudioName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="16dp"
+                android:textColor="@color/white"
+                android:textSize="16dp"
+                tools:text="Adhan Audio" />
+
 
         </LinearLayout>
 
@@ -198,20 +155,29 @@
             android:layout_height="1px"
             android:background="#FF9800" />
 
-
         <LinearLayout
-            android:id="@+id/contactUs"
+            android:id="@+id/iqamaAudio"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_gravity="start|center_vertical"
+            android:gravity="start|center_vertical"
             android:orientation="horizontal">
 
             <TextView
-
-                android:layout_width="0dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:padding="16dp"
-                android:text="Contact Us, Inform a bug/error, Request a feature"
+                android:text="Iqama Audio"
+                android:textColor="@color/white"
+                android:textSize="16dp" />
+
+            <TextView
+                android:id="@+id/iqamaAudioName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="16dp"
+                android:text="Iqama Audio"
                 android:textColor="@color/white"
                 android:textSize="16dp" />
 

@@ -8,7 +8,6 @@ import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.edit
 import androidx.core.os.ConfigurationCompat
 import androidx.multidex.MultiDexApplication
-import com.azan.types.PrayersType
 import com.google.firebase.crashlytics.ktx.crashlytics
 import com.google.firebase.crashlytics.ktx.setCustomKeys
 import com.google.firebase.ktx.Firebase
@@ -85,14 +84,14 @@ class AppApplication : MultiDexApplication() {
         lateinit var restService: WebServices
         lateinit var instance: AppApplication
 
-        fun getArabicNames(string: String?): String? {
-            return when (string?.let { PrayersType.valueOf(it) }) {
-                PrayersType.FAJR -> "الفجر"
-                PrayersType.SUNRISE -> "الشروق"
-                PrayersType.ZUHR -> "الظهر"
-                PrayersType.ASR -> "العصر"
-                PrayersType.MAGHRIB -> "المغرب"
-                PrayersType.ISHA -> "العشاء"
+        fun getArabicNames(index: Int): String? {
+            return when (index) {
+                0 -> "الفجر"
+                1 -> "الشروق"
+                2 -> "الظهر"
+                3 -> "العصر"
+                4 -> "المغرب"
+                5 -> "العشاء"
                 else -> null
             }
         }

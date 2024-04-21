@@ -53,8 +53,8 @@ android {
         applicationId "shakir.swalah"
         minSdkVersion 19
         targetSdkVersion 34
-        versionCode 110
-        versionName "2.0.0 (2024.4.21)"
+        versionCode 111
+        versionName "2.0.1"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         signingConfig signingConfigs.rel_config
         buildConfigField "boolean", "isRunFromStudio", (gradle.startParameter.projectProperties.get("android.injected.build.api") != null).toString()
@@ -84,7 +84,7 @@ dependencies {
 
 
     implementation 'com.intuit.sdp:sdp-android:1.1.0'
-    implementation 'com.github.ahmedeltaher:Azan:2.1'
+   // implementation 'com.github.ahmedeltaher:Azan:3.0'
 
 
 

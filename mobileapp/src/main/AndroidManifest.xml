@@ -20,7 +20,7 @@
         android:theme="@style/Theme.MyApplication"
         tools:ignore="GoogleAppIndexingWarning"
         tools:replace="android:allowBackup">
-        <activity android:name=".LogActivity"></activity>
+        <activity android:name=".LogActivity"  android:screenOrientation="portrait"></activity>
         <activity
             android:name=".QiblaActivity"
             android:screenOrientation="portrait"></activity>
@@ -34,12 +34,15 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".GenerateToneActivity" />
-        <activity android:name=".MonthViewActivity" />
-        <activity android:name=".SettingsActivity" />
-        <activity android:name=".IqamaActivity" />
-        <activity android:name=".NotificationsActivity" />
-        <activity android:name=".LocationSelectorAvtivity" />
+        <activity android:name=".GenerateToneActivity"
+            android:screenOrientation="portrait"
+            />
+        <activity android:name=".MonthViewActivity"  android:screenOrientation="portrait" />
+        <activity android:name=".SettingsActivity"  android:screenOrientation="portrait"/>
+        <activity android:name=".SoundActivity"  android:screenOrientation="portrait"/>
+        <activity android:name=".IqamaActivity"  android:screenOrientation="portrait"/>
+        <activity android:name=".AdhanTimeActivity"  android:screenOrientation="portrait"/>
+        <activity android:name=".LocationSelectorAvtivity"  android:screenOrientation="portrait"/>
 
         <receiver
             android:name=".AlarmBroadCastReceiver"

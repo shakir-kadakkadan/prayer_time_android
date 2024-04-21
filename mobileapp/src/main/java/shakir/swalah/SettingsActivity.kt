@@ -9,11 +9,7 @@ import android.os.PowerManager
 import android.provider.Settings
 import androidx.appcompat.app.AlertDialog
 import androidx.core.view.isVisible
-import shakir.swalah.Util.is_24_hourFormat
 import shakir.swalah.databinding.ActivitySettingsBinding
-import java.text.SimpleDateFormat
-import java.util.Date
-import java.util.Locale
 
 class SettingsActivity : BaseActivity() {
     private lateinit var binding: ActivitySettingsBinding
@@ -22,47 +18,6 @@ class SettingsActivity : BaseActivity() {
         binding = ActivitySettingsBinding.inflate(layoutInflater)
         setContentView(binding.root)
         adjustWithSystemWindow(binding.rootViewLL, binding.topSpacer, true)
-        binding.hour24Value.setText(if (Util.is_24_hourFormat) "24 Hour" else "12 Hour")
-        binding.showAMPMValue.setText(SimpleDateFormat(Util.timeFormat(), Locale.ENGLISH).format(Date()).ltrEmbed())
-        binding.hour24.setOnClickListener {
-            val selected = if (Util.is_24_hourFormat) 1 else 0
-            AlertDialog.Builder(this@SettingsActivity)
-                .setTitle(binding.hour24key.text.toString())
-                .setSingleChoiceItems(arrayOf("12 Hour", "24 Hour"), selected) { dialog, which ->
-                    Util.is_24_hourFormat = if (which == 0) false else true
-                    binding.hour24Value.setText(if (Util.is_24_hourFormat) "24 Hour" else "12 Hour")
-                    binding.showAMPMValue.setText(SimpleDateFormat(Util.timeFormat(), Locale.ENGLISH).format(Date()).ltrEmbed())
-                    if (is_24_hourFormat) {
-                        binding.showAMPMKey.alpha = .25f
-                    } else {
-                        binding.showAMPMKey.alpha = 1f
-                    }
-                    dialog.dismiss()
-
-                }
-                .show()
-        }
-
-        if (is_24_hourFormat) {
-            binding.showAMPMKey.alpha = .25f
-        } else {
-            binding.showAMPMKey.alpha = 1f
-        }
-        binding.showAMPM.setOnClickListener {
-            if (!is_24_hourFormat) {
-                val selected = if (Util.isAMPMShow) 0 else 1
-                AlertDialog.Builder(this@SettingsActivity)
-                    .setTitle(binding.showAMPMKey.text.toString())
-                    .setSingleChoiceItems(arrayOf("Show", "Hide"), selected) { dialog, which ->
-                        Util.isAMPMShow = if (which == 0) true else false
-                        binding.showAMPMValue.setText(SimpleDateFormat(Util.timeFormat(), Locale.ENGLISH).format(Date()).ltrEmbed())
-                        dialog.dismiss()
-                    }
-                    .show()
-            }
-
-        }
-
 
 
 
@@ -97,8 +52,8 @@ class SettingsActivity : BaseActivity() {
 
         }
 
-        binding.notifications.setOnClickListener {
-            startActivity(Intent(this, NotificationsActivity::class.java))
+        binding.adhanTimeSettings.setOnClickListener {
+            startActivity(Intent(this, AdhanTimeActivity::class.java))
         }
 
 
@@ -111,22 +66,33 @@ class SettingsActivity : BaseActivity() {
 
         binding.adhanAlarm.setOnCheckedChangeListener { buttonView, isChecked ->
             Util.isadhanAlarmOn = isChecked
+            Util.setNextAlarm(this@SettingsActivity)
         }
         binding.iqamaAlarm.setOnCheckedChangeListener { buttonView, isChecked ->
             Util.isiqamaAlarmOn = isChecked
+            Util.setNextAlarm(this@SettingsActivity)
         }
 
 
-         binding.contactUs.setOnClickListener {
-             val url = "https://wa.me/918129625121?text=This message is regarding أَذَان app"
-             val intent = Intent(Intent.ACTION_VIEW)
-             intent.data = Uri.parse(url)
-             startActivity(intent)
+        binding.contactUs.setOnClickListener {
+            val url = "https://wa.me/918129625121?text=This message is regarding أَذَان app.\n"
+            val intent = Intent(Intent.ACTION_VIEW)
+            intent.data = Uri.parse(url)
+            startActivity(intent)
 
-         }
+        }
 
+        binding.sound.setOnClickListener {
+            startActivity(Intent(this@SettingsActivity, SoundActivity::class.java))
+        }
 
-
+        binding.share.setOnClickListener {
+            val shareIntent = Intent(Intent.ACTION_SEND)
+            shareIntent.type = "text/plain"
+            val appLink = "https://play.google.com/store/apps/details?id=${BuildConfig.APPLICATION_ID}"
+            shareIntent.putExtra(Intent.EXTRA_TEXT, (" أَذَان \u200E Lite \n") +"Prayer Time and Notifications,  Qibla: \n$appLink")
+            startActivity(Intent.createChooser(shareIntent, "Share via"))
+        }
 
 
     }

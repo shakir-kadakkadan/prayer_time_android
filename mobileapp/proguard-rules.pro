@@ -21,3 +21,4 @@
 #-renamesourcefileattribute SourceFile
 
 -keep public class com.github.msarhan.** { *; }
+-keep class android.content.res.XmlResourceParser

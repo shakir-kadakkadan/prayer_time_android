@@ -5,15 +5,12 @@ import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import androidx.core.view.isVisible
-
-
+import com.azan.astrologicalCalc.SimpleDate
 
 
 import java.text.SimpleDateFormat
 import java.util.*
-import com.azan.TimeCalculator
-import com.azan.types.AngleCalculationType
-import com.azan.types.PrayersType
+
 import shakir.swalah.databinding.ActivityIqamaBinding
 import shakir.swalah.databinding.ActivityMainBinding
 import java.util.concurrent.TimeUnit
@@ -37,19 +34,9 @@ class IqamaActivity : BaseActivity() {
             "العشاء",
         )
 
-
-        val array = arrayOf(
-            PrayersType.FAJR,
-            PrayersType.ZUHR,
-            PrayersType.ASR,
-            PrayersType.MAGHRIB,
-            PrayersType.ISHA
-        )
-        val date = GregorianCalendar()
-        val prayerTimes =
-            TimeCalculator().date(date).location(sp.getDouble("v2_latitude", 0.0), sp.getDouble("v2_longitude", 0.0), 0.0, 0.0)
-                .timeCalculationMethod(AngleCalculationType.KARACHI)
-                .calculateTimes()
+        val azan = getAthanObj(sp.getDouble("v2_latitude", 0.0), sp.getDouble("v2_longitude", 0.0))
+        val today = SimpleDate(GregorianCalendar())
+        val prayerTimes = azan.getPrayerTimes(today).times.map { Date(today.year-1900,today.month-1,today.day,it.hour,it.minute,it.second) }
         val timeFormat = Util.timeFormat()
 
 
@@ -73,7 +60,7 @@ class IqamaActivity : BaseActivity() {
                 view.afterTime.isVisible = iqama.isAfter
                 view.afterTimeMinuteLabel.isVisible = iqama.isAfter
                 view.atTime.isVisible = !iqama.isAfter
-                val prayTime = prayerTimes.getPrayTime(array[index])
+                val prayTime = prayerTimes[index]
                 val fixed =
                     if (iqama.fixed <= 0) {
                         TimeUnit.MINUTES.toMillis(30).plus(prayTime.time)

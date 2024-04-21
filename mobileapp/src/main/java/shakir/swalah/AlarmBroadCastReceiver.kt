@@ -6,22 +6,21 @@ import android.app.NotificationManager
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import android.graphics.Color
 import android.media.AudioAttributes
 import android.media.AudioManager
+import android.media.Ringtone
 import android.media.RingtoneManager
 import android.net.Uri
 import android.os.Build
 import android.os.Handler
 import android.util.Log
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationCompat.VISIBILITY_PUBLIC
 import androidx.core.app.NotificationManagerCompat
-import com.azan.TimeCalculator
-import com.azan.types.AngleCalculationType
-import com.azan.types.PrayersType
-import com.google.firebase.crashlytics.FirebaseCrashlytics
 import java.text.SimpleDateFormat
-import java.util.*
+import java.util.Locale
 
 
 class AlarmBroadCastReceiver : BroadcastReceiver() {
@@ -99,13 +98,17 @@ class AlarmBroadCastReceiver : BroadcastReceiver() {
     }
 
 
-
-
 }
 
-val CHANNEL_MAME = "adan"
+
 
 fun showNoti(context: Context, title: String) {
+
+    try {
+        (context.getSystemService(AppCompatActivity.NOTIFICATION_SERVICE) as NotificationManager).cancelAll()
+    } catch (e: Exception) {
+        e.printStackTrace()
+    }
     println("AlarmBroadCastReceiver : showNoti() called with: context = $context, title = $title")
 
     /* val intent = Intent(this, AlertDetails::class.java).apply {
@@ -117,23 +120,9 @@ val pendingIntent: PendingIntent = PendingIntent.getActivity(this, 0, intent, 0)
 
 
 
-    createNotificationChannel(context)
+
 
     // val alarmSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
-
-
-    val audioManager =
-        context.getSystemService(Context.AUDIO_SERVICE) as AudioManager
-
-    if (audioManager.getStreamVolume(AudioManager.STREAM_ALARM)
-        <
-        (audioManager.getStreamMaxVolume(AudioManager.STREAM_ALARM) * .75)
-    )
-        audioManager.setStreamVolume(
-            AudioManager.STREAM_ALARM,
-            (audioManager.getStreamMaxVolume(AudioManager.STREAM_ALARM) * .75).toInt(),
-            AudioManager.FLAG_SHOW_UI
-        )
 
 
     /*   val mediaPlayer = MediaPlayer.create(context, R.raw.message_tone)
@@ -150,54 +139,118 @@ val pendingIntent: PendingIntent = PendingIntent.getActivity(this, 0, intent, 0)
 
        })*/
 
-
-    val path =
-
-        if (title.contains("الإقامة")){
+    val sp = Util.getMySharedPreference(AppApplication.instance)
+    var prefKey = if (title.contains("الإقامة")) "iqama_sound" else "athan_sound"
+    var prefKeyName = if (title.contains("الإقامة")) "iqama_soundName" else "athan_soundName"
+    var soundName=sp.getString(prefKeyName,null)?:"Adhan"
+    val path = if (sp.getString(prefKey, null) != null)
+        Uri.parse(sp.getString(prefKey, null))
+    else {
+        if (title.contains("الإقامة")) {
+            soundName="mixkit_access_allowed_tone_2869"
             Uri.parse("android.resource://" + AppApplication.instance.packageName + "/" + R.raw.mixkit_access_allowed_tone_2869)
-        }else{
+        } else {
+            soundName="message_tone"
             Uri.parse("android.resource://" + AppApplication.instance.packageName + "/" + R.raw.message_tone)
         }
-
-
-
-
-    if (path!=null) {
-        val ringtone = RingtoneManager.getRingtone(context!!.applicationContext, path)
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            ringtone.setAudioAttributes(
-                AudioAttributes.Builder().setUsage(AudioAttributes.USAGE_ALARM).build()
-            )
-        } else {
-            ringtone.setStreamType(AudioManager.STREAM_ALARM)
-        }
-
-        ringtone.play()
-
     }
 
-    var builder = NotificationCompat.Builder(context, CHANNEL_MAME)
-        .setSmallIcon(android.R.drawable.ic_lock_idle_alarm)
+
+    println("path ${path}")
+
+    var NotificationSoundUri:Uri?=null
+    var channelName="Adhan"
+    if (sp.getBoolean("soundTypeIsAlarm", true)) {
+        playSound(context, path)
+        channelName="Adhan"
+    }else{
+        NotificationSoundUri=path
+        channelName=soundName
+    }
+
+    createNotificationChannel(context,channelName,NotificationSoundUri)
+
+    var builder = NotificationCompat.Builder(context, channelName)
+        .setSmallIcon(R.drawable.ic_stat_notifications)
         .setContentTitle(title)
         /* .setContentText(textContent)*/
         //.setContentIntent(pendingIntent)
         .setPriority(NotificationCompat.PRIORITY_HIGH)
         .setCategory(NotificationCompat.CATEGORY_ALARM)
         .setAutoCancel(true)
+        .setColor(Color.parseColor("#ff0C2752"))
         .setVisibility(VISIBILITY_PUBLIC)
         .setOnlyAlertOnce(true)
-        .setSound(null)
+        .setSound(NotificationSoundUri)
         .setVibrate(longArrayOf(0, 0))
 
 
     with(NotificationManagerCompat.from(context)) {
         // notificationId is a unique int for each notification that you must define
-        notify(0, builder.build())
+        notify(1111, builder.build())
+    }
+}
+
+var ringtone: Ringtone? = null
+fun playSound(context: Context, uri: Uri?, minSound: Int = 15) {
+    try {
+
+        try {
+            ringtone?.stop()
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+        val sp = Util.getMySharedPreference(AppApplication.instance)
+        var audio = sp.getInt("alarmVolumeSeekBar100", 75)
+        if (audio < 15) audio = 15;
+
+        println("audio / 100f ${audio / 100f}")
+
+        val audioManager =
+            context.getSystemService(Context.AUDIO_SERVICE) as AudioManager
+
+        if (audioManager.getStreamVolume(AudioManager.STREAM_ALARM)
+            !=
+            (audioManager.getStreamMaxVolume(AudioManager.STREAM_ALARM) * (audio / 100f)).toInt()
+        )
+            audioManager.setStreamVolume(
+                AudioManager.STREAM_ALARM,
+                (audioManager.getStreamMaxVolume(AudioManager.STREAM_ALARM) * (audio / 100f)).toInt(),
+                AudioManager.FLAG_SHOW_UI
+            )
+
+
+
+
+        println("printlnprintlnprintln R.raw.athan ${R.raw.athan} message_tone.mp3 ${R.raw.message_tone} mixkit_access_allowed_tone_2869.wav ${R.raw.mixkit_access_allowed_tone_2869}")
+
+
+
+
+
+
+
+        if (uri != null) {
+
+            ringtone = RingtoneManager.getRingtone(context!!.applicationContext, uri)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                ringtone?.setAudioAttributes(
+                    AudioAttributes.Builder().setUsage(AudioAttributes.USAGE_ALARM).build()
+                )
+            } else {
+                ringtone?.setStreamType(AudioManager.STREAM_ALARM)
+            }
+
+            ringtone?.play()
+
+        }
+    } catch (e: Exception) {
+        e.printStackTrace()
     }
 }
 
 
-private fun createNotificationChannel(context: Context?) {
+private fun createNotificationChannel(context: Context?, channelName: String, NotificationSoundUri: Uri?) {
     context?.apply {
         // Create the NotificationChannel, but only on API 26+ because
         // the NotificationChannel class is new and not in the support library
@@ -205,7 +258,7 @@ private fun createNotificationChannel(context: Context?) {
 
 
             val importance = NotificationManager.IMPORTANCE_HIGH
-            val channel = NotificationChannel(CHANNEL_MAME, CHANNEL_MAME, importance).apply {
+            val channel = NotificationChannel(channelName, channelName, importance).apply {
                 description = "Show Adan Notification"
                 setSound(null, null)
             }
@@ -213,6 +266,13 @@ private fun createNotificationChannel(context: Context?) {
             // Register the channel with the system
             val notificationManager: NotificationManager =
                 getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+
+            val audioAttributes = AudioAttributes.Builder()
+                .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
+                .setUsage(AudioAttributes.USAGE_NOTIFICATION)
+                .build()
+            val vibrationPattern = longArrayOf(0, 500, 500, 500)
+            channel.setSound(NotificationSoundUri, audioAttributes)
 
             notificationManager.createNotificationChannel(channel)
         }

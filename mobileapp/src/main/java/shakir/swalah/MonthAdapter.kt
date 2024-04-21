@@ -9,9 +9,8 @@ import android.widget.TableRow
 import android.widget.TextView
 import androidx.core.view.forEachIndexed
 import androidx.recyclerview.widget.RecyclerView
-import com.azan.TimeCalculator
-import com.azan.types.AngleCalculationType
-import com.azan.types.PrayersType
+import com.azan.astrologicalCalc.SimpleDate
+
 import shakir.swalah.databinding.AdapterMonthViewBinding
 import java.text.SimpleDateFormat
 import java.util.*
@@ -43,31 +42,22 @@ class MonthAdapter(var latitude: Double, var longitude: Double, var timeFormat: 
             thread {
                 val dateString = SimpleDateFormat("MMMM yyyy", Locale.ENGLISH).format(cal.time)
                 val monthIndex = cal.get(Calendar.MONTH)
-                val array = arrayOf(
-                    PrayersType.FAJR,
-                    PrayersType.SUNRISE,
-                    PrayersType.ZUHR,
-                    PrayersType.ASR,
-                    PrayersType.MAGHRIB,
-                    PrayersType.ISHA
-                )
+
 
 
                 val list = arrayListOf<String>()
                 list.add("Date ")
                 for (i in 0..5) {
-                    list.add(AppApplication.getArabicNames(array[i].name) ?: "")
+                    list.add(AppApplication.getArabicNames(i) ?: "")
                 }
                 while (cal.get(Calendar.MONTH) == monthIndex) {
-                    val date = GregorianCalendar().apply { time = cal.time }
-                    val prayerTimes =
-                        TimeCalculator().date(date).location(latitude, longitude, 0.0, 0.0)
-                            .timeCalculationMethod(AngleCalculationType.KARACHI)
-                            .calculateTimes()
+                    val today = SimpleDate(GregorianCalendar().apply { time = cal.time })
+                    val azan = getAthanObj(latitude, longitude)
+                    val prayerTimes = azan.getPrayerTimes(today).times.map { Date(today.year-1900,today.month-1,today.day,it.hour,it.minute,it.second) }
                     list.add(cal.get(Calendar.DATE).toString())
                     for (i in 0..5) {
                         list.add(
-                            SimpleDateFormat(timeFormat, Locale.ENGLISH).format(prayerTimes.getPrayTime(array[i]))
+                            SimpleDateFormat(timeFormat, Locale.ENGLISH).format(prayerTimes[i])
                         )
                     }
                     cal.add(Calendar.DATE, 1)
