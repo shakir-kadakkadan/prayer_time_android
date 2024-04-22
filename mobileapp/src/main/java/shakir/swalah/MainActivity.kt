@@ -22,7 +22,6 @@ import androidx.core.content.ContextCompat
 import androidx.core.content.edit
 import androidx.core.os.ConfigurationCompat
 import com.azan.Azan
-import com.azan.Method
 
 import com.azan.astrologicalCalc.Location
 import com.azan.astrologicalCalc.SimpleDate
@@ -422,9 +421,9 @@ class MainActivity : BaseActivity() {
             add(Calendar.DATE, 1)
         })
         val azan = getAthanObj(latitude, longitude)
-        val prayerTimes = azan.getPrayerTimes(today).times.map { Date(today.year-1900,today.month-1,today.day,it.hour,it.minute,it.second) }
-        val prayerTimesYest = azan.getPrayerTimes(dateYest).times.map { Date(dateYest.year-1900,dateYest.month-1,dateYest.day,it.hour,it.minute,it.second) }
-        val prayerTimesTomorrow = azan.getPrayerTimes(dateTomorrow).times.map { Date(dateTomorrow.year-1900,dateTomorrow.month-1,dateTomorrow.day,it.hour,it.minute,it.second) }
+        val prayerTimes = azan.getAthanOfDate(today)
+        val prayerTimesYest = azan.getAthanOfDate(dateYest)
+        val prayerTimesTomorrow = azan.getAthanOfDate(dateTomorrow)
 
         nextPrayTime = null
         arrayListOf(
@@ -634,6 +633,14 @@ fun getAthanObj(latitude: Double, longitude: Double): Azan {
     val location = Location(latitude, longitude, gmtOffsetInMillis, dstOffsetInHours)
     val azan = Azan(location, timeMethods[tm].first,)
     return azan
+}
+
+
+fun Azan.getAthanOfDate(today: SimpleDate): List<Date> {
+   return getPrayerTimes(today).times.mapIndexed { index, it ->
+       val adj = AppApplication.sp.getInt("adjustment_$index", 0)
+       Date(Date(today.year - 1900, today.month - 1, today.day, it.hour, it.minute, it.second).time + (adj * 60000))
+   }
 }
 
 

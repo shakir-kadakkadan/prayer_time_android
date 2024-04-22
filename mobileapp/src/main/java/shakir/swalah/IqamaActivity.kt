@@ -36,7 +36,7 @@ class IqamaActivity : BaseActivity() {
 
         val azan = getAthanObj(sp.getDouble("v2_latitude", 0.0), sp.getDouble("v2_longitude", 0.0))
         val today = SimpleDate(GregorianCalendar())
-        val prayerTimes = azan.getPrayerTimes(today).times.map { Date(today.year-1900,today.month-1,today.day,it.hour,it.minute,it.second) }
+        val prayerTimes = azan.getAthanOfDate(today)
         val timeFormat = Util.timeFormat()
 
 

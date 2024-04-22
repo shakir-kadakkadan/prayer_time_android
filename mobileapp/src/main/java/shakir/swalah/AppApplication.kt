@@ -29,6 +29,7 @@ class AppApplication : MultiDexApplication() {
     override fun onCreate() {
         super.onCreate()
         instance = this
+        sp=Util.getMySharedPreference(this)
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
 
 
@@ -83,6 +84,7 @@ class AppApplication : MultiDexApplication() {
     companion object {
         lateinit var restService: WebServices
         lateinit var instance: AppApplication
+        lateinit var sp: SharedPreferences
 
         fun getArabicNames(index: Int): String? {
             return when (index) {

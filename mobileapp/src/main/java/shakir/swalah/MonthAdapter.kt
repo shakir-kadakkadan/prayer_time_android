@@ -53,7 +53,7 @@ class MonthAdapter(var latitude: Double, var longitude: Double, var timeFormat: 
                 while (cal.get(Calendar.MONTH) == monthIndex) {
                     val today = SimpleDate(GregorianCalendar().apply { time = cal.time })
                     val azan = getAthanObj(latitude, longitude)
-                    val prayerTimes = azan.getPrayerTimes(today).times.map { Date(today.year-1900,today.month-1,today.day,it.hour,it.minute,it.second) }
+                    val prayerTimes = azan.getAthanOfDate(today)
                     list.add(cal.get(Calendar.DATE).toString())
                     for (i in 0..5) {
                         list.add(

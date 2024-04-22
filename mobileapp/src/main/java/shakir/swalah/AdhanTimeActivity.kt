@@ -1,12 +1,17 @@
 package shakir.swalah
 
 import android.os.Bundle
+import android.view.View
+import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.edit
+import androidx.core.view.forEachIndexed
 import com.azan.Method
+import com.azan.astrologicalCalc.SimpleDate
 import shakir.swalah.databinding.ActivityAdhanTimeSettingsBinding
 import java.text.SimpleDateFormat
 import java.util.Date
+import java.util.GregorianCalendar
 import java.util.Locale
 
 
@@ -33,6 +38,7 @@ class AdhanTimeActivity : BaseActivity() {
                         binding.showAMPMKey.alpha = 1f
                     }
                     dialog.dismiss()
+                    updateTime()
 
                 }
                 .show()
@@ -52,15 +58,17 @@ class AdhanTimeActivity : BaseActivity() {
                         Util.isAMPMShow = if (which == 0) true else false
                         binding.showAMPMValue.setText(SimpleDateFormat(Util.timeFormat(), Locale.ENGLISH).format(Date()).ltrEmbed())
                         dialog.dismiss()
+                        updateTime()
                     }
                     .show()
             }
+
 
         }
 
         var tm = sp.getInt("timeMethods", 0)
         binding.caculationMethodsSelected.setText(timeMethods[tm].second)
-        binding.caculationMethodsDesc.setText(timeMethods[tm].third.replace(timeMethods[tm].second,"").trimIndent())
+        binding.caculationMethodsDesc.setText(timeMethods[tm].third.replace(timeMethods[tm].second, "").trimIndent())
         binding.caculationMethods.setOnClickListener {
             AlertDialog.Builder(this@AdhanTimeActivity)
                 .setTitle("Calculation Methods")
@@ -70,14 +78,47 @@ class AdhanTimeActivity : BaseActivity() {
                         putInt("timeMethods", tm)
                     }
                     binding.caculationMethodsSelected.setText(timeMethods[tm].second)
-                    binding.caculationMethodsDesc.setText(timeMethods[tm].third.replace(timeMethods[tm].second,"").trimIndent())
+                    binding.caculationMethodsDesc.setText(timeMethods[tm].third.replace(timeMethods[tm].second, "").trimIndent())
                     dialog.dismiss()
                     Util.setNextAlarm(this@AdhanTimeActivity)
+                    updateTime()
                 }
                 .show()
         }
 
 
+
+        updateTime()
+
+
+    }
+
+    fun updateTime() {
+        val timeFormat = Util.timeFormat()
+        val today = SimpleDate(GregorianCalendar())
+        val latitude = sp.getDouble("v2_latitude", 0.0)
+        val longitude = sp.getDouble("v2_longitude", 0.0)
+        val azan = getAthanObj(latitude, longitude)
+        val prayerTimes = azan.getAthanOfDate(today)
+        binding.adjustmentLL.forEachIndexed { index, view ->
+            view.findViewById<TextView>(R.id.prayerName).setText(AppApplication.getArabicNames(index)?.ltrEmbed())
+            view.findViewById<TextView>(R.id.prayerTime).setText(SimpleDateFormat(timeFormat, Locale.ENGLISH).format(prayerTimes[index]).ltrEmbed())
+            view.findViewById<TextView>(R.id.adjustment).setText(sp.getInt("adjustment_$index", 0).toString())
+            view.findViewById<View>(R.id.plus).setOnClickListener {
+                view.findViewById<TextView>(R.id.adjustment).setText((view.findViewById<TextView>(R.id.adjustment).text.toString().toInt() + 1).toString())
+                sp.edit(commit = true) {
+                    putInt("adjustment_$index", view.findViewById<TextView>(R.id.adjustment).text.toString().toInt())
+                }
+                updateTime()
+            }
+            view.findViewById<View>(R.id.minus).setOnClickListener {
+                view.findViewById<TextView>(R.id.adjustment).setText((view.findViewById<TextView>(R.id.adjustment).text.toString().toInt() - 1).toString())
+                sp.edit(commit = true) {
+                    putInt("adjustment_$index", view.findViewById<TextView>(R.id.adjustment).text.toString().toInt())
+                }
+                updateTime()
+            }
+        }
     }
 
 }

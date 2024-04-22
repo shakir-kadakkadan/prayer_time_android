@@ -48,7 +48,7 @@ object Util {
                 date.add(Calendar.DATE, 1)
             val dateS = SimpleDate(date)
             val azan = getAthanObj(latitude, longitude)
-            val prayerTimes = azan.getPrayerTimes(dateS).times.map { Date(dateS.year-1900,dateS.month-1,dateS.day,it.hour,it.minute,it.second) }
+            val prayerTimes = azan.getAthanOfDate(dateS)
             (0..5).forEachIndexed { index, prayersType ->
                 arrayOf(false, true).forEach { _isIqama ->
                     val isIqama = _isIqama && index != 1
