@@ -5,11 +5,16 @@
     android:layout_height="wrap_content"
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="horizontal"
-    android:layout_gravity="end"
-    android:gravity="end"
-    android:layoutDirection="rtl"
-    android:textDirection="rtl"
+    android:layout_gravity="start"
+    android:gravity="start"
+    android:layoutDirection="ltr"
+    android:textDirection="ltr"
    >
+
+
+
+
+
 
 
 
@@ -24,13 +29,10 @@
 
         />
 
-
-
-
     <TextView
-        android:gravity="end|center_vertical"
+        android:gravity="start|center_vertical"
         android:id="@+id/prayerTime"
-        android:layout_width="@dimen/_40sdp"
+        android:layout_width="@dimen/_50sdp"
         android:layout_height="wrap_content"
         tools:text="Time"
         android:textColor="@color/white"

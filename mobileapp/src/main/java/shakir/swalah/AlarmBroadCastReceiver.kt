@@ -160,7 +160,7 @@ val pendingIntent: PendingIntent = PendingIntent.getActivity(this, 0, intent, 0)
 
     var NotificationSoundUri:Uri?=null
     var channelName="Adhan"
-    if (sp.getBoolean("soundTypeIsAlarm", true)) {
+    if (sp.getBoolean("soundTypeIsAlarm", false)) {
         playSound(context, path)
         channelName="Adhan"
     }else{

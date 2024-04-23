@@ -100,24 +100,29 @@ class IqamaActivity : BaseActivity() {
                 }
                 view.afterTime.setText(iqama.after.toString())
                 view.atTime.setOnClickListener {
-                    TimePickerFragment { HH, m ->
-                        iqama.fixed = Calendar.getInstance().apply {
-                            timeInMillis = prayTime.time
-                            set(Calendar.HOUR_OF_DAY, HH)
-                            set(Calendar.MINUTE, m)
-                            set(Calendar.SECOND, 0)
-                            set(Calendar.MILLISECOND, 0)
-                        }.timeInMillis
-                        view.atTime.setText(SimpleDateFormat(timeFormat, Locale.ENGLISH).format(Date(iqama.fixed)).ltrEmbed())
-                        Util.saveIqamaSettings(iqamaSettins)
-                        Util.setNextAlarm(this@IqamaActivity)
+                    try {
+                        TimePickerFragment { HH, m ->
+                            iqama.fixed = Calendar.getInstance().apply {
+                                timeInMillis = prayTime.time
+                                set(Calendar.HOUR_OF_DAY, HH)
+                                set(Calendar.MINUTE, m)
+                                set(Calendar.SECOND, 0)
+                                set(Calendar.MILLISECOND, 0)
+                            }.timeInMillis
+                            view.atTime.setText(SimpleDateFormat(timeFormat, Locale.ENGLISH).format(Date(iqama.fixed)).ltrEmbed())
+                            Util.saveIqamaSettings(iqamaSettins)
+                            Util.setNextAlarm(this@IqamaActivity)
 
-                    }.apply {
+                        }.apply {
 
-                        arguments = Bundle().apply {
-                            putLong("prayTime", fixed)
-                        }
-                    }.show(supportFragmentManager, "timePicker")
+                            arguments = Bundle().apply {
+                                putLong("prayTime", fixed)
+                            }
+                        }.show(supportFragmentManager, "timePicker")
+                    } catch (e: Exception) {
+                        e.report()
+                        toast(e.message)
+                    }
                 }
 
                 if (setAction) {

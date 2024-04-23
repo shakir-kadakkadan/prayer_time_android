@@ -1386,7 +1386,11 @@ fun SharedPreferences.getDouble(key: String, default: Double) =
 fun Activity?.toast(s: Any?) {
     if (this != null) {
         this.runOnUiThread {
-            Toast.makeText(this, "$s", Toast.LENGTH_SHORT).show()
+            try {
+                Toast.makeText(this, "$s", Toast.LENGTH_SHORT).show()
+            } catch (e: Exception) {
+               e.printStackTrace()
+            }
         }
 
     }

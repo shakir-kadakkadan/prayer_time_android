@@ -21,6 +21,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import androidx.core.content.edit
 import androidx.core.os.ConfigurationCompat
+import androidx.core.view.isVisible
 import com.azan.Azan
 
 import com.azan.astrologicalCalc.Location
@@ -127,8 +128,6 @@ class MainActivity : BaseActivity() {
         binding.locationLL.setOnClickListener {
             startActivity(Intent(this, LocationSelectorAvtivity::class.java))
         }
-
-
 
 
     }
@@ -241,7 +240,6 @@ class MainActivity : BaseActivity() {
             }
 
 
-
             val redMinuteAdhan = if (currentPrayTime!!.second == 1) 10L else 20L
 
             if (currentIqamaMilli != null && System.currentTimeMillis() > currentIqamaMilli!! && System.currentTimeMillis() <= (currentIqamaMilli!! + TimeUnit.MINUTES.toMillis(10))) {
@@ -301,9 +299,6 @@ class MainActivity : BaseActivity() {
         countDownTimer.start()
         onMinuteUpdate(isOnResume = true)
         updator()
-
-
-
 
 
     }
@@ -453,29 +448,55 @@ class MainActivity : BaseActivity() {
 
 
 
-        binding.prayerTimeLl.MIDNIGHT.prayerName.setText("Mid night")
-        binding.prayerTimeLl.THIRDNIGHT.prayerName.setText("Third night(m)")
-        binding.prayerTimeLl.THIRDNIGHTISHA.prayerName.setText("Third night(i)")
-        binding.prayerTimeLl.MIDNIGHT.prayerTime.setText(SimpleDateFormat(timeFormat, Locale.ENGLISH).format(Date(prayerTimes[0].time.plus(prayerTimesYest[4].time).div(2))).ltrEmbed())
-        binding.prayerTimeLl.THIRDNIGHT.prayerTime.setText(
-            SimpleDateFormat(timeFormat, Locale.ENGLISH).format(
-                Date(
-                    prayerTimes[0].time.minus(
-                        prayerTimes[0].time.minus(prayerTimesYest[4].time).div(3)
-                    )
-                )
-            ).ltrEmbed()
-        )
+        if (sp.getInt("showMidNight", 0) == 1) {
+            binding.prayerTimeLl.MIDNIGHT.prayerName.setText("Mid night")
+            binding.prayerTimeLl.MIDNIGHT.prayerTime.setText(SimpleDateFormat(timeFormat, Locale.ENGLISH).format(Date(prayerTimes[0].time.plus(prayerTimesYest[4].time).div(2))).ltrEmbed())
+            binding.prayerTimeLl.MIDNIGHT.root.isVisible = true
+        } else {
+            binding.prayerTimeLl.MIDNIGHT.root.isVisible = false
+        }
 
-        binding.prayerTimeLl.THIRDNIGHTISHA.prayerTime.setText(
-            SimpleDateFormat(timeFormat, Locale.ENGLISH).format(
-                Date(
-                    prayerTimes[0].time.minus(
-                        prayerTimes[0].time.minus(prayerTimesYest[5].time).div(3)
+        if (sp.getInt("showThirdNight", 0) == 0) {
+            binding.prayerTimeLl.THIRDNIGHTISHA.root.isVisible = true
+            binding.prayerTimeLl.THIRDNIGHTISHA.prayerName.setText("Third night")
+            binding.prayerTimeLl.THIRDNIGHTISHA.prayerTime.setText(
+                SimpleDateFormat(timeFormat, Locale.ENGLISH).format(
+                    Date(
+                        prayerTimes[0].time.minus(
+                            prayerTimes[0].time.minus(prayerTimesYest[5].time).div(3)
+                        )
                     )
-                )
-            ).ltrEmbed()
-        )
+                ).ltrEmbed()
+            )
+        } else {
+            binding.prayerTimeLl.THIRDNIGHTISHA.root.isVisible = false
+        }
+
+        if (sp.getInt("showThirdNight", 0) == 1) {
+            binding.prayerTimeLl.THIRDNIGHT.prayerName.setText("Third night")
+            binding.prayerTimeLl.THIRDNIGHT.root.isVisible = true
+            binding.prayerTimeLl.THIRDNIGHT.prayerTime.setText(
+                SimpleDateFormat(timeFormat, Locale.ENGLISH).format(
+                    Date(
+                        prayerTimes[0].time.minus(
+                            prayerTimes[0].time.minus(prayerTimesYest[4].time).div(3)
+                        )
+                    )
+                ).ltrEmbed()
+            )
+        } else {
+            binding.prayerTimeLl.THIRDNIGHT.root.isVisible = false
+        }
+
+
+
+
+
+
+
+
+
+
 
         Util.setNextAlarm(this)
 
@@ -533,11 +554,16 @@ class MainActivity : BaseActivity() {
                                 .setTitle("Warning")
                                 .setMessage("Battery optimization mode is enabled. It can interrupt Adhan notifications and alarms. Please Allow \"Stop optimising Battery Usage\"")
                                 .setPositiveButton("OK") { dialog, which ->
-                                    dialog.dismiss()
-                                    startActivity(with(Intent()) {
-                                        action = ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS
-                                        setData(Uri.parse("package:${BuildConfig.APPLICATION_ID}"))
-                                    })
+                                    try {
+                                        dialog.dismiss()
+                                        startActivity(with(Intent()) {
+                                            action = ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS
+                                            setData(Uri.parse("package:${BuildConfig.APPLICATION_ID}"))
+                                        })
+                                    } catch (e: Exception) {
+                                      e.report()
+                                        toast(e.message)
+                                    }
 
                                 }
                                 .setNegativeButton("Ignore") { dialog, which ->
@@ -616,31 +642,31 @@ fun sendGetRequest(urlString: String): String? {
 
 fun getAthanObj(latitude: Double, longitude: Double): Azan {
     val defaultTimeZone: TimeZone = TimeZone.getDefault()
-    var dstOffsetInHours: Int=0
+    var dstOffsetInHours: Int = 0
     dstOffsetInHours = if (defaultTimeZone.useDaylightTime()) {
         val dstOffsetInMillis = defaultTimeZone.dstSavings
         TimeUnit.MILLISECONDS.toHours(dstOffsetInMillis.toLong()).toInt()
     } else {
         0
     }
-    val sp=Util.getMySharedPreference(AppApplication.instance)
+    val sp = Util.getMySharedPreference(AppApplication.instance)
     var tm = sp.getInt("timeMethods", 0)
 
 
-    val gmtOffsetInMillis= defaultTimeZone.getRawOffset()/(3600000.0)
+    val gmtOffsetInMillis = defaultTimeZone.getRawOffset() / (3600000.0)
     val calendar = Calendar.getInstance(defaultTimeZone)
     //val isDST = defaultTimeZone.inDaylightTime(calendar.getTime())
     val location = Location(latitude, longitude, gmtOffsetInMillis, dstOffsetInHours)
-    val azan = Azan(location, timeMethods[tm].first,)
+    val azan = Azan(location, timeMethods[tm].first)
     return azan
 }
 
 
 fun Azan.getAthanOfDate(today: SimpleDate): List<Date> {
-   return getPrayerTimes(today).times.mapIndexed { index, it ->
-       val adj = AppApplication.sp.getInt("adjustment_$index", 0)
-       Date(Date(today.year - 1900, today.month - 1, today.day, it.hour, it.minute, it.second).time + (adj * 60000))
-   }
+    return getPrayerTimes(today).times.mapIndexed { index, it ->
+        val adj = AppApplication.sp.getInt("adjustment_$index", 0)
+        Date(Date(today.year - 1900, today.month - 1, today.day, it.hour, it.minute, it.second).time + (adj * 60000))
+    }
 }
 
 

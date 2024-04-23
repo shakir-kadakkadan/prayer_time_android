@@ -20,7 +20,7 @@
         android:theme="@style/Theme.MyApplication"
         tools:ignore="GoogleAppIndexingWarning"
         tools:replace="android:allowBackup">
-        <activity android:name=".LogActivity"  android:screenOrientation="portrait"></activity>
+      <!--  <activity android:name=".LogActivity"  android:screenOrientation="portrait"></activity>-->
         <activity
             android:name=".QiblaActivity"
             android:screenOrientation="portrait"></activity>

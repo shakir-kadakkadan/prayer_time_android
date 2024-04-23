@@ -36,194 +36,287 @@
         </TextView>
 
 
-        <TextView
-            android:id="@+id/adhanTimeSettings"
+        <androidx.core.widget.NestedScrollView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="16dp"
-            android:text="Adhan Time Settings"
-            android:textColor="@color/white"
-            android:textSize="16dp"
-            android:visibility="visible" />
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1px"
-            android:background="#FF9800"
-            android:visibility="visible" />
+            android:layout_height="match_parent"
+            android:orientation="vertical">
 
 
-        <TextView
-            android:id="@+id/battery"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="16dp"
-            android:text="Stop Battery Optimisation"
-            android:textColor="@color/white"
-            android:textSize="16dp" />
-
-        <View
-            android:id="@+id/batteryLine"
-            android:layout_width="match_parent"
-            android:layout_height="1px"
-            android:background="#FF9800" />
-
-        <TextView
-
-            android:id="@+id/iqama"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="16dp"
-            android:text="Iqama Time (وقت الإقامة)"
-            android:textColor="@color/white"
-            android:textSize="16dp" />
-
-        <View
-            android:id="@+id/iqamaLine"
-            android:layout_width="match_parent"
-            android:layout_height="1px"
-            android:background="#FF9800" />
-
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-
-            <TextView
-
-
-                android:layout_width="0dp"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:padding="16dp"
-                android:text="Adhan Reminder (تذكير الأذان)"
-                android:textColor="@color/white"
-                android:textSize="16dp" />
+                android:orientation="vertical">
 
 
-            <Switch
-                android:id="@+id/adhanAlarm"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:checked="true" />
+                <TextView
+                    android:id="@+id/adhanTimeSettings"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="16dp"
+                    android:text="Adhan Time Settings"
+                    android:textColor="@color/white"
+                    android:textSize="16dp"
+                    android:visibility="visible" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1px"
+                    android:background="#FF9800"
+                    android:visibility="visible" />
 
 
-        </LinearLayout>
+                <TextView
+                    android:id="@+id/battery"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="16dp"
+                    android:text="Stop Battery Optimisation"
+                    android:textColor="@color/white"
+                    android:textSize="16dp" />
 
-        <View
+                <View
+                    android:id="@+id/batteryLine"
+                    android:layout_width="match_parent"
+                    android:layout_height="1px"
+                    android:background="#FF9800" />
 
-            android:layout_width="match_parent"
-            android:layout_height="1px"
-            android:background="#FF9800" />
+                <TextView
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
+                    android:id="@+id/iqama"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="16dp"
+                    android:text="Iqama Time (وقت الإقامة)"
+                    android:textColor="@color/white"
+                    android:textSize="16dp" />
 
-            <TextView
-
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:padding="16dp"
-                android:text="Iqama Reminder (تذكير الإقامة)"
-                android:textColor="@color/white"
-                android:textSize="16dp" />
-
-            <Switch
-                android:id="@+id/iqamaAlarm"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:checked="false" />
-
-
-        </LinearLayout>
-
-        <View
-
-            android:layout_width="match_parent"
-            android:layout_height="1px"
-            android:background="#FF9800" />
-
-        <LinearLayout
-            android:id="@+id/sound"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-
-            <TextView
-
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:padding="16dp"
-                android:text="Sound Settings"
-                android:textColor="@color/white"
-                android:textSize="16dp" />
+                <View
+                    android:id="@+id/iqamaLine"
+                    android:layout_width="match_parent"
+                    android:layout_height="1px"
+                    android:background="#FF9800" />
 
 
-        </LinearLayout>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
 
-        <View
-
-            android:layout_width="match_parent"
-            android:layout_height="1px"
-            android:background="#FF9800" />
-
-
-        <LinearLayout
-            android:id="@+id/share"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-
-            <TextView
-
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:padding="16dp"
-                android:text="Share this app"
-                android:textColor="@color/white"
-                android:textSize="16dp" />
+                    <TextView
 
 
-        </LinearLayout>
-
-        <View
-
-            android:layout_width="match_parent"
-            android:layout_height="1px"
-            android:background="#FF9800" />
-
-
-        <LinearLayout
-            android:id="@+id/contactUs"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-
-            <TextView
-
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:padding="16dp"
-                android:text="Contact Us, Inform a bug/error, Request a feature"
-                android:textColor="@color/white"
-                android:textSize="16dp" />
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:padding="16dp"
+                        android:text="Adhan Reminder (تذكير الأذان)"
+                        android:textColor="@color/white"
+                        android:textSize="16dp" />
 
 
-        </LinearLayout>
+                    <Switch
+                        android:id="@+id/adhanAlarm"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:checked="true" />
 
-        <View
 
-            android:layout_width="match_parent"
-            android:layout_height="1px"
-            android:background="#FF9800" />
+                </LinearLayout>
 
+                <View
+
+                    android:layout_width="match_parent"
+                    android:layout_height="1px"
+                    android:background="#FF9800" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:padding="16dp"
+                        android:text="Iqama Reminder (تذكير الإقامة)"
+                        android:textColor="@color/white"
+                        android:textSize="16dp" />
+
+                    <Switch
+                        android:id="@+id/iqamaAlarm"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:checked="false" />
+
+
+                </LinearLayout>
+
+                <View
+
+                    android:layout_width="match_parent"
+                    android:layout_height="1px"
+                    android:background="#FF9800" />
+
+                <LinearLayout
+                    android:id="@+id/midnight"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:id="@+id/midnightT"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:padding="16dp"
+                        android:text="Show Midnight Time"
+                        android:textColor="@color/white"
+                        android:textSize="16dp" />
+
+                    <TextView
+                        android:id="@+id/midnightValue"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:padding="16dp"
+                        android:text="val"
+                        android:textColor="@color/white"
+                        android:textSize="14dp" />
+
+
+                </LinearLayout>
+
+
+                <View
+
+                    android:layout_width="match_parent"
+                    android:layout_height="1px"
+                    android:background="#FF9800" />
+
+                <LinearLayout
+                    android:id="@+id/thirdNight"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:id="@+id/thirdNightT"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:padding="16dp"
+                        android:text="Show Third Night Time"
+                        android:textColor="@color/white"
+                        android:textSize="16dp" />
+
+                    <TextView
+                        android:id="@+id/thirdNightValue"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:padding="16dp"
+                        android:text="val"
+                        android:textColor="@color/white"
+                        android:textSize="14dp" />
+
+
+                </LinearLayout>
+
+
+
+                <View
+
+                    android:layout_width="match_parent"
+                    android:layout_height="1px"
+                    android:background="#FF9800" />
+
+
+
+
+
+
+
+
+                <LinearLayout
+                    android:id="@+id/sound"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:padding="16dp"
+                        android:text="Sound Settings"
+                        android:textColor="@color/white"
+                        android:textSize="16dp" />
+
+
+                </LinearLayout>
+
+                <View
+
+                    android:layout_width="match_parent"
+                    android:layout_height="1px"
+                    android:background="#FF9800" />
+
+
+                <LinearLayout
+                    android:id="@+id/share"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:padding="16dp"
+                        android:text="Share this app"
+                        android:textColor="@color/white"
+                        android:textSize="16dp" />
+
+
+                </LinearLayout>
+
+                <View
+
+                    android:layout_width="match_parent"
+                    android:layout_height="1px"
+                    android:background="#FF9800" />
+
+
+                <LinearLayout
+                    android:id="@+id/contactUs"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:padding="16dp"
+                        android:text="Contact Us, Inform a bug/error, Request a feature"
+                        android:textColor="@color/white"
+                        android:textSize="16dp" />
+
+
+                </LinearLayout>
+
+                <View
+
+                    android:layout_width="match_parent"
+                    android:layout_height="1px"
+                    android:background="#FF9800" />
+
+
+            </LinearLayout>
+
+
+        </androidx.core.widget.NestedScrollView>
 
     </LinearLayout>
 

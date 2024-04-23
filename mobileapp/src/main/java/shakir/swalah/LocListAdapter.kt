@@ -19,9 +19,9 @@ class LocListAdapter(val function: (Cord) -> Unit) : RecyclerView.Adapter<LocLis
     }
 
     override fun onBindViewHolder(holder: VH, position: Int) {
-        holder.binding.locationTV.setText(arrayList.get(position).name)
+        holder.binding.locationTV.setText(arrayList.getOrNull(position)?.name)
         holder.binding.root.setOnClickListener {
-            function?.invoke(arrayList.get(position))
+            arrayList.getOrNull(position)?.let { it1 -> function?.invoke(it1) }
         }
     }
 

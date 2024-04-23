@@ -91,48 +91,52 @@ abstract class MainActivityLocation : BaseActivity() {
 
     @SuppressLint("MissingPermission")
     private fun getLastLocation() {
-        if (hasLocationPermissions()) {
-            if (isLocationEnabled()) {
+        try {
+            if (hasLocationPermissions()) {
+                if (isLocationEnabled()) {
 
-                mFusedLocationClient.lastLocation.addOnCompleteListener(this) { task ->
-                    var location: Location? = task.result
-                    if (location == null) {
-                        requestNewLocationData()
-                    } else {
-                        onLocationServiceResult(location)
+                    mFusedLocationClient.lastLocation.addOnCompleteListener(this) { task ->
+                        var location: Location? = task.result
+                        if (location == null) {
+                            requestNewLocationData()
+                        } else {
+                            onLocationServiceResult(location)
+                        }
                     }
+                } else {
+                    val builder =
+                        LocationSettingsRequest.Builder().addLocationRequest(requestNewLocationData())
+                    builder.setAlwaysShow(true)
+                    val result =
+                        LocationServices.getSettingsClient(this).checkLocationSettings(builder.build())
+                    result.addOnSuccessListener {
+                        Log.d("hgdhag", "addOnSuccessListener ${it.locationSettingsStates}")
+                    }
+                    result.addOnFailureListener {
+                        it.printStackTrace()
+                        Log.d("hgdhag", "addOnFailureListener ${it.message}")
+                        if (it is ResolvableApiException) {
+                            // Location settings are not satisfied, but this can be fixed
+                            // by showing the user a dialog.
+                            try {
+                                // Show the dialog by calling startResolutionForResult(),
+                                // and check the result in onActivityResult().
+                                it.startResolutionForResult(this, 1)
+                            } catch (sendEx: IntentSender.SendIntentException) {
+                                // Ignore the error.
+                                sendEx.printStackTrace()
+                            }
+
+                        }
+                    }
+
+
                 }
             } else {
-                val builder =
-                    LocationSettingsRequest.Builder().addLocationRequest(requestNewLocationData())
-                builder.setAlwaysShow(true)
-                val result =
-                    LocationServices.getSettingsClient(this).checkLocationSettings(builder.build())
-                result.addOnSuccessListener {
-                    Log.d("hgdhag", "addOnSuccessListener ${it.locationSettingsStates}")
-                }
-                result.addOnFailureListener {
-                    it.printStackTrace()
-                    Log.d("hgdhag", "addOnFailureListener ${it.message}")
-                    if (it is ResolvableApiException) {
-                        // Location settings are not satisfied, but this can be fixed
-                        // by showing the user a dialog.
-                        try {
-                            // Show the dialog by calling startResolutionForResult(),
-                            // and check the result in onActivityResult().
-                            it.startResolutionForResult(this, 1)
-                        } catch (sendEx: IntentSender.SendIntentException) {
-                            // Ignore the error.
-                            sendEx.printStackTrace()
-                        }
-
-                    }
-                }
-
-
+                requestPermissions()
             }
-        } else {
-            requestPermissions()
+        } catch (e: Exception) {
+            toast(e.message)
         }
     }
 

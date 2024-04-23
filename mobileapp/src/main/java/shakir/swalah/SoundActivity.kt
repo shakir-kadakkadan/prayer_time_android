@@ -24,7 +24,7 @@ class SoundActivity : BaseActivity() {
         adjustWithSystemWindow(binding.rootViewLL, binding.topSpacer, true)
 
 
-        binding.alarm.isChecked = sp.getBoolean("soundTypeIsAlarm", true) == true
+        binding.alarm.isChecked = sp.getBoolean("soundTypeIsAlarm", false) == true
         binding.notification.isChecked = !binding.alarm.isChecked
         binding.soundType.setOnCheckedChangeListener { group, checkedId ->
             if (checkedId == R.id.alarm) {
