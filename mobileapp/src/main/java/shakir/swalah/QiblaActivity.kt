@@ -24,7 +24,12 @@ class QiblaActivity : MainActivityLocation() {
         subLocality: String,
         countryName: String
     ) {
-        updateCompassView(location, locality)
+        try {
+            updateCompassView(location, locality)
+        } catch (e: Exception) {
+           e.report()
+            toast(e.message)
+        }
     }
 
 
@@ -36,7 +41,12 @@ class QiblaActivity : MainActivityLocation() {
         setContentView(binding.root)
         adjustWithSystemWindow(binding.rootViewLL, binding.topSpacer, true)
         binding.locationButton.setOnClickListener {
-           requestForGPSLocationWithRotationAnimation()
+            try {
+                requestForGPSLocationWithRotationAnimation()
+            } catch (e: Exception) {
+                e.report()
+                toast(e.message)
+            }
         }
 
     }
@@ -63,7 +73,12 @@ class QiblaActivity : MainActivityLocation() {
                 }, locality = locality)
 
 
-                startLocationServiceInitialisation()
+                try {
+                    startLocationServiceInitialisation()
+                } catch (e: Exception) {
+                    e.report()
+                    toast(e.message)
+                }
             }
         } catch (e: Exception) {
             FirebaseCrashlytics.getInstance().recordException(e)

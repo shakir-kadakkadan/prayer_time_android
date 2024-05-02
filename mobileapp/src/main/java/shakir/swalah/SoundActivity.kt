@@ -2,7 +2,6 @@ package shakir.swalah
 
 import android.app.AlertDialog
 import android.app.NotificationManager
-import android.app.ProgressDialog
 import android.content.Context
 import android.content.DialogInterface
 import android.media.RingtoneManager
@@ -12,7 +11,14 @@ import android.widget.SeekBar
 import android.widget.SeekBar.OnSeekBarChangeListener
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.edit
+import androidx.lifecycle.lifecycleScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import org.json.JSONObject
 import shakir.swalah.databinding.ActivitySoundBinding
+import java.io.File
+import java.net.URLEncoder
 
 
 class SoundActivity : BaseActivity() {
@@ -67,7 +73,7 @@ class SoundActivity : BaseActivity() {
 
     }
 
-    fun updateAudioNameTextViews(){
+    fun updateAudioNameTextViews() {
         binding.adhanSoundAudioName.setText(sp.getString("${"athan_"}soundName", null))
         binding.iqamaAudioName.setText(sp.getString("${"iqama_"}soundName", null))
     }
@@ -84,12 +90,19 @@ class SoundActivity : BaseActivity() {
 
     fun showSoundList(key: String) {
 
+
+
+
+        val dir = File(filesDir, "adhanMp3s")
+        val fileList=dir.listFiles().filter { it.isFile }
+
+        println("fileList ${fileList.map { it.path }.joinToString(",")}")
+
         val appSoundList = arrayListOf(
-            "athan" to R.raw.athan,
-            "beep_beep_beep" to R.raw.beep_beep_beep,
             "message_tone" to R.raw.message_tone,
             "mixkit_access_allowed_tone_2869" to R.raw.mixkit_access_allowed_tone_2869,
-            "complete_quest_requirement" to R.raw.complete_quest_requirement,
+            "beep_beep_beep" to R.raw.beep_beep_beep,
+            "athan" to R.raw.athan,
         )
 
         var prevSoundName = sp.getString("${key}soundName", null)
@@ -97,7 +110,7 @@ class SoundActivity : BaseActivity() {
 
         val list: ArrayList<String> = arrayListOf()
         list.addAll(appSoundList.map { it.first })
-
+        list.addAll(fileList.map { it.name })
         list.addAll(notificationSounds.map { it.first })
         var pos = -1
         if (sp.getString("${key}soundName", null) != null) {
@@ -114,7 +127,13 @@ class SoundActivity : BaseActivity() {
 //                    playSound(this@SoundActivity, notificationSounds.first { it.first == list.get(pos) }.second)
 //                }
 
-                if (appSoundList.map { it.first }.contains(list.get(pos))) {
+                if (fileList.find { it.name==list.get(pos)}!=null) {
+                    val path = Uri.fromFile(fileList.find { it.name==list.get(pos)})
+                    sp.edit(commit = true) {
+                        putString("${key}sound", path.toString())
+                        putString("${key}soundName", list.get(pos))
+                    }
+                } else if (appSoundList.map { it.first }.contains(list.get(pos))) {
                     val path = Uri.parse("android.resource://" + AppApplication.instance.packageName + "/" + appSoundList.get(pos).second)
                     sp.edit(commit = true) {
                         putString("${key}sound", path.toString())
@@ -155,10 +174,18 @@ class SoundActivity : BaseActivity() {
 
 
     }
-    lateinit var notificationSounds: ArrayList<Pair<String, Uri>>
+
+    val notificationSounds: ArrayList<Pair<String, Uri>> = arrayListOf()
     override fun onStart() {
         super.onStart()
-        notificationSounds = getNotificationSounds(this)
+        try {
+            notificationSounds.clear()
+            notificationSounds.addAll(getNotificationSounds(this))
+        } catch (e: Exception) {
+            e.report()
+        }
+        downloadSounds(force = true)
+
     }
 
 

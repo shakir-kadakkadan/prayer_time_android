@@ -34,7 +34,10 @@ import com.google.firebase.ktx.Firebase
 import shakir.swalah.Util.isiqamaAlarmOn
 import shakir.swalah.databinding.ActivityMainBinding
 import shakir.swalah.models.Cord
+import java.io.BufferedInputStream
 import java.io.BufferedReader
+import java.io.File
+import java.io.FileOutputStream
 import java.io.InputStreamReader
 import java.net.HttpURLConnection
 import java.net.URL
@@ -388,6 +391,8 @@ class MainActivity : BaseActivity() {
         } catch (e: Exception) {
             e.printStackTrace()
         }
+
+        downloadSounds()
     }
 
     var nextPrayTime: Pair<Date, Int>? = null
@@ -639,6 +644,42 @@ fun sendGetRequest(urlString: String): String? {
 
     return response
 }
+
+fun downloadFileGET(urlString: String, file: File) {
+    val connection: HttpURLConnection?
+
+    try {
+        // Create URL object
+        val url = URL(urlString)
+
+        // Open connection
+        connection = url.openConnection() as HttpURLConnection
+
+        // Set request method
+        connection.requestMethod = "GET"
+
+        // Connect to the server
+        connection.connect()
+
+        // Read the binary data
+        val inputStream = BufferedInputStream(connection.inputStream)
+        val fileOutputStream = FileOutputStream(file)
+        val buffer = ByteArray(1024)
+        var bytesRead: Int
+        while (inputStream.read(buffer).also { bytesRead = it } != -1) {
+            fileOutputStream.write(buffer, 0, bytesRead)
+        }
+        fileOutputStream.close()
+        inputStream.close()
+        connection.disconnect()
+
+    } catch (e: Exception) {
+        e.printStackTrace()
+    }
+}
+
+
+
 
 fun getAthanObj(latitude: Double, longitude: Double): Azan {
     val defaultTimeZone: TimeZone = TimeZone.getDefault()

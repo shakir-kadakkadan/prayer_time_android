@@ -1,9 +1,6 @@
 package shakir.swalah
 
-import android.Manifest
-import android.content.Context
 import android.content.SharedPreferences
-import android.content.pm.PackageManager
 import android.content.res.Configuration
 import android.graphics.Color
 import android.os.Build
@@ -11,12 +8,20 @@ import android.os.Bundle
 import android.view.View
 import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat
+import androidx.core.content.edit
+import androidx.lifecycle.lifecycleScope
 import com.google.firebase.analytics.FirebaseAnalytics
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import org.json.JSONObject
+import java.io.File
+import java.net.URLEncoder
+import java.util.concurrent.TimeUnit
 
 
 open class BaseActivity : AppCompatActivity() {
-//    lateinit var appDatabase: AppDatabase
+    //    lateinit var appDatabase: AppDatabase
     val sp: SharedPreferences
         get() {
             return Util.getMySharedPreference(this)
@@ -103,10 +108,60 @@ open class BaseActivity : AppCompatActivity() {
 
     }
 
+    fun downloadSounds(force:Boolean=false) {
+        try {
+            val lastDownloaded=sp.getLong("lastDownloaded",0L)
+            if (force||TimeUnit.MILLISECONDS.toHours(System.currentTimeMillis()-lastDownloaded)>25){
+                lifecycleScope.launch {
+                    try {
+                        withContext(Dispatchers.IO) {
+                            try {
+                                val s = sendGetRequest("https://firebasestorage.googleapis.com/v0/b/prayer-time-shakir.appspot.com/o/")
+                                println("sssss")
+                                println(s)
+                                val jsonArray = JSONObject(s).getJSONArray("items")
+                                for (i in 0 until jsonArray.length()) {
+                                    try {
+                                        val name = jsonArray.getJSONObject(i).getString("name")
+                                        if (name.startsWith("adhan/")) {
+                                            val temp = File(filesDir, "temp")
+                                            val dir = File(filesDir, "adhanMp3s")
+                                            if (!dir.exists()) dir.mkdir()
+                                            val mp3 = File(dir, name.replaceFirst("adhan/",""))
+                                            if (mp3.length() <= 0) {
+                                                val token = JSONObject(sendGetRequest("https://firebasestorage.googleapis.com/v0/b/prayer-time-shakir.appspot.com/o/${URLEncoder.encode(name)}")).getString("downloadTokens")
+                                                downloadFileGET("https://firebasestorage.googleapis.com/v0/b/prayer-time-shakir.appspot.com/o/${URLEncoder.encode(name)}?alt=media&token=$token", temp)
+                                                temp.copyTo(mp3)
+                                                temp.delete()
+                                            }
+                                            println("fileList mp3 ${mp3.path} ${mp3.length()}")
+                                        }
 
 
+                                    } catch (e: Exception) {
+                                        e.printStackTrace()
+                                    }
+                                }
 
+                                sp.edit(commit = true) {
+                                    putLong("lastDownloaded",System.currentTimeMillis())
+                                }
 
+                            } catch (e: Exception) {
+                                e.printStackTrace()
+                            }
+
+                        }
+                    } catch (e: Exception) {
+                        e.printStackTrace()
+                    }
+                }
+            }
+        } catch (e: Exception) {
+           e.printStackTrace()
+        }
+
+    }
 
 
 }
