@@ -16,6 +16,7 @@ import android.os.CountDownTimer
 import android.os.Handler
 import android.os.PowerManager
 import android.provider.Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS
+import android.view.WindowManager
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
@@ -23,10 +24,8 @@ import androidx.core.content.edit
 import androidx.core.os.ConfigurationCompat
 import androidx.core.view.isVisible
 import com.azan.Azan
-
 import com.azan.astrologicalCalc.Location
 import com.azan.astrologicalCalc.SimpleDate
-
 import com.github.msarhan.ummalqura.calendar.UmmalquraCalendar
 import com.google.firebase.crashlytics.ktx.crashlytics
 import com.google.firebase.crashlytics.ktx.setCustomKeys
@@ -72,6 +71,7 @@ class MainActivity : BaseActivity() {
     private lateinit var binding: ActivityMainBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        showWhenLockedAndTurnScreenOn()
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
@@ -134,6 +134,28 @@ class MainActivity : BaseActivity() {
 
 
     }
+
+    private fun showWhenLockedAndTurnScreenOn() {
+        val win = window
+        win.addFlags(WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED)
+        win.addFlags(
+            WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON
+                    or WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON
+                    or WindowManager.LayoutParams.FLAG_ALLOW_LOCK_WHILE_SCREEN_ON
+        )
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1) {
+            setShowWhenLocked(true)
+            setTurnScreenOn(true)
+        } else {
+            window.addFlags(
+                WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED
+                        or WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON
+            )
+        }
+    }
+
+
 
 
     fun millisecondsToHMS(milliseconds: Long): String {
@@ -302,6 +324,12 @@ class MainActivity : BaseActivity() {
         countDownTimer.start()
         onMinuteUpdate(isOnResume = true)
         updator()
+
+        try {
+            ringtone?.stop()
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
 
 
     }

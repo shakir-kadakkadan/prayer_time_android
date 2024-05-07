@@ -2,23 +2,23 @@ package shakir.swalah
 
 import android.app.AlertDialog
 import android.app.NotificationManager
+import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.DialogInterface
+import android.content.Intent
+import android.content.IntentFilter
+import android.media.AudioManager
 import android.media.RingtoneManager
 import android.net.Uri
 import android.os.Bundle
+import android.view.KeyEvent
 import android.widget.SeekBar
 import android.widget.SeekBar.OnSeekBarChangeListener
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.FileProvider
 import androidx.core.content.edit
-import androidx.lifecycle.lifecycleScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import org.json.JSONObject
 import shakir.swalah.databinding.ActivitySoundBinding
 import java.io.File
-import java.net.URLEncoder
 
 
 class SoundActivity : BaseActivity() {
@@ -33,6 +33,7 @@ class SoundActivity : BaseActivity() {
         binding.alarm.isChecked = sp.getBoolean("soundTypeIsAlarm", false) == true
         binding.notification.isChecked = !binding.alarm.isChecked
         binding.soundType.setOnCheckedChangeListener { group, checkedId ->
+            stopPlay()
             if (checkedId == R.id.alarm) {
                 sp.edit { putBoolean("soundTypeIsAlarm", true) }
             }
@@ -54,6 +55,7 @@ class SoundActivity : BaseActivity() {
             }
 
             override fun onStopTrackingTouch(seekBar: SeekBar?) {
+                stopPlay()
                 sp.edit { putInt("alarmVolumeSeekBar100", seekBar!!.progress) }
                 showNoti(this@SoundActivity, "Sample")
             }
@@ -62,29 +64,34 @@ class SoundActivity : BaseActivity() {
 
 
         binding.adhanSound.setOnClickListener {
-
+            stopPlay()
             showSoundList("athan_")
         }
         binding.iqamaAudio.setOnClickListener {
+            stopPlay()
             showSoundList("iqama_")
         }
         updateAudioNameTextViews()
+
+        val filter = IntentFilter("android.media.VOLUME_CHANGED_ACTION")
+        registerReceiver(volumeChangeReceiver, filter)
+
+        binding.root.setOnClickListener {
+            stopPlay()
+        }
 
 
     }
 
     fun updateAudioNameTextViews() {
+        stopPlay()
         binding.adhanSoundAudioName.setText(sp.getString("${"athan_"}soundName", null))
         binding.iqamaAudioName.setText(sp.getString("${"iqama_"}soundName", null))
     }
 
     override fun onPause() {
         super.onPause()
-        try {
-            (this.getSystemService(AppCompatActivity.NOTIFICATION_SERVICE) as NotificationManager).cancelAll()
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
+        stopPlay()
     }
 
 
@@ -128,7 +135,7 @@ class SoundActivity : BaseActivity() {
 //                }
 
                 if (fileList.find { it.name==list.get(pos)}!=null) {
-                    val path = Uri.fromFile(fileList.find { it.name==list.get(pos)})
+                    val path = FileProvider.getUriForFile(this, "${this.packageName}.provider", fileList.find { it.name==list.get(pos)}!!)
                     sp.edit(commit = true) {
                         putString("${key}sound", path.toString())
                         putString("${key}soundName", list.get(pos))
@@ -186,6 +193,13 @@ class SoundActivity : BaseActivity() {
         }
         downloadSounds(force = true)
 
+
+
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        unregisterReceiver(volumeChangeReceiver)
     }
 
 
@@ -223,5 +237,76 @@ class SoundActivity : BaseActivity() {
             binding.alarmVolumeSeekBar.isEnabled = false
         }
     }
+
+    override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
+        stopPlay()
+
+//        if (keyCode == KeyEvent.KEYCODE_VOLUME_UP) {
+//            updateseekBarOnUpdateVolumeKey()
+//        } else if (keyCode == KeyEvent.KEYCODE_VOLUME_DOWN) {
+//            updateseekBarOnUpdateVolumeKey()
+//        }
+
+        return super.onKeyDown(keyCode, event)
+
+    }
+
+
+    override fun onKeyLongPress(keyCode: Int, event: KeyEvent?): Boolean {
+        stopPlay()
+        return super.onKeyLongPress(keyCode, event)
+    }
+
+    override fun onKeyUp(keyCode: Int, event: KeyEvent?): Boolean {
+        stopPlay()
+        return super.onKeyUp(keyCode, event)
+
+    }
+
+    fun stopPlay(){
+
+        try {
+            ringtone?.stop()
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+
+        try {
+            (getSystemService(AppCompatActivity.NOTIFICATION_SERVICE) as NotificationManager).cancelAll()
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
+
+
+    fun updateseekBarOnUpdateVolumeKey(){
+        try {
+            val audioManager = getSystemService(Context.AUDIO_SERVICE) as AudioManager
+            val streamVolume = audioManager.getStreamVolume(AudioManager.STREAM_ALARM)
+            val max = audioManager.getStreamMaxVolume(AudioManager.STREAM_ALARM)
+            binding.alarmVolumeSeekBar.progress=((streamVolume/max.toDouble())*binding.alarmVolumeSeekBar.max).toInt()
+
+            println("streamVolume ${streamVolume} ${binding.alarmVolumeSeekBar}")
+        } catch (e: Exception) {
+           e.printStackTrace()
+        }
+    }
+
+    var volumeChangeReceiver: BroadcastReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context, intent: Intent) {
+            if (intent.action != null && intent.action == "android.media.VOLUME_CHANGED_ACTION") {
+                if (binding.alarm.isChecked){
+                    updateseekBarOnUpdateVolumeKey()
+                }
+
+            }
+        }
+    }
+
+
+
+
+
+
 
 }

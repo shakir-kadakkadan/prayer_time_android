@@ -3,6 +3,7 @@ package shakir.swalah
 
 import android.app.NotificationChannel
 import android.app.NotificationManager
+import android.app.PendingIntent
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
@@ -39,8 +40,7 @@ class AlarmBroadCastReceiver : BroadcastReceiver() {
             Log.d(
                 TAG,
 
-                "milli" + milli +
-                        "onReceive() called with: context = [" + context + "], intent = [" + intent + "]"
+                "milli" + milli + "onReceive() called with: context = [" + context + "], intent = [" + intent + "]"
             );
 
 
@@ -80,8 +80,7 @@ class AlarmBroadCastReceiver : BroadcastReceiver() {
 
 
                 showNoti(
-                    context, intent?.getStringExtra("name") + " " +
-                            SimpleDateFormat(Util.timeFormat(), Locale.ENGLISH).format(milli).ltrEmbed()
+                    context, intent?.getStringExtra("name") + " " + SimpleDateFormat(Util.timeFormat(), Locale.ENGLISH).format(milli).ltrEmbed()
                 )
 
             }
@@ -101,7 +100,6 @@ class AlarmBroadCastReceiver : BroadcastReceiver() {
 }
 
 
-
 fun showNoti(context: Context, title: String) {
 
     try {
@@ -116,10 +114,6 @@ fun showNoti(context: Context, title: String) {
 }
 val pendingIntent: PendingIntent = PendingIntent.getActivity(this, 0, intent, 0)
 */
-
-
-
-
 
 
     // val alarmSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
@@ -142,38 +136,49 @@ val pendingIntent: PendingIntent = PendingIntent.getActivity(this, 0, intent, 0)
     val sp = Util.getMySharedPreference(AppApplication.instance)
     var prefKey = if (title.contains("الإقامة")) "iqama_sound" else "athan_sound"
     var prefKeyName = if (title.contains("الإقامة")) "iqama_soundName" else "athan_soundName"
-    var soundName=sp.getString(prefKeyName,null)?:"Adhan"
-    val path = if (sp.getString(prefKey, null) != null)
+    var soundName = sp.getString(prefKeyName, null) ?: "Adhan"
+
+
+
+
+    var path = if (sp.getString(prefKey, null) != null) {
         Uri.parse(sp.getString(prefKey, null))
-    else {
+    } else {
         if (title.contains("الإقامة")) {
-            soundName="mixkit_access_allowed_tone_2869"
+            soundName = "mixkit_access_allowed_tone_2869"
             Uri.parse("android.resource://" + AppApplication.instance.packageName + "/" + R.raw.mixkit_access_allowed_tone_2869)
         } else {
-            soundName="message_tone"
+            soundName = "message_tone"
             Uri.parse("android.resource://" + AppApplication.instance.packageName + "/" + R.raw.message_tone)
         }
+    }
+
+    //sunrise : dont play adhan; play any beeps
+    if (title.contains("الشروق")&&  (soundName.endsWith(".mp3")||soundName.contains("athan"))) {
+        soundName = "message_tone"
+        path=Uri.parse("android.resource://" + AppApplication.instance.packageName + "/" + R.raw.message_tone)
     }
 
 
     println("path ${path}")
 
-    var NotificationSoundUri:Uri?=null
-    var channelName="Adhan"
+    var NotificationSoundUri: Uri? = null
+    var channelName = "Adhan"
     if (sp.getBoolean("soundTypeIsAlarm", false)) {
         playSound(context, path)
-        channelName="Adhan"
-    }else{
-        NotificationSoundUri=path
-        channelName=soundName
+        channelName = "default_channel"
+    } else {
+        NotificationSoundUri = path
+        channelName = soundName + "_v1"
     }
 
-    createNotificationChannel(context,channelName,NotificationSoundUri)
+    createNotificationChannel(context, channelName, NotificationSoundUri)
 
-    var builder = NotificationCompat.Builder(context, channelName)
+
+    var builder = NotificationCompat
+        .Builder(context, channelName)
         .setSmallIcon(R.drawable.ic_stat_notifications)
-        .setContentTitle(title)
-        /* .setContentText(textContent)*/
+        .setContentTitle(title)/* .setContentText(textContent)*/
         //.setContentIntent(pendingIntent)
         .setPriority(NotificationCompat.PRIORITY_HIGH)
         .setCategory(NotificationCompat.CATEGORY_ALARM)
@@ -184,12 +189,44 @@ val pendingIntent: PendingIntent = PendingIntent.getActivity(this, 0, intent, 0)
         .setSound(NotificationSoundUri)
         .setVibrate(longArrayOf(0, 0))
 
+    val intent = Intent(context, MainActivity::class.java).apply {
+        action = Intent.ACTION_MAIN
+        addCategory(Intent.CATEGORY_LAUNCHER)
+        flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+    }
+
+
+// Create a PendingIntent
+    val pendingIntent: PendingIntent = PendingIntent.getActivity(context, 3333, intent, PendingIntent.FLAG_IMMUTABLE)
+
+
+    val intentDismiss = Intent(context, NotificationDismissedReceiver::class.java)
+    intentDismiss.action = "NOTIFICATION_DELETED_ACTION"
+    val dismissPendingIntent = PendingIntent.getBroadcast(context, 2222, intentDismiss,  PendingIntent.FLAG_IMMUTABLE)
+
+
+// Set the content intent of the notification builder
+    builder.setContentIntent(pendingIntent)
+    builder.setDeleteIntent(dismissPendingIntent)
+
+
 
     with(NotificationManagerCompat.from(context)) {
         // notificationId is a unique int for each notification that you must define
         notify(1111, builder.build())
     }
 }
+
+class NotificationDismissedReceiver : BroadcastReceiver() {
+    override fun onReceive(context: Context?, intent: Intent?) {
+        try {
+            ringtone?.stop()
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
+}
+
 
 var ringtone: Ringtone? = null
 fun playSound(context: Context, uri: Uri?, minSound: Int = 15) {
@@ -206,18 +243,11 @@ fun playSound(context: Context, uri: Uri?, minSound: Int = 15) {
 
         println("audio / 100f ${audio / 100f}")
 
-        val audioManager =
-            context.getSystemService(Context.AUDIO_SERVICE) as AudioManager
+        val audioManager = context.getSystemService(Context.AUDIO_SERVICE) as AudioManager
 
-        if (audioManager.getStreamVolume(AudioManager.STREAM_ALARM)
-            !=
-            (audioManager.getStreamMaxVolume(AudioManager.STREAM_ALARM) * (audio / 100f)).toInt()
+        if (audioManager.getStreamVolume(AudioManager.STREAM_ALARM) != (audioManager.getStreamMaxVolume(AudioManager.STREAM_ALARM) * (audio / 100f)).toInt()) audioManager.setStreamVolume(
+            AudioManager.STREAM_ALARM, (audioManager.getStreamMaxVolume(AudioManager.STREAM_ALARM) * (audio / 100f)).toInt(), AudioManager.FLAG_SHOW_UI
         )
-            audioManager.setStreamVolume(
-                AudioManager.STREAM_ALARM,
-                (audioManager.getStreamMaxVolume(AudioManager.STREAM_ALARM) * (audio / 100f)).toInt(),
-                AudioManager.FLAG_SHOW_UI
-            )
 
 
 
@@ -264,13 +294,9 @@ private fun createNotificationChannel(context: Context?, channelName: String, No
             }
 
             // Register the channel with the system
-            val notificationManager: NotificationManager =
-                getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+            val notificationManager: NotificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
-            val audioAttributes = AudioAttributes.Builder()
-                .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
-                .setUsage(AudioAttributes.USAGE_NOTIFICATION)
-                .build()
+            val audioAttributes = AudioAttributes.Builder().setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION).setUsage(AudioAttributes.USAGE_NOTIFICATION).build()
             val vibrationPattern = longArrayOf(0, 500, 500, 500)
             channel.setSound(NotificationSoundUri, audioAttributes)
 

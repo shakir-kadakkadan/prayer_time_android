@@ -53,7 +53,7 @@ android {
         applicationId "shakir.swalah"
         minSdkVersion 19
         targetSdkVersion 34
-        versionCode 114
+        versionCode 117
         versionName "2.0.3"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         signingConfig signingConfigs.rel_config
