@@ -4,6 +4,7 @@ package shakir.swalah
 
 
 import android.Manifest
+import android.app.AlarmManager
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
@@ -15,6 +16,7 @@ import android.os.Bundle
 import android.os.CountDownTimer
 import android.os.Handler
 import android.os.PowerManager
+import android.provider.Settings
 import android.provider.Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS
 import android.view.WindowManager
 import android.widget.Toast
@@ -31,6 +33,7 @@ import com.google.firebase.crashlytics.ktx.crashlytics
 import com.google.firebase.crashlytics.ktx.setCustomKeys
 import com.google.firebase.ktx.Firebase
 import shakir.swalah.Util.isiqamaAlarmOn
+import shakir.swalah.Util.setNextAlarm
 import shakir.swalah.databinding.ActivityMainBinding
 import shakir.swalah.models.Cord
 import java.io.BufferedInputStream
@@ -71,6 +74,7 @@ class MainActivity : BaseActivity() {
     private lateinit var binding: ActivityMainBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        AppApplication.instance.acquireScreenCpuWakeLock()
         showWhenLockedAndTurnScreenOn()
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
@@ -135,27 +139,60 @@ class MainActivity : BaseActivity() {
 
     }
 
-    private fun showWhenLockedAndTurnScreenOn() {
-        val win = window
-        win.addFlags(WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED)
-        win.addFlags(
-            WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON
-                    or WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON
-                    or WindowManager.LayoutParams.FLAG_ALLOW_LOCK_WHILE_SCREEN_ON
-        )
+    var turnoff_SCHEDULED_FOR_showWhenLockedAndTurnScreenOn = 0L
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1) {
-            setShowWhenLocked(true)
-            setTurnScreenOn(true)
-        } else {
-            window.addFlags(
-                WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED
+    private fun showWhenLockedAndTurnScreenOn() {
+        turnoff_SCHEDULED_FOR_showWhenLockedAndTurnScreenOn = 0L
+        try {
+
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1) {
+                setShowWhenLocked(true)
+                setTurnScreenOn(true)
+            } else {
+                window.addFlags(
+                    WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED
+                            or WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON
+                )
+            }
+
+            val win = window
+            win.addFlags(WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED)
+            win.addFlags(
+                WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON
                         or WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON
+                        or WindowManager.LayoutParams.FLAG_ALLOW_LOCK_WHILE_SCREEN_ON
             )
+
+
+        } catch (e: Exception) {
+            e.printStackTrace()
         }
     }
 
+    var offed = false
 
+    private fun turnOffShowWhenLockedAndTurnScreenOn() {
+        try {
+            val win = window
+
+            // Remove the flags that were added to show when locked and turn screen on
+            win.clearFlags(WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED)
+            win.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+            win.clearFlags(WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON)
+            win.clearFlags(WindowManager.LayoutParams.FLAG_ALLOW_LOCK_WHILE_SCREEN_ON)
+
+            // Alternatively, for API 27 or above, use setShowWhenLocked and setTurnScreenOn to false
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1) {
+                setShowWhenLocked(false)
+                setTurnScreenOn(false)
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+
+        offed = true
+    }
 
 
     fun millisecondsToHMS(milliseconds: Long): String {
@@ -309,27 +346,73 @@ class MainActivity : BaseActivity() {
         } catch (e: Exception) {
             e.report()
         }
+
+
+
+
+        if (turnoff_SCHEDULED_FOR_showWhenLockedAndTurnScreenOn == 0L) {
+            if (countdownColor == Color.RED || countdownColor == Color.WHITE) {
+                turnoff_SCHEDULED_FOR_showWhenLockedAndTurnScreenOn = System.currentTimeMillis() + TimeUnit.MINUTES.toMillis(3)
+            }
+        } else if (turnoff_SCHEDULED_FOR_showWhenLockedAndTurnScreenOn < System.currentTimeMillis()) {
+            if (countdownColor == Color.GREEN) {
+                turnoff_SCHEDULED_FOR_showWhenLockedAndTurnScreenOn = 0L
+            } else {
+                turnOffShowWhenLockedAndTurnScreenOn()
+            }
+        } else if (countdownColor == Color.GREEN && offed) {
+            offed = false
+            showWhenLockedAndTurnScreenOn()
+        }
+
+
     }
 
 
     override fun onPause() {
         super.onPause()
         countDownTimer.cancel()
+        offed = true
+        AppApplication.instance.releaseCpuLock()
 
     }
 
 
     override fun onResume() {
         super.onResume()
+        showWhenLockedAndTurnScreenOn()
+        AppApplication.instance.acquireScreenCpuWakeLock()
         countDownTimer.start()
         onMinuteUpdate(isOnResume = true)
         updator()
 
+        if (intent.getBooleanExtra("noMute", false) == true) {
+
+        } else {
+            try {
+                ringtone?.stop()
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
+
         try {
-            ringtone?.stop()
+            binding.root.setOnTouchListener { v, event ->
+                try {
+                    ringtone?.stop()
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
+                return@setOnTouchListener false
+            }
         } catch (e: Exception) {
             e.printStackTrace()
         }
+
+
+
+
+        setNextAlarm(this)
 
 
     }
@@ -594,7 +677,7 @@ class MainActivity : BaseActivity() {
                                             setData(Uri.parse("package:${BuildConfig.APPLICATION_ID}"))
                                         })
                                     } catch (e: Exception) {
-                                      e.report()
+                                        e.report()
                                         toast(e.message)
                                     }
 
@@ -605,14 +688,48 @@ class MainActivity : BaseActivity() {
                                 }
                                 .create()
                         optiDialog?.show()
+                        return
+
                     }
 
 
                 }
             }
+
+            // if not return
+            alarmPermission()
+
         }
 
 
+
+    }
+
+
+    fun alarmPermission() {
+
+        try {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                val alarmManager =
+                    getSystemService(Context.ALARM_SERVICE) as AlarmManager
+                when {
+                    alarmManager.canScheduleExactAlarms() -> {
+
+                    }
+
+                    else -> {
+                        startActivity(
+                            Intent(
+                                Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM,
+                                Uri.parse("package:$packageName")
+                            )
+                        )
+                    }
+                }
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
     }
 
 
@@ -705,8 +822,6 @@ fun downloadFileGET(urlString: String, file: File) {
         e.printStackTrace()
     }
 }
-
-
 
 
 fun getAthanObj(latitude: Double, longitude: Double): Azan {

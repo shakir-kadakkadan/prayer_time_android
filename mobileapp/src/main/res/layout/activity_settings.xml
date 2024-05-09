@@ -80,6 +80,28 @@
                     android:layout_height="1px"
                     android:background="#FF9800" />
 
+
+                <TextView
+                    android:id="@+id/alarmPermission"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="16dp"
+                    android:text="Alarm Permission"
+                    android:textColor="@color/white"
+                    android:textSize="16dp" />
+
+                <View
+                    android:id="@+id/alarmPermissionLine"
+                    android:layout_width="match_parent"
+                    android:layout_height="1px"
+                    android:background="#FF9800" />
+
+
+
+
+
+
+
                 <TextView
 
                     android:id="@+id/iqama"
@@ -160,6 +182,37 @@
                     android:background="#FF9800" />
 
                 <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:visibility="gone">
+
+                    <TextView
+
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:padding="16dp"
+                        android:text="Open the app when showing a notification"
+                        android:textColor="@color/white"
+                        android:textSize="16dp" />
+
+                    <Switch
+                        android:id="@+id/openApp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:checked="true" />
+
+
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1px"
+                    android:background="#FF9800"
+                    android:visibility="gone" />
+
+                <LinearLayout
                     android:id="@+id/midnight"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
@@ -221,18 +274,11 @@
                 </LinearLayout>
 
 
-
                 <View
 
                     android:layout_width="match_parent"
                     android:layout_height="1px"
                     android:background="#FF9800" />
-
-
-
-
-
-
 
 
                 <LinearLayout

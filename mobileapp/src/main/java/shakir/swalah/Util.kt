@@ -95,7 +95,7 @@ object Util {
 
 
 //                           if (BuildConfig.isRunFromStudio)
-//                               milli=System.currentTimeMillis()+TimeUnit.MINUTES.toMillis(1)
+//                               milli=System.currentTimeMillis()+TimeUnit.SECONDS.toMillis(10)
 
 
                             val pendingIntent =
@@ -253,7 +253,19 @@ object Util {
         }
 
 
-    var isiqamaAlarmOn: Boolean
+    var openApp: Boolean
+        get() {
+            val sharedPreferences = getMySharedPreference(AppApplication.instance)
+            return sharedPreferences.getString("openApp", "true").toBoolean()
+        }
+        set(value) {
+            val sharedPreferences = getMySharedPreference(AppApplication.instance)
+            sharedPreferences.edit().putString("openApp", value.toString()).commit()
+        }
+
+
+
+      var isiqamaAlarmOn: Boolean
         get() {
             val sharedPreferences = getMySharedPreference(AppApplication.instance)
             return sharedPreferences.getString("isiqamaAlarmOn_v2", "true").toBoolean()
@@ -262,6 +274,11 @@ object Util {
             val sharedPreferences = getMySharedPreference(AppApplication.instance)
             sharedPreferences.edit().putString("isiqamaAlarmOn_v2", value.toString()).commit()
         }
+
+
+
+
+
 
 
     fun timeFormat(): String {

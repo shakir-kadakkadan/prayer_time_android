@@ -215,6 +215,24 @@ val pendingIntent: PendingIntent = PendingIntent.getActivity(this, 0, intent, 0)
         // notificationId is a unique int for each notification that you must define
         notify(1111, builder.build())
     }
+
+
+//    try {
+//
+//        if (title!="Sample"&& Util.openApp){
+//            AppApplication.instance.acquireScreenCpuWakeLock()
+//            val openAppIntent = Intent(context, MainActivity::class.java)
+//            openAppIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+//            openAppIntent.putExtra("noMute",true)
+//            println("sadasdasdsdasdasd 1")
+//        }
+//
+//    } catch (e: Exception) {
+//        println("sadasdasdsdasdasd 2")
+//      e.printStackTrace()
+//    }
+
+
 }
 
 class NotificationDismissedReceiver : BroadcastReceiver() {

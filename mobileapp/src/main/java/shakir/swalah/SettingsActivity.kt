@@ -1,5 +1,6 @@
 package shakir.swalah
 
+import android.app.AlarmManager
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
@@ -19,8 +20,42 @@ class SettingsActivity : BaseActivity() {
         binding = ActivitySettingsBinding.inflate(layoutInflater)
         setContentView(binding.root)
         adjustWithSystemWindow(binding.rootViewLL, binding.topSpacer, true)
-        binding.battery.isVisible = Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && !(getSystemService(Context.POWER_SERVICE) as PowerManager).isIgnoringBatteryOptimizations(BuildConfig.APPLICATION_ID)
-        binding.batteryLine.isVisible = binding.battery.isVisible
+        try {
+            binding.battery.isVisible = Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && !(getSystemService(Context.POWER_SERVICE) as PowerManager).isIgnoringBatteryOptimizations(BuildConfig.APPLICATION_ID)
+            binding.batteryLine.isVisible = binding.battery.isVisible
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+
+
+
+        try {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                val alarmManager =
+                    getSystemService(Context.ALARM_SERVICE) as AlarmManager
+                binding.alarmPermission.isVisible = !alarmManager.canScheduleExactAlarms()
+            } else {
+                binding.alarmPermission.isVisible = false
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+        binding.alarmPermissionLine.isVisible = binding.alarmPermission.isVisible
+        binding.alarmPermission.setOnClickListener {
+            try {
+                startActivity(
+                    Intent(
+                        Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM,
+                        Uri.parse("package:$packageName")
+                    )
+                )
+            } catch (e: Exception) {
+              e.printStackTrace()
+            }
+        }
+
+
+
         binding.battery.setOnClickListener {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 val powerManager = getSystemService(Context.POWER_SERVICE) as PowerManager
@@ -64,6 +99,7 @@ class SettingsActivity : BaseActivity() {
 
         binding.adhanAlarm.isChecked = Util.isadhanAlarmOn
         binding.iqamaAlarm.isChecked = Util.isiqamaAlarmOn
+        binding.openApp.isChecked = Util.openApp
 
         binding.adhanAlarm.setOnCheckedChangeListener { buttonView, isChecked ->
             Util.isadhanAlarmOn = isChecked
@@ -71,6 +107,11 @@ class SettingsActivity : BaseActivity() {
         }
         binding.iqamaAlarm.setOnCheckedChangeListener { buttonView, isChecked ->
             Util.isiqamaAlarmOn = isChecked
+            Util.setNextAlarm(this@SettingsActivity)
+        }
+
+        binding.openApp.setOnCheckedChangeListener { buttonView, isChecked ->
+            Util.openApp = isChecked
             Util.setNextAlarm(this@SettingsActivity)
         }
 

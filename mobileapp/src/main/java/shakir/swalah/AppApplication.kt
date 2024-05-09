@@ -1,16 +1,5 @@
 package shakir.swalah
 
-import android.app.Application
-import android.content.SharedPreferences
-import android.os.Handler
-import android.text.format.DateFormat
-import androidx.appcompat.app.AppCompatDelegate
-import androidx.core.content.edit
-import androidx.core.os.ConfigurationCompat
-import androidx.multidex.MultiDexApplication
-import com.google.firebase.crashlytics.ktx.crashlytics
-import com.google.firebase.crashlytics.ktx.setCustomKeys
-import com.google.firebase.ktx.Firebase
 //import com.google.gson.GsonBuilder
 //import io.reactivex.internal.functions.Functions
 //import io.reactivex.plugins.RxJavaPlugins
@@ -21,7 +10,10 @@ import com.google.firebase.ktx.Firebase
 //import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 //import retrofit2.converter.gson.GsonConverterFactory
 
-import java.util.concurrent.TimeUnit
+import android.content.SharedPreferences
+import android.os.PowerManager
+import androidx.appcompat.app.AppCompatDelegate
+import androidx.multidex.MultiDexApplication
 
 class AppApplication : MultiDexApplication() {
 
@@ -29,9 +21,8 @@ class AppApplication : MultiDexApplication() {
     override fun onCreate() {
         super.onCreate()
         instance = this
-        sp=Util.getMySharedPreference(this)
+        sp = Util.getMySharedPreference(this)
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
-
 
 
         /*   try {
@@ -78,7 +69,39 @@ class AppApplication : MultiDexApplication() {
 //            .build()
 //        restService = retrofitRx.create(WebServices::class.java)
 //        RxJavaPlugins.setErrorHandler(Functions.emptyConsumer())
+
+
     }
+
+    fun acquireScreenCpuWakeLock() {
+        try {
+            if (sCpuWakeLock != null) {
+                return
+            }
+            val pm = getSystemService(POWER_SERVICE) as PowerManager
+            sCpuWakeLock = pm.newWakeLock(
+                PowerManager.PARTIAL_WAKE_LOCK
+                        or PowerManager.ACQUIRE_CAUSES_WAKEUP or PowerManager.ON_AFTER_RELEASE, "TYLER"
+            )
+            if (sCpuWakeLock?.isHeld == true)
+                sCpuWakeLock?.acquire()
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
+
+    fun releaseCpuLock() {
+        try {
+            if (sCpuWakeLock != null) {
+                sCpuWakeLock?.release()
+                sCpuWakeLock = null
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
+
+    var sCpuWakeLock: PowerManager.WakeLock? = null
 
 
     companion object {
