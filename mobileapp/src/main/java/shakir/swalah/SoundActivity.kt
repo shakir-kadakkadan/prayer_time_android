@@ -191,7 +191,7 @@ class SoundActivity : BaseActivity() {
                     }
                 }
 
-                showNoti(this, "Sample ${if (key == "iqama_") "(" + "الإقامة" + ")" else ""}")
+                showNoti(this, "Sample ${if (key == "iqama_") "(" + "الإقامة" + ")" else ""}${if (key == "fajr_") "(" + "الفجر" + ")" else ""}")
 
 
             })
