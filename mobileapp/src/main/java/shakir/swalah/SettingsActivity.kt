@@ -1,6 +1,7 @@
 package shakir.swalah
 
 import android.app.AlarmManager
+import android.app.NotificationManager
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
@@ -50,7 +51,7 @@ class SettingsActivity : BaseActivity() {
                     )
                 )
             } catch (e: Exception) {
-              e.printStackTrace()
+                e.printStackTrace()
             }
         }
 
@@ -125,7 +126,9 @@ class SettingsActivity : BaseActivity() {
                         null
                     }
                     if (url.isNullOrBlank()) {
+                        //918590559204
                         url = "https://wa.me/918129625121?text=This message is regarding أَذَان app.\n"
+
                     }
                     runOnUiThread {
                         try {
@@ -158,7 +161,7 @@ class SettingsActivity : BaseActivity() {
         }
 
 
-        var showMidNight = sp.getInt("showMidNight", 1)
+        var showMidNight = sp.getInt("showMidNightv2", 1)
         var arr = arrayOf("Show", "Hide")
         binding.midnightValue.setText(arr[showMidNight])
         binding.midnight.setOnClickListener {
@@ -168,7 +171,7 @@ class SettingsActivity : BaseActivity() {
                     showMidNight = which
                     binding.midnightValue.setText(arr[which])
                     dialog.dismiss()
-                    sp.edit().putInt("showMidNight", showMidNight).commit()
+                    sp.edit().putInt("showMidNightv2", showMidNight).commit()
                 }
                 .show()
         }
@@ -190,5 +193,93 @@ class SettingsActivity : BaseActivity() {
 
 
     }
+
+    override fun onResume() {
+        super.onResume()
+        try {
+            dndTextSetups()
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+
+    }
+
+    var dndNow = false
+    fun dndTextSetups() {
+        var dnd = sp.getBoolean("dnd", false) && isNotificationPolicyAccessGranted()
+        sp.edit().putBoolean("dnd", dnd).commit()
+        var dndMinute = sp.getInt("dndMinutev2", 1)
+        println(" dnd ${dnd} isNotificationPolicyAccessGranted ${isNotificationPolicyAccessGranted()}")
+        binding.dnd.isChecked = dnd
+        binding.dnd.setOnCheckedChangeListener { buttonView, isChecked ->
+
+            if (isChecked) {
+                AlertDialog.Builder(this@SettingsActivity)
+                    .setTitle("Put your phone in Silent mode during prayer after iqama for ")
+                    .setSingleChoiceItems(arrayOf("5 Minute", "10 Minute", "Put Silent/DND Now for 10 Minutes"), dndMinute) { dialog, which ->
+
+                        dialog.dismiss()
+                        if (which != 2) {
+                            dndNow = false
+                            sp.edit().putInt("dndMinutev2", which).commit()
+                        } else {
+                            sp.edit().putBoolean("dnd", isChecked).commit()
+                            dndNow = true
+                            if (isNotificationPolicyAccessGranted())
+                                setSilentMode()
+                        }
+                        println("isNotificationPolicyAccessGranted " + isNotificationPolicyAccessGranted())
+                        if (isNotificationPolicyAccessGranted() == false) {
+                            AlertDialog.Builder(this/*, R.style.MyAlertDialogTheme*/)
+                                .setTitle("Warning")
+                                .setMessage("Allow 'Do Not Disturb' permission to activate silent mode automatically during prayer ")
+                                .setPositiveButton("OK") { dialog, which ->
+                                    Util.setNextAlarmDND(AppApplication.instance, offDND = true)
+                                    dialog.dismiss()
+                                    askDNDPermission()
+                                    sp.edit().putBoolean("dnd", isChecked).commit()
+                                    //dndTextSetups()
+                                }
+                                .show()
+
+
+                        } else {
+                            sp.edit().putBoolean("dnd", isChecked).commit()
+                            dndTextSetups()
+                        }
+                    }
+                    .show()
+            } else {
+                setSilentModeOff()
+            }
+        }
+        if (dnd && dndNow) {
+            setSilentMode()
+        }
+
+    }
+
+
+    fun isNotificationPolicyAccessGranted(): Boolean {
+        val notificationManager = this.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            notificationManager.isNotificationPolicyAccessGranted
+        } else {
+            return true
+        }
+    }
+
+
+    fun askDNDPermission() {
+        try {
+            val intent = Intent(Settings.ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS)
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            startActivity(intent)
+        } catch (e: Exception) {
+            println("isNotificationPolicyAccessGranted ${e.message}")
+            e.printStackTrace()
+        }
+    }
+
 
 }

@@ -71,7 +71,16 @@ class SoundActivity : BaseActivity() {
             stopPlay()
             showSoundList("iqama_")
         }
-        updateAudioNameTextViews()
+
+        binding.fajrSound.setOnClickListener {
+            stopPlay()
+            showSoundList("fajr_")
+        }
+
+
+
+
+        updateAudioNameTextViews(1)
 
         val filter = IntentFilter("android.media.VOLUME_CHANGED_ACTION")
         registerReceiver(volumeChangeReceiver, filter)
@@ -83,10 +92,37 @@ class SoundActivity : BaseActivity() {
 
     }
 
-    fun updateAudioNameTextViews() {
+    fun updateAudioNameTextViews(rety: Int) {
         stopPlay()
         binding.adhanSoundAudioName.setText(sp.getString("${"athan_"}soundName", null))
         binding.iqamaAudioName.setText(sp.getString("${"iqama_"}soundName", null))
+        var fajrrr = sp.getString("${"fajr_"}soundName", null)
+        binding.fajrSoundAudioName.setText(fajrrr)
+        if (fajrrr.isNullOrBlank()) {
+            try {
+                val key = "fajr_"
+                val dir = File(filesDir, "adhanMp3s")
+                val fileList = try {
+                    dir.listFiles().filter { it.isFile }
+                } catch (e: Exception) {
+                    emptyList()
+                }
+                fileList.find { it.name.contains("fajr", ignoreCase = true) }?.let {
+                    val path = FileProvider.getUriForFile(this, "${this.packageName}.provider", it)
+                    sp.edit(commit = true) {
+                        putString("${key}sound", path.toString())
+                        putString("${key}soundName", it.name)
+                    }
+                }
+                if (rety > 0)
+                    updateAudioNameTextViews(rety = rety-1)
+            } catch (e: Exception) {
+             e.printStackTrace()
+            }
+
+        }
+
+
     }
 
     override fun onPause() {
@@ -98,10 +134,12 @@ class SoundActivity : BaseActivity() {
     fun showSoundList(key: String) {
 
 
-
-
         val dir = File(filesDir, "adhanMp3s")
-        val fileList=dir.listFiles().filter { it.isFile }
+        val fileList = try {
+            dir.listFiles().filter { it.isFile }
+        } catch (e: Exception) {
+            emptyList()
+        }
 
         println("fileList ${fileList.map { it.path }.joinToString(",")}")
 
@@ -134,8 +172,8 @@ class SoundActivity : BaseActivity() {
 //                    playSound(this@SoundActivity, notificationSounds.first { it.first == list.get(pos) }.second)
 //                }
 
-                if (fileList.find { it.name==list.get(pos)}!=null) {
-                    val path = FileProvider.getUriForFile(this, "${this.packageName}.provider", fileList.find { it.name==list.get(pos)}!!)
+                if (fileList.find { it.name == list.get(pos) } != null) {
+                    val path = FileProvider.getUriForFile(this, "${this.packageName}.provider", fileList.find { it.name == list.get(pos) }!!)
                     sp.edit(commit = true) {
                         putString("${key}sound", path.toString())
                         putString("${key}soundName", list.get(pos))
@@ -164,10 +202,10 @@ class SoundActivity : BaseActivity() {
 
             })
             .setOnDismissListener {
-                updateAudioNameTextViews()
+                updateAudioNameTextViews(0)
             }
             .setOnCancelListener {
-                updateAudioNameTextViews()
+                updateAudioNameTextViews(0)
             }
 
             .setNegativeButton("Cancel", DialogInterface.OnClickListener { dialog, which ->
@@ -191,8 +229,15 @@ class SoundActivity : BaseActivity() {
         } catch (e: Exception) {
             e.report()
         }
-        downloadSounds(force = true)
+        downloadSounds(force = true) {
+            runOnUiThread {
+                try {
+                    binding.downloading.setText(it)
+                } catch (e: Exception) {
 
+                }
+            }
+        }
 
 
     }
@@ -238,75 +283,32 @@ class SoundActivity : BaseActivity() {
         }
     }
 
-    override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
-        stopPlay()
-
-//        if (keyCode == KeyEvent.KEYCODE_VOLUME_UP) {
-//            updateseekBarOnUpdateVolumeKey()
-//        } else if (keyCode == KeyEvent.KEYCODE_VOLUME_DOWN) {
-//            updateseekBarOnUpdateVolumeKey()
-//        }
-
-        return super.onKeyDown(keyCode, event)
-
-    }
 
 
-    override fun onKeyLongPress(keyCode: Int, event: KeyEvent?): Boolean {
-        stopPlay()
-        return super.onKeyLongPress(keyCode, event)
-    }
 
-    override fun onKeyUp(keyCode: Int, event: KeyEvent?): Boolean {
-        stopPlay()
-        return super.onKeyUp(keyCode, event)
-
-    }
-
-    fun stopPlay(){
-
-        try {
-            ringtone?.stop()
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
-
-        try {
-            (getSystemService(AppCompatActivity.NOTIFICATION_SERVICE) as NotificationManager).cancelAll()
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
-    }
-
-
-    fun updateseekBarOnUpdateVolumeKey(){
+    fun updateseekBarOnUpdateVolumeKey() {
         try {
             val audioManager = getSystemService(Context.AUDIO_SERVICE) as AudioManager
             val streamVolume = audioManager.getStreamVolume(AudioManager.STREAM_ALARM)
             val max = audioManager.getStreamMaxVolume(AudioManager.STREAM_ALARM)
-            binding.alarmVolumeSeekBar.progress=((streamVolume/max.toDouble())*binding.alarmVolumeSeekBar.max).toInt()
+            binding.alarmVolumeSeekBar.progress = ((streamVolume / max.toDouble()) * binding.alarmVolumeSeekBar.max).toInt()
 
             println("streamVolume ${streamVolume} ${binding.alarmVolumeSeekBar}")
         } catch (e: Exception) {
-           e.printStackTrace()
+            e.printStackTrace()
         }
     }
 
     var volumeChangeReceiver: BroadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
             if (intent.action != null && intent.action == "android.media.VOLUME_CHANGED_ACTION") {
-                if (binding.alarm.isChecked){
+                if (binding.alarm.isChecked) {
                     updateseekBarOnUpdateVolumeKey()
                 }
 
             }
         }
     }
-
-
-
-
-
 
 
 }

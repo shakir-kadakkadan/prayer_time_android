@@ -386,26 +386,20 @@ class MainActivity : BaseActivity() {
         onMinuteUpdate(isOnResume = true)
         updator()
 
-        if (intent.getBooleanExtra("noMute", false) == true) {
-
-        } else {
-            try {
-                ringtone?.stop()
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
-        }
 
         try {
-            binding.root.setOnTouchListener { v, event ->
+            println("setOnTouchListener ${binding.rootViewLL}")
+            binding.nestedScrollView.setOnTouchListener { v, event ->
                 try {
-                    ringtone?.stop()
+                    if (ringtone?.isPlaying == true)
+                        ringtone?.stop()
                 } catch (e: Exception) {
                     e.printStackTrace()
                 }
                 return@setOnTouchListener false
             }
         } catch (e: Exception) {
+            println("setOnTouchListener ${e.message}")
             e.printStackTrace()
         }
 
@@ -413,6 +407,7 @@ class MainActivity : BaseActivity() {
 
 
         setNextAlarm(this)
+        Util.setNextAlarmDND(AppApplication.instance, offDND = true)
 
 
     }
@@ -503,7 +498,11 @@ class MainActivity : BaseActivity() {
             e.printStackTrace()
         }
 
-        downloadSounds()
+        downloadSounds() {
+            runOnUiThread {
+
+            }
+        }
     }
 
     var nextPrayTime: Pair<Date, Int>? = null
@@ -564,7 +563,7 @@ class MainActivity : BaseActivity() {
 
 
 
-        if (sp.getInt("showMidNight", 0) == 1) {
+        if (sp.getInt("showMidNight", 1) == 0) {
             binding.prayerTimeLl.MIDNIGHT.prayerName.setText("Mid night")
             binding.prayerTimeLl.MIDNIGHT.prayerTime.setText(SimpleDateFormat(timeFormat, Locale.ENGLISH).format(Date(prayerTimes[0].time.plus(prayerTimesYest[4].time).div(2))).ltrEmbed())
             binding.prayerTimeLl.MIDNIGHT.root.isVisible = true
@@ -700,7 +699,6 @@ class MainActivity : BaseActivity() {
             alarmPermission()
 
         }
-
 
 
     }

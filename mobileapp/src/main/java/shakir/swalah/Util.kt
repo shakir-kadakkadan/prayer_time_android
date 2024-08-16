@@ -162,6 +162,119 @@ object Util {
     }
 
 
+
+    fun setNextAlarmDND(context: Context, tommorrow: Boolean = false,offDND:Boolean=false) {
+
+
+
+        try {
+            val sharedPreferences = getMySharedPreference(context)
+
+            val dnd = sharedPreferences
+                .getBoolean("dnd", false)
+
+            if (!dnd)
+                return
+
+            val dndMinutev2 = sharedPreferences
+                .getInt("dndMinutev2", 1).plus(1).times(5)
+
+
+
+            val latitude = sharedPreferences
+                .getDouble("v2_latitude", 11.00)
+
+            val longitude = sharedPreferences
+                .getDouble("v2_longitude", 76.00)
+            val date = GregorianCalendar()
+            if (tommorrow)
+                date.add(Calendar.DATE, 1)
+            val dateS = SimpleDate(date)
+            val azan = getAthanObj(latitude, longitude)
+            val prayerTimes = azan.getAthanOfDate(dateS)
+            (0..5).forEachIndexed { index, prayersType ->
+                arrayOf(false, true).forEach { _isIqama ->
+                    val isIqama = _isIqama && index != 1
+
+                        if (isIqama||offDND ) {
+                            var milli = prayerTimes[prayersType].time
+                            if (isIqama) {
+                                val iqsettings = Util.getIqamaSettings().get(if (index == 0) 0 else index - 1)
+                                if (iqsettings.isAfter) {
+                                    milli = milli + (TimeUnit.MINUTES.toMillis(iqsettings.after.toLong()))
+                                } else {
+                                    milli = iqsettings.fixed
+                                }
+
+                            }
+
+                            if (offDND){
+                                milli=System.currentTimeMillis()+(1000*dndMinutev2*60)
+                            }else{
+                                milli=milli+(1000*10)
+                            }
+
+
+                            if (milli >= System.currentTimeMillis()) {
+
+
+                                val alarmManager =
+                                    context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+
+                                // Alarm type
+                                val alarmType = AlarmManager.RTC_WAKEUP
+
+                                val uniqueIndexForParayer = 5555 + 1
+
+
+//                           if (BuildConfig.isRunFromStudio)
+//                               milli=System.currentTimeMillis()+TimeUnit.SECONDS.toMillis(10)
+
+
+                                val pendingIntent =
+                                    createPendingIntent(context, milli,  if (offDND) "offDND" else "dnd", uniqueIndexForParayer)
+
+
+                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                                    alarmManager.setExactAndAllowWhileIdle(
+                                        alarmType,
+                                        milli,
+                                        pendingIntent
+                                    )
+                                } else {
+                                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                                        alarmManager.setExact(alarmType, milli, pendingIntent)
+                                    } else {
+                                        alarmManager.set(alarmType, milli, pendingIntent)
+                                    }
+                                }
+
+
+
+
+
+                                return@setNextAlarmDND
+                            }
+                        }
+
+                }
+
+            }
+
+            //if execution reached here . it means
+            //no alarm set because no more prayer today
+            //set alarm for next date
+            if (!tommorrow)
+                setNextAlarmDND(context, tommorrow = true)
+
+        } catch (e: Exception) {
+            e.report()
+        }
+
+
+    }
+
+
     fun cancelLastPendingIntent(context: Context) {
 
         try {

@@ -155,6 +155,43 @@
             android:layout_height="1px"
             android:background="#FF9800" />
 
+
+        <LinearLayout
+            android:id="@+id/fajrSound"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="start|center_vertical"
+            android:gravity="start|center_vertical"
+            android:orientation="horizontal">
+
+            <TextView
+
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:padding="16dp"
+                android:text="Fajr Adhan Audio"
+                android:textColor="@color/white"
+                android:textSize="16dp" />
+
+            <TextView
+                android:id="@+id/fajrSoundAudioName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="16dp"
+                android:textColor="@color/white"
+                android:textSize="16dp"
+                tools:text="Adhan Audio" />
+
+
+        </LinearLayout>
+
+        <View
+
+            android:layout_width="match_parent"
+            android:layout_height="1px"
+            android:background="#FF9800" />
+
         <LinearLayout
             android:id="@+id/iqamaAudio"
             android:layout_width="match_parent"
@@ -189,6 +226,22 @@
             android:layout_width="match_parent"
             android:layout_height="1px"
             android:background="#FF9800" />
+
+
+        <TextView
+            android:id="@+id/downloading"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="16dp"
+            android:layout_gravity="right"
+            android:gravity="right"
+            tools:text="Iqama Audio"
+            android:textColor="#FF6D00"
+            android:textSize="16dp" />
+
+
+
+
 
 
     </LinearLayout>

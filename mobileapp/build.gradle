@@ -53,8 +53,8 @@ android {
         applicationId "shakir.swalah"
         minSdkVersion 19
         targetSdkVersion 34
-        versionCode 118
-        versionName "2.0.4"
+        versionCode 119
+        versionName "2.0.5"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         signingConfig signingConfigs.rel_config
         buildConfigField "boolean", "isRunFromStudio", (gradle.startParameter.projectProperties.get("android.injected.build.api") != null).toString()
@@ -104,7 +104,7 @@ dependencies {
 
     api 'com.github.msarhan:ummalqura-calendar:1.1.9'
 
-    implementation "com.leinardi.android:speed-dial:3.0.0"
+    implementation "com.leinardi.android:speed-dial:3.3.0"
 
 
     implementation "androidx.multidex:multidex:2.0.1"

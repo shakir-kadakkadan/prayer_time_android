@@ -1,10 +1,12 @@
 package shakir.swalah
 
+import android.app.NotificationManager
 import android.content.SharedPreferences
 import android.content.res.Configuration
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
+import android.view.KeyEvent
 import android.view.View
 import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
@@ -108,10 +110,10 @@ open class BaseActivity : AppCompatActivity() {
 
     }
 
-    fun downloadSounds(force:Boolean=false) {
+    fun downloadSounds(force: Boolean = false, aaaaa: (String) -> Unit) {
         try {
-            val lastDownloaded=sp.getLong("lastDownloaded",0L)
-            if (force||TimeUnit.MILLISECONDS.toHours(System.currentTimeMillis()-lastDownloaded)>25){
+            val lastDownloaded = sp.getLong("lastDownloaded", 0L)
+            if (force || TimeUnit.MILLISECONDS.toHours(System.currentTimeMillis() - lastDownloaded) > 25) {
                 lifecycleScope.launch {
                     try {
                         withContext(Dispatchers.IO) {
@@ -127,27 +129,33 @@ open class BaseActivity : AppCompatActivity() {
                                             val temp = File(filesDir, "temp")
                                             val dir = File(filesDir, "adhanMp3s")
                                             if (!dir.exists()) dir.mkdir()
-                                            val mp3 = File(dir, name.replaceFirst("adhan/",""))
+                                            val mp3 = File(dir, name.replaceFirst("adhan/", ""))
                                             if (mp3.length() <= 0) {
                                                 val token = JSONObject(sendGetRequest("https://firebasestorage.googleapis.com/v0/b/prayer-time-shakir.appspot.com/o/${URLEncoder.encode(name)}")).getString("downloadTokens")
+                                                aaaaa.invoke("Downloading... $name")
                                                 downloadFileGET("https://firebasestorage.googleapis.com/v0/b/prayer-time-shakir.appspot.com/o/${URLEncoder.encode(name)}?alt=media&token=$token", temp)
                                                 temp.copyTo(mp3)
                                                 temp.delete()
+                                                if (i == jsonArray.length() - 1)
+                                                    aaaaa.invoke("Downloading Completed")
                                             }
                                             println("fileList mp3 ${mp3.path} ${mp3.length()}")
+
                                         }
 
 
                                     } catch (e: Exception) {
+                                        aaaaa.invoke("Downloading Failed\nPlease check your internet connection")
                                         e.printStackTrace()
                                     }
                                 }
 
                                 sp.edit(commit = true) {
-                                    putLong("lastDownloaded",System.currentTimeMillis())
+                                    putLong("lastDownloaded", System.currentTimeMillis())
                                 }
 
                             } catch (e: Exception) {
+                                aaaaa.invoke("Downloading Failed\nPlease check your internet connection")
                                 e.printStackTrace()
                             }
 
@@ -158,10 +166,56 @@ open class BaseActivity : AppCompatActivity() {
                 }
             }
         } catch (e: Exception) {
-           e.printStackTrace()
+            e.printStackTrace()
         }
 
     }
+
+
+
+    fun stopPlay() {
+
+        try {
+            ringtone?.stop()
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+
+        try {
+            (getSystemService(AppCompatActivity.NOTIFICATION_SERVICE) as NotificationManager).cancelAll()
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
+
+
+
+    override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
+        stopPlay()
+
+//        if (keyCode == KeyEvent.KEYCODE_VOLUME_UP) {
+//            updateseekBarOnUpdateVolumeKey()
+//        } else if (keyCode == KeyEvent.KEYCODE_VOLUME_DOWN) {
+//            updateseekBarOnUpdateVolumeKey()
+//        }
+
+        return super.onKeyDown(keyCode, event)
+
+    }
+
+
+    override fun onKeyLongPress(keyCode: Int, event: KeyEvent?): Boolean {
+        stopPlay()
+        return super.onKeyLongPress(keyCode, event)
+    }
+
+    override fun onKeyUp(keyCode: Int, event: KeyEvent?): Boolean {
+        stopPlay()
+        return super.onKeyUp(keyCode, event)
+
+    }
+
+
 
 
 }

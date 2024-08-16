@@ -31,6 +31,15 @@ class AlarmBroadCastReceiver : BroadcastReceiver() {
 
     override fun onReceive(context: Context?, intent: Intent?) {
         try {
+            val name = intent?.getStringExtra("name")
+            if (name == "dnd") {
+                setSilentMode()
+                return
+            } else if (name == "offDND") {
+                setSilentModeOff()
+                Util.setNextAlarmDND(AppApplication.instance, offDND = false)
+                return
+            }
             val milli = intent?.getLongExtra("milli", 0) ?: 0
             val currentTimeMillis = System.currentTimeMillis()
             if (milli <= currentTimeMillis) {
@@ -99,6 +108,60 @@ class AlarmBroadCastReceiver : BroadcastReceiver() {
 
 }
 
+fun setSilentModeOff() {
+    println("setSilentMode")
+    try {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            // Check for notification policy access
+            val notificationManager = AppApplication.instance.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+            println("setSilentMode notificationManager.isNotificationPolicyAccessGranted ${notificationManager.isNotificationPolicyAccessGranted}")
+            if (notificationManager.isNotificationPolicyAccessGranted) {
+                notificationManager.setInterruptionFilter(NotificationManager.INTERRUPTION_FILTER_ALL)
+
+            } else {
+                // askDNDPermission()
+            }
+        } else {
+            // For older Android versions
+            val audioManager = AppApplication.instance.getSystemService(Context.AUDIO_SERVICE) as AudioManager
+            audioManager.ringerMode = AudioManager.RINGER_MODE_NORMAL
+
+        }
+    } catch (e: Exception) {
+        e.printStackTrace()
+        println("setSilentMode 3")
+    }
+    println("setSilentMode 2")
+}
+
+
+fun setSilentMode() {
+    println("setSilentMode")
+    try {
+        Util.setNextAlarmDND(AppApplication.instance, offDND = true)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            // Check for notification policy access
+            val notificationManager = AppApplication.instance.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+            println("setSilentMode notificationManager.isNotificationPolicyAccessGranted ${notificationManager.isNotificationPolicyAccessGranted}")
+            if (notificationManager.isNotificationPolicyAccessGranted) {
+                notificationManager.setInterruptionFilter(NotificationManager.INTERRUPTION_FILTER_NONE)
+
+            } else {
+                // askDNDPermission()
+            }
+        } else {
+            // For older Android versions
+            val audioManager = AppApplication.instance.getSystemService(Context.AUDIO_SERVICE) as AudioManager
+            audioManager.ringerMode = AudioManager.RINGER_MODE_VIBRATE
+
+        }
+    } catch (e: Exception) {
+        e.printStackTrace()
+        println("setSilentMode 3")
+    }
+    println("setSilentMode 2")
+}
+
 
 fun showNoti(context: Context, title: String) {
 
@@ -134,11 +197,13 @@ val pendingIntent: PendingIntent = PendingIntent.getActivity(this, 0, intent, 0)
        })*/
 
     val sp = Util.getMySharedPreference(AppApplication.instance)
-    var prefKey = if (title.contains("الإقامة")) "iqama_sound" else "athan_sound"
-    var prefKeyName = if (title.contains("الإقامة")) "iqama_soundName" else "athan_soundName"
+    var prefKey = if (title.contains("الإقامة")) "iqama_sound" else
+        if (title.contains("الفجر")) "fajr_sound" else "athan_sound"
+
+    var prefKeyName = if (title.contains("الإقامة")) "iqama_soundName" else
+        if (title.contains("الفجر")) "fajr_soundName"
+        else "athan_soundName"
     var soundName = sp.getString(prefKeyName, null) ?: "Adhan"
-
-
 
 
     var path = if (sp.getString(prefKey, null) != null) {
@@ -154,9 +219,9 @@ val pendingIntent: PendingIntent = PendingIntent.getActivity(this, 0, intent, 0)
     }
 
     //sunrise : dont play adhan; play any beeps
-    if (title.contains("الشروق")&&  (soundName.endsWith(".mp3")||soundName.contains("athan"))) {
+    if (title.contains("الشروق") && (soundName.endsWith(".mp3") || soundName.contains("athan"))) {
         soundName = "message_tone"
-        path=Uri.parse("android.resource://" + AppApplication.instance.packageName + "/" + R.raw.message_tone)
+        path = Uri.parse("android.resource://" + AppApplication.instance.packageName + "/" + R.raw.message_tone)
     }
 
 
@@ -202,7 +267,7 @@ val pendingIntent: PendingIntent = PendingIntent.getActivity(this, 0, intent, 0)
 
     val intentDismiss = Intent(context, NotificationDismissedReceiver::class.java)
     intentDismiss.action = "NOTIFICATION_DELETED_ACTION"
-    val dismissPendingIntent = PendingIntent.getBroadcast(context, 2222, intentDismiss,  PendingIntent.FLAG_IMMUTABLE)
+    val dismissPendingIntent = PendingIntent.getBroadcast(context, 2222, intentDismiss, PendingIntent.FLAG_IMMUTABLE)
 
 
 // Set the content intent of the notification builder
