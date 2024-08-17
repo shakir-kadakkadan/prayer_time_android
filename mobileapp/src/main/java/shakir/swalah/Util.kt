@@ -163,7 +163,7 @@ object Util {
 
 
 
-    fun setNextAlarmDND(context: Context, tommorrow: Boolean = false,offDND:Boolean=false) {
+    fun setNextAlarmDND(context: Context, tommorrow: Boolean = false,offDND:Boolean=false,) {
 
 
 
@@ -176,9 +176,12 @@ object Util {
             if (!dnd)
                 return
 
-            val dndMinutev2 = sharedPreferences
+            var dndMinutev2 = sharedPreferences
                 .getInt("dndMinutev2", 1).plus(1).times(5)
 
+            if (sharedPreferences.getBoolean("dndManual",false)){
+                dndMinutev2=10
+            }
 
 
             val latitude = sharedPreferences
@@ -224,7 +227,7 @@ object Util {
                                 // Alarm type
                                 val alarmType = AlarmManager.RTC_WAKEUP
 
-                                val uniqueIndexForParayer = 5555 + 1
+                                val uniqueIndexForParayer = 5555 + 1 + if (offDND) 1 else 2
 
 
 //                           if (BuildConfig.isRunFromStudio)

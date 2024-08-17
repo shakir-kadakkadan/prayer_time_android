@@ -407,7 +407,7 @@ class MainActivity : BaseActivity() {
 
 
         setNextAlarm(this)
-        Util.setNextAlarmDND(AppApplication.instance, offDND = true)
+        Util.setNextAlarmDND(AppApplication.instance, offDND = false)
 
 
     }

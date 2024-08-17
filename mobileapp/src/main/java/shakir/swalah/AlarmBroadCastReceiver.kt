@@ -20,6 +20,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationCompat.VISIBILITY_PUBLIC
 import androidx.core.app.NotificationManagerCompat
+import shakir.swalah.Util.getMySharedPreference
 import java.text.SimpleDateFormat
 import java.util.Locale
 
@@ -39,6 +40,8 @@ class AlarmBroadCastReceiver : BroadcastReceiver() {
                 setSilentModeOff()
                 Util.setNextAlarmDND(AppApplication.instance, offDND = false)
                 return
+            } else {
+                Util.setNextAlarmDND(AppApplication.instance, offDND = false)
             }
             val milli = intent?.getLongExtra("milli", 0) ?: 0
             val currentTimeMillis = System.currentTimeMillis()
@@ -109,6 +112,11 @@ class AlarmBroadCastReceiver : BroadcastReceiver() {
 }
 
 fun setSilentModeOff() {
+    val sharedPreferences = getMySharedPreference(AppApplication.instance)
+    if (sharedPreferences.getBoolean("dndManual", false)) {
+        sharedPreferences.edit().putBoolean("dndManual", false).commit()
+
+    }
     println("setSilentMode")
     try {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {

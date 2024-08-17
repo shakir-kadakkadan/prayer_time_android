@@ -222,6 +222,7 @@ class SettingsActivity : BaseActivity() {
                         if (which != 2) {
                             dndNow = false
                             sp.edit().putInt("dndMinutev2", which).commit()
+                            sp.edit().putBoolean("dndManual", true).commit()
                         } else {
                             sp.edit().putBoolean("dnd", isChecked).commit()
                             dndNow = true
@@ -234,7 +235,8 @@ class SettingsActivity : BaseActivity() {
                                 .setTitle("Warning")
                                 .setMessage("Allow 'Do Not Disturb' permission to activate silent mode automatically during prayer ")
                                 .setPositiveButton("OK") { dialog, which ->
-                                    Util.setNextAlarmDND(AppApplication.instance, offDND = true)
+                                    sp.edit().putBoolean("dndManual", true).commit()
+                                    Util.setNextAlarmDND(AppApplication.instance, offDND = true, )
                                     dialog.dismiss()
                                     askDNDPermission()
                                     sp.edit().putBoolean("dnd", isChecked).commit()
