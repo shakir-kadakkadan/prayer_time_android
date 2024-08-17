@@ -407,7 +407,7 @@ class MainActivity : BaseActivity() {
 
 
         setNextAlarm(this)
-        Util.setNextAlarmDND(AppApplication.instance, offDND = false)
+        Util.setNextAlarmDND(AppApplication.instance,)
 
 
     }
@@ -614,6 +614,7 @@ class MainActivity : BaseActivity() {
 
 
         Util.setNextAlarm(this)
+        Util.setNextAlarmDND(AppApplication.instance,)
 
         binding.locationTV.setText(if (l.isNullOrBlank()) "My Location" else l)
         println("$latitude $longitude $l")

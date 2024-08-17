@@ -121,9 +121,8 @@ object Util {
                             println("settttttt milli $milli arabicNames $arabicNames uniqueIndexForParayer $uniqueIndexForParayer $isIqama")
 
 
-
-                            var lastMilli_prev=sharedPreferences.getLong("lastMilli_copy",0L)
-                            var lastName_prev=sharedPreferences.getString("lastName_copy","")
+                            var lastMilli_prev = sharedPreferences.getLong("lastMilli_copy", 0L)
+                            var lastName_prev = sharedPreferences.getString("lastName_copy", "")
 
                             sharedPreferences
                                 .edit()
@@ -132,7 +131,7 @@ object Util {
                                 .putString("lastName", arabicNames)
                                 .putString("lastName_copy", arabicNames)
                                 .apply {
-                                    if (lastMilli_prev!=0L&&lastMilli_prev!=milli){
+                                    if (lastMilli_prev != 0L && lastMilli_prev != milli) {
                                         putLong("lastMilli_prev", lastMilli_prev)
                                         putString("lastName_prev", lastName_prev)
                                     }
@@ -162,9 +161,7 @@ object Util {
     }
 
 
-
-    fun setNextAlarmDND(context: Context, tommorrow: Boolean = false,offDND:Boolean=false,) {
-
+    fun setNextAlarmDND(context: Context, tommorrow: Boolean = false) {
 
 
         try {
@@ -179,9 +176,9 @@ object Util {
             var dndMinutev2 = sharedPreferences
                 .getInt("dndMinutev2", 1).plus(1).times(5)
 
-            if (sharedPreferences.getBoolean("dndManual",false)){
-                dndMinutev2=10
-            }
+
+            val dndManualMilli = sharedPreferences.getLong("dndManualMilli", 0L)
+            val dndManualMilliEnd = dndManualMilli + TimeUnit.MINUTES.toMillis(10)
 
 
             val latitude = sharedPreferences
@@ -199,66 +196,75 @@ object Util {
                 arrayOf(false, true).forEach { _isIqama ->
                     val isIqama = _isIqama && index != 1
 
-                        if (isIqama||offDND ) {
-                            var milli = prayerTimes[prayersType].time
-                            if (isIqama) {
-                                val iqsettings = Util.getIqamaSettings().get(if (index == 0) 0 else index - 1)
-                                if (iqsettings.isAfter) {
-                                    milli = milli + (TimeUnit.MINUTES.toMillis(iqsettings.after.toLong()))
-                                } else {
-                                    milli = iqsettings.fixed
-                                }
-
+                    if (isIqama) {
+                        var iqama_milli = prayerTimes[prayersType].time
+                        if (isIqama) {
+                            val iqsettings = Util.getIqamaSettings().get(if (index == 0) 0 else index - 1)
+                            if (iqsettings.isAfter) {
+                                iqama_milli = iqama_milli + (TimeUnit.MINUTES.toMillis(iqsettings.after.toLong()))
+                            } else {
+                                iqama_milli = iqsettings.fixed
                             }
 
-                            if (offDND){
-                                milli=System.currentTimeMillis()+(1000*dndMinutev2*60)
-                            }else{
-                                milli=milli+(1000*10)
-                            }
+                        }
 
 
-                            if (milli >= System.currentTimeMillis()) {
+                        iqama_milli = iqama_milli + TimeUnit.SECONDS.toMillis(10)
+                        val iqama_milliEnd = iqama_milli + TimeUnit.MINUTES.toMillis(dndMinutev2.toLong()) - TimeUnit.SECONDS.toMillis(11)
 
 
-                                val alarmManager =
-                                    context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+                        fun setAlarm(milli: Long, action: String, uniqueIndexForParayer: Int) {
 
-                                // Alarm type
-                                val alarmType = AlarmManager.RTC_WAKEUP
+                            val alarmManager =
+                                context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
 
-                                val uniqueIndexForParayer = 5555 + 1 + if (offDND) 1 else 2
-
-
-//                           if (BuildConfig.isRunFromStudio)
-//                               milli=System.currentTimeMillis()+TimeUnit.SECONDS.toMillis(10)
+                            // Alarm type
+                            val alarmType = AlarmManager.RTC_WAKEUP
 
 
-                                val pendingIntent =
-                                    createPendingIntent(context, milli,  if (offDND) "offDND" else "dnd", uniqueIndexForParayer)
+                            val pendingIntent =
+                                createPendingIntent(context, milli, action, uniqueIndexForParayer)
 
 
-                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                                    alarmManager.setExactAndAllowWhileIdle(
-                                        alarmType,
-                                        milli,
-                                        pendingIntent
-                                    )
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                                alarmManager.setExactAndAllowWhileIdle(
+                                    alarmType,
+                                    milli,
+                                    pendingIntent
+                                )
+                            } else {
+                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                                    alarmManager.setExact(alarmType, milli, pendingIntent)
                                 } else {
-                                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-                                        alarmManager.setExact(alarmType, milli, pendingIntent)
-                                    } else {
-                                        alarmManager.set(alarmType, milli, pendingIntent)
-                                    }
+                                    alarmManager.set(alarmType, milli, pendingIntent)
                                 }
-
-
-
-
-
-                                return@setNextAlarmDND
                             }
                         }
+
+
+                        var exit = false
+
+                        if (dndManualMilliEnd > System.currentTimeMillis()) {
+                            setAlarm(dndManualMilliEnd, "offDND", 555)
+                            exit = true
+                        } else {
+                            sharedPreferences.edit().remove("dndManualMilli").commit()
+                        }
+
+                        if (iqama_milli > System.currentTimeMillis()) {
+                            exit = true
+                            setAlarm(iqama_milli, "dnd", 666)
+
+                        }
+                        if (iqama_milliEnd > System.currentTimeMillis()) {
+                            exit = true
+                            setAlarm(iqama_milliEnd, "offDND", 777)
+                        }
+                        if (exit) {
+                            return@setNextAlarmDND
+                        }
+
+                    }
 
                 }
 
@@ -315,10 +321,7 @@ object Util {
         arabicNames: String?,
         uniqueIndexForParayer: Int
     ): PendingIntent {
-        Log.d(
-            "TESTSTSTST",
-            "createPendingIntent() called with: context = [" + context + "], milli = [" + milli + "], arabicNames = [" + arabicNames + "], uniqueIndexForParayer = [" + uniqueIndexForParayer + "]"
-        );
+
         val broadcastIntent = Intent(context, AlarmBroadCastReceiver::class.java).apply {
             setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
             putExtra("milli", milli)
@@ -380,8 +383,7 @@ object Util {
         }
 
 
-
-      var isiqamaAlarmOn: Boolean
+    var isiqamaAlarmOn: Boolean
         get() {
             val sharedPreferences = getMySharedPreference(AppApplication.instance)
             return sharedPreferences.getString("isiqamaAlarmOn_v2", "true").toBoolean()
@@ -390,11 +392,6 @@ object Util {
             val sharedPreferences = getMySharedPreference(AppApplication.instance)
             sharedPreferences.edit().putString("isiqamaAlarmOn_v2", value.toString()).commit()
         }
-
-
-
-
-
 
 
     fun timeFormat(): String {

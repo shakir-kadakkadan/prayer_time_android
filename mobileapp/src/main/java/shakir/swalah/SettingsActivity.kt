@@ -105,15 +105,18 @@ class SettingsActivity : BaseActivity() {
         binding.adhanAlarm.setOnCheckedChangeListener { buttonView, isChecked ->
             Util.isadhanAlarmOn = isChecked
             Util.setNextAlarm(this@SettingsActivity)
+            Util.setNextAlarmDND(AppApplication.instance,)
         }
         binding.iqamaAlarm.setOnCheckedChangeListener { buttonView, isChecked ->
             Util.isiqamaAlarmOn = isChecked
             Util.setNextAlarm(this@SettingsActivity)
+            Util.setNextAlarmDND(AppApplication.instance,)
         }
 
         binding.openApp.setOnCheckedChangeListener { buttonView, isChecked ->
             Util.openApp = isChecked
             Util.setNextAlarm(this@SettingsActivity)
+            Util.setNextAlarmDND(AppApplication.instance,)
         }
 
 
@@ -222,10 +225,10 @@ class SettingsActivity : BaseActivity() {
                         if (which != 2) {
                             dndNow = false
                             sp.edit().putInt("dndMinutev2", which).commit()
-                            sp.edit().putBoolean("dndManual", true).commit()
                         } else {
                             sp.edit().putBoolean("dnd", isChecked).commit()
                             dndNow = true
+                            sp.edit().putLong("dndManualMilli", System.currentTimeMillis()).commit()
                             if (isNotificationPolicyAccessGranted())
                                 setSilentMode()
                         }
@@ -235,8 +238,7 @@ class SettingsActivity : BaseActivity() {
                                 .setTitle("Warning")
                                 .setMessage("Allow 'Do Not Disturb' permission to activate silent mode automatically during prayer ")
                                 .setPositiveButton("OK") { dialog, which ->
-                                    sp.edit().putBoolean("dndManual", true).commit()
-                                    Util.setNextAlarmDND(AppApplication.instance, offDND = true, )
+                                    Util.setNextAlarmDND(AppApplication.instance,  )
                                     dialog.dismiss()
                                     askDNDPermission()
                                     sp.edit().putBoolean("dnd", isChecked).commit()
@@ -257,6 +259,7 @@ class SettingsActivity : BaseActivity() {
         }
         if (dnd && dndNow) {
             setSilentMode()
+
         }
 
     }

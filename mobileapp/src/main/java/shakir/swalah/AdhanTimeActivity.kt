@@ -81,6 +81,7 @@ class AdhanTimeActivity : BaseActivity() {
                     binding.caculationMethodsDesc.setText(timeMethods[tm].third.replace(timeMethods[tm].second, "").trimIndent())
                     dialog.dismiss()
                     Util.setNextAlarm(this@AdhanTimeActivity)
+                    Util.setNextAlarmDND(AppApplication.instance,)
                     updateTime()
                 }
                 .show()

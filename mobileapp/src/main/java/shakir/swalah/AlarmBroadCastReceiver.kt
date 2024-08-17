@@ -20,7 +20,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationCompat.VISIBILITY_PUBLIC
 import androidx.core.app.NotificationManagerCompat
-import shakir.swalah.Util.getMySharedPreference
 import java.text.SimpleDateFormat
 import java.util.Locale
 
@@ -38,10 +37,7 @@ class AlarmBroadCastReceiver : BroadcastReceiver() {
                 return
             } else if (name == "offDND") {
                 setSilentModeOff()
-                Util.setNextAlarmDND(AppApplication.instance, offDND = false)
                 return
-            } else {
-                Util.setNextAlarmDND(AppApplication.instance, offDND = false)
             }
             val milli = intent?.getLongExtra("milli", 0) ?: 0
             val currentTimeMillis = System.currentTimeMillis()
@@ -49,11 +45,6 @@ class AlarmBroadCastReceiver : BroadcastReceiver() {
                 Log.d(TAG, "past time")
             }
 
-            Log.d(
-                TAG,
-
-                "milli" + milli + "onReceive() called with: context = [" + context + "], intent = [" + intent + "]"
-            );
 
 
 
@@ -64,32 +55,6 @@ class AlarmBroadCastReceiver : BroadcastReceiver() {
             if (context != null) {
 
 
-//                val array = arrayOf(
-//                    PrayersType.FAJR,
-//                    PrayersType.SUNRISE,
-//                    PrayersType.ZUHR,
-//                    PrayersType.ASR,
-//                    PrayersType.MAGHRIB,
-//                    PrayersType.ISHA
-//                )
-//                val date = GregorianCalendar()
-//
-//                val sharedPreferences = Util.getMySharedPreference(context)
-//                val latitude = sharedPreferences
-//                    .getDouble("latitude", 11.00)
-//
-//                val longitude = sharedPreferences
-//                    .getDouble("longitude", 76.00)
-//
-//
-//                val prayerTimes =
-//                    TimeCalculator().date(date).location(latitude, longitude, 0.0, 0.0)
-//                        .timeCalculationMethod(AngleCalculationType.KARACHI)
-//                        .calculateTimes()
-//
-//
-//                Log.d("dgfbdsfjjd", "$latitude $longitude $prayerTimes")
-
 
                 showNoti(
                     context, intent?.getStringExtra("name") + " " + SimpleDateFormat(Util.timeFormat(), Locale.ENGLISH).format(milli).ltrEmbed()
@@ -98,7 +63,10 @@ class AlarmBroadCastReceiver : BroadcastReceiver() {
             }
 
             Handler().postDelayed({
-                context?.let { Util.setNextAlarm(it) }
+                context?.let {
+                    Util.setNextAlarm(it)
+                    Util.setNextAlarmDND(AppApplication.instance,)
+                }
             }, 2500)
         } catch (e: Exception) {
             e.report()
@@ -112,13 +80,9 @@ class AlarmBroadCastReceiver : BroadcastReceiver() {
 }
 
 fun setSilentModeOff() {
-    val sharedPreferences = getMySharedPreference(AppApplication.instance)
-    if (sharedPreferences.getBoolean("dndManual", false)) {
-        sharedPreferences.edit().putBoolean("dndManual", false).commit()
 
-    }
-    println("setSilentMode")
     try {
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             // Check for notification policy access
             val notificationManager = AppApplication.instance.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
@@ -139,18 +103,15 @@ fun setSilentModeOff() {
         e.printStackTrace()
         println("setSilentMode 3")
     }
-    println("setSilentMode 2")
+    Util.setNextAlarmDND(AppApplication.instance)
 }
 
 
 fun setSilentMode() {
-    println("setSilentMode")
     try {
-        Util.setNextAlarmDND(AppApplication.instance, offDND = true)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             // Check for notification policy access
             val notificationManager = AppApplication.instance.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-            println("setSilentMode notificationManager.isNotificationPolicyAccessGranted ${notificationManager.isNotificationPolicyAccessGranted}")
             if (notificationManager.isNotificationPolicyAccessGranted) {
                 notificationManager.setInterruptionFilter(NotificationManager.INTERRUPTION_FILTER_NONE)
 
@@ -165,9 +126,11 @@ fun setSilentMode() {
         }
     } catch (e: Exception) {
         e.printStackTrace()
-        println("setSilentMode 3")
+
     }
-    println("setSilentMode 2")
+
+    Util.setNextAlarmDND(AppApplication.instance)
+
 }
 
 
