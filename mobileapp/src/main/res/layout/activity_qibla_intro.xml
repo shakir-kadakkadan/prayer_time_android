@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/rootViewLL"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/bg_3"
+    android:orientation="vertical"
+    android:paddingTop="@dimen/_30sdp"
+    tools:context=".QiblaActivity">
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+
+        <TextView
+            android:id="@+id/ok2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_margin="16dp"
+            android:gravity="center"
+            android:text="OK"
+            android:textColor="@color/white"
+            android:textSize="20dp"
+            android:padding="8dp"
+            android:textStyle="bold"
+            android:background="@drawable/bg_2"
+
+            />
+
+
+
+        <ImageView
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:scaleType="fitCenter"
+            android:minHeight="@dimen/_100sdp"
+            android:adjustViewBounds="true"
+            android:id="@+id/imageView"
+            ></ImageView>
+
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"
+            android:paddingTop="16dp"
+            android:paddingBottom="16dp"
+            android:text="Qibla Direction uses your device's compass, to get an accurate result we advise you to calibrate the compass before using Qibla Direction. And make sure that your device is away from any electronic devices or magnetic field around the device; So that it does not affect the accuracy of the compass."
+            android:textColor="@color/white" />
+
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"
+            android:paddingBottom="16dp"
+            android:text="يستخدم اتجاه القبلة بوصلة جهازك، وللحصول على نتيجة دقيقة ننصحك بمعايرة البوصلة قبل استخدام اتجاه القبلة. واحرص على أن يكون جهازك بعيداً عن أي أجهزة الكترونية أو مجال مغناطيسي
+
+حول الجهاز؛ حتى لا يؤثر ذلك في دقة البوصلة."
+            android:textColor="@color/white" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"
+            android:paddingBottom="16dp"
+            android:text="Move the device in an 8- shape to calibrate the compass
+
+You should tilt and move your device 3 times in this way, then press Back when you are done"
+            android:textColor="@color/white" />
+
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"
+            android:paddingBottom="16dp"
+            android:text="حرك الجهاز على شكل 8 لمعايرة البوصلة
+
+يجب إمالة الجهاز وتحريكه 3 مرات على هذا النحو, ثم اضغط رجوع عند الانتهاء"
+            android:textColor="@color/white" />
+
+
+
+
+        <TextView
+            android:id="@+id/ok"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_margin="16dp"
+            android:gravity="center"
+            android:text="OK"
+            android:textColor="@color/white"
+            android:textSize="20dp"
+            android:padding="8dp"
+            android:textStyle="bold"
+            android:background="@drawable/bg_2"
+
+            />
+
+
+
+    </LinearLayout>
+
+
+</androidx.core.widget.NestedScrollView>

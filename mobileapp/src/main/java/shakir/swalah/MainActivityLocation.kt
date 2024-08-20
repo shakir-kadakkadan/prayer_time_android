@@ -1,8 +1,6 @@
 package shakir.swalah
 
 import android.Manifest
-import android.animation.Animator
-import android.animation.ObjectAnimator
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
@@ -17,14 +15,18 @@ import android.os.Handler
 import android.os.Looper
 import android.provider.Settings
 import android.util.Log
-import android.view.View
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ActivityCompat
 import com.google.android.gms.common.api.ResolvableApiException
-import com.google.android.gms.location.*
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationCallback
+import com.google.android.gms.location.LocationRequest
+import com.google.android.gms.location.LocationResult
+import com.google.android.gms.location.LocationServices
+import com.google.android.gms.location.LocationSettingsRequest
 import com.google.firebase.crashlytics.FirebaseCrashlytics
-
-import java.util.*
+import java.util.Locale
 import kotlin.concurrent.thread
 
 abstract class MainActivityLocation : BaseActivity() {
@@ -96,11 +98,23 @@ abstract class MainActivityLocation : BaseActivity() {
                 if (isLocationEnabled()) {
 
                     mFusedLocationClient.lastLocation.addOnCompleteListener(this) { task ->
-                        var location: Location? = task.result
-                        if (location == null) {
-                            requestNewLocationData()
-                        } else {
-                            onLocationServiceResult(location)
+                        try {
+                            var location: Location? = task.result
+                            if (location == null) {
+                                requestNewLocationData()
+                            } else {
+                                onLocationServiceResult(location)
+                            }
+                        } catch (e: Exception) {
+//                            AlertDialog.Builder(this)
+//                                .setMessage(
+//                                    "Unable to determine your location. Please check your device settings and ensure location services are enabled.\n\n"+e.message
+//                                )
+//                                .setPositiveButton("OK") { dialog, _ ->
+//                                    dialog.dismiss()
+//                                }
+//                                .show()
+                           e.printStackTrace()
                         }
                     }
                 } else {
@@ -113,20 +127,25 @@ abstract class MainActivityLocation : BaseActivity() {
                         Log.d("hgdhag", "addOnSuccessListener ${it.locationSettingsStates}")
                     }
                     result.addOnFailureListener {
-                        it.printStackTrace()
-                        Log.d("hgdhag", "addOnFailureListener ${it.message}")
-                        if (it is ResolvableApiException) {
-                            // Location settings are not satisfied, but this can be fixed
-                            // by showing the user a dialog.
-                            try {
-                                // Show the dialog by calling startResolutionForResult(),
-                                // and check the result in onActivityResult().
-                                it.startResolutionForResult(this, 1)
-                            } catch (sendEx: IntentSender.SendIntentException) {
-                                // Ignore the error.
-                                sendEx.printStackTrace()
-                            }
+                        try {
+                            it.printStackTrace()
+                            Log.d("hgdhag", "addOnFailureListener ${it.message}")
+                            if (it is ResolvableApiException) {
+                                // Location settings are not satisfied, but this can be fixed
+                                // by showing the user a dialog.
+                                try {
+                                    // Show the dialog by calling startResolutionForResult(),
+                                    // and check the result in onActivityResult().
+                                    it.startResolutionForResult(this, 1)
+                                } catch (sendEx: IntentSender.SendIntentException) {
+                                    // Ignore the error.
+                                    sendEx.printStackTrace()
+                                }
 
+                            }
+                        } catch (e: Exception) {
+                            toast(e.message)
+                           e.printStackTrace()
                         }
                     }
 

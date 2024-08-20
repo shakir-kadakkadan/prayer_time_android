@@ -111,7 +111,7 @@ class MainActivity : BaseActivity() {
         binding.speedDial.setOnActionSelectedListener {
             when (it.id) {
                 R.id.qiblaFAB -> {
-                    startActivity(Intent(this, QiblaActivity::class.java))
+                    startActivity(Intent(this, QiblaIntroActivity::class.java))
                 }
 
                 R.id.settingsFAB -> {

@@ -12,7 +12,7 @@ import shakir.swalah.databinding.ActivityQiblaBinding
 import java.util.*
 
 
-class QiblaActivity : MainActivityLocation() {
+class QiblaActivity : MainActivityLocationHMS() {
     override fun onLoactionPermissionDialogDone() {
 
     }
@@ -92,7 +92,7 @@ class QiblaActivity : MainActivityLocation() {
 
 
     private fun updateCompassView(myLocation: Location?, locality: String?) {
-
+        println("QiblaActivity : updateCompassView() called with: myLocation = $myLocation, locality = $locality")
         try {
             binding.locationTV.setText(if (locality.isNullOrBlank()) "My Location" else locality)
             if (myLocation != null && compassSensorManager != null) {
@@ -107,6 +107,7 @@ class QiblaActivity : MainActivityLocation() {
                     e.printStackTrace()
                 }
 
+                println("QiblaActivity : updateCompassView() called with: myLocation = $myLocation, locality = $locality")
                 binding.dialFrame?.init(compassSensorManager, myLocation, northPoleLoc)
                 binding.needleFrame?.init(compassSensorManager, myLocation, makkaLoc)
                 if (binding.needleFrame?.visibility != View.VISIBLE) {
@@ -126,6 +127,7 @@ class QiblaActivity : MainActivityLocation() {
     override fun onResume() {
         super.onResume()
         compassSensorManager?.onResume()
+        getHMSLocation()
     }
 
 
@@ -133,6 +135,9 @@ class QiblaActivity : MainActivityLocation() {
         super.onPause()
         compassSensorManager?.onPause()
     }
+
+
+
 
 
 }

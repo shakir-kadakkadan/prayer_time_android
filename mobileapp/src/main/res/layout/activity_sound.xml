@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/rootViewLL"
     android:layout_width="match_parent"
@@ -129,7 +129,7 @@
 
             <TextView
 
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:padding="16dp"
@@ -138,8 +138,9 @@
                 android:textSize="16dp" />
 
             <TextView
+                android:layout_weight="1"
                 android:id="@+id/adhanSoundAudioName"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:padding="16dp"
                 android:textColor="@color/white"
@@ -166,7 +167,7 @@
 
             <TextView
 
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:padding="16dp"
@@ -175,8 +176,9 @@
                 android:textSize="16dp" />
 
             <TextView
+                android:layout_weight="1"
                 android:id="@+id/fajrSoundAudioName"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:padding="16dp"
                 android:textColor="@color/white"
@@ -201,7 +203,8 @@
             android:orientation="horizontal">
 
             <TextView
-                android:layout_width="wrap_content"
+
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:padding="16dp"
@@ -210,8 +213,9 @@
                 android:textSize="16dp" />
 
             <TextView
+                android:layout_weight="1"
                 android:id="@+id/iqamaAudioName"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:padding="16dp"
                 android:text="Iqama Audio"
@@ -247,4 +251,4 @@
     </LinearLayout>
 
 
-</FrameLayout>
+</androidx.core.widget.NestedScrollView>

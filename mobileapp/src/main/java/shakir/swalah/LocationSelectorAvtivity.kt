@@ -16,7 +16,11 @@ import androidx.core.app.ActivityCompat
 import androidx.core.view.isVisible
 import androidx.core.widget.doOnTextChanged
 import com.google.android.gms.common.api.ResolvableApiException
-import com.google.android.gms.location.*
+import com.google.android.gms.location.LocationRequest
+import com.google.android.gms.location.LocationServices
+import com.google.android.gms.location.LocationSettingsRequest
+import com.google.android.gms.location.LocationSettingsResponse
+import com.google.android.gms.location.SettingsClient
 import com.google.android.gms.tasks.CancellationTokenSource
 import com.google.android.gms.tasks.Task
 import kotlinx.coroutines.Dispatchers
@@ -24,12 +28,11 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import shakir.swalah.databinding.ActivityLocationSelectorBinding
-import shakir.swalah.databinding.ActivityMainBinding
 import shakir.swalah.models.Cord
-import java.util.*
+import java.util.Locale
 import kotlin.math.absoluteValue
 
-class LocationSelectorAvtivity : BaseActivity() {
+class LocationSelectorAvtivity : LocationSelectorActivityHMS() {
 
 
     val arrayList = arrayListOf<Cord>()
@@ -46,10 +49,10 @@ class LocationSelectorAvtivity : BaseActivity() {
                 arrayList.add(Cord(splited[0], splited[1].toDouble(), splited[2].toDouble()))
             }
         }
-        if (sp.getBoolean("v2_set",false)==true){
-            locationLastForDistanceCalculation=Location("").apply {
-                latitude=sp.getDouble("v2_latitude",0.0)
-                longitude=sp.getDouble("v2_longitude",0.0)
+        if (sp.getBoolean("v2_set", false) == true) {
+            locationLastForDistanceCalculation = Location("").apply {
+                latitude = sp.getDouble("v2_latitude", 0.0)
+                longitude = sp.getDouble("v2_longitude", 0.0)
             }
         }
         adapter = LocListAdapter() {
@@ -90,21 +93,21 @@ class LocationSelectorAvtivity : BaseActivity() {
                             locationLastForDistanceCalculation!!.distanceTo(Location("").apply { latitude = it.latitude; longitude = it.longitude }).absoluteValue
                         })
                         adapter.notifyDataSetChanged()
-                        binding. clear.isVisible = false
+                        binding.clear.isVisible = false
                     } else {
                         adapter.arrayList.clear()
                         adapter.arrayList.addAll(arrayList.filter { it.name.startsWith(key, ignoreCase = true) }.plus(
                             arrayList.filter { it.name.contains(key, ignoreCase = true) }
                         ).distinct())
                         adapter.notifyDataSetChanged()
-                        binding. clear.isVisible = true
+                        binding.clear.isVisible = true
                     }
                 } catch (e: Exception) {
-                  e.printStackTrace()
+                    e.printStackTrace()
                 }
             }
         } catch (e: Exception) {
-          e.printStackTrace()
+            e.printStackTrace()
         }
     }
 
@@ -144,7 +147,7 @@ class LocationSelectorAvtivity : BaseActivity() {
             requestCurrentLoaction()
             Handler().postDelayed({
                 requestCurrentLoaction()
-            },2000)
+            }, 2000)
 
         }
 
@@ -152,6 +155,10 @@ class LocationSelectorAvtivity : BaseActivity() {
 
     override fun onResume() {
         super.onResume()
+        function = {
+            onGetLocation(it)
+        }
+        getHMSLocation()
 
     }
 
@@ -226,11 +233,11 @@ class LocationSelectorAvtivity : BaseActivity() {
     }
 
 
-
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (requestCode == 15) {
             requestLocationTurnOn()
+            getHMSLocation()
 
         }
     }
@@ -238,37 +245,40 @@ class LocationSelectorAvtivity : BaseActivity() {
 
     var locationLastForDistanceCalculation: Location? = null
 
+
+    fun onGetLocation(location: Location) {
+        if (location != null) {
+            GlobalScope.launch(Dispatchers.Main) {
+                try {
+                    val localityName = fetchLocality(location)
+                    binding.locationTV.setText("Select Current Location\n$localityName")
+                    binding.locationTV.setOnClickListener {
+                        sp.edit().putString("v2_locality", localityName)
+                            .putDouble("v2_latitude", location.latitude)
+                            .putDouble("v2_longitude", location.longitude)
+                            .putBoolean("v2_set", true)
+                            .commit()
+                        onBackPressed()
+                    }
+                    locationLastForDistanceCalculation = location
+                    runOnUiThread {
+                        notifyRV()
+                    }
+
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
+            }
+        }
+    }
+
     @SuppressLint("MissingPermission")
     fun requestCurrentLoaction() {
         try {
             LocationServices.getFusedLocationProviderClient(this)
                 .getCurrentLocation(android.location.LocationRequest.QUALITY_HIGH_ACCURACY, CancellationTokenSource().token)
                 .addOnSuccessListener { location ->
-                    if (location != null) {
-                        GlobalScope.launch(Dispatchers.Main) {
-                            try {
-                                val localityName = fetchLocality(location)
-                                binding.locationTV.setText("Select Current Location\n$localityName")
-                                binding.locationTV.setOnClickListener {
-                                    sp.edit().putString("v2_locality", localityName)
-                                        .putDouble("v2_latitude", location.latitude)
-                                        .putDouble("v2_longitude", location.longitude)
-                                        .putBoolean("v2_set", true)
-                                        .commit()
-                                    onBackPressed()
-                                }
-                                locationLastForDistanceCalculation = location
-                                runOnUiThread {
-                                    notifyRV()
-                                }
-
-                            } catch (e: Exception) {
-                                e.printStackTrace()
-                            }
-                        }
-                    }
-
-
+                    onGetLocation(location)
                 }
                 .addOnFailureListener {
                     it.printStackTrace()
@@ -308,7 +318,7 @@ class LocationSelectorAvtivity : BaseActivity() {
             } else {
                 finish()
             }
-        }else{
+        } else {
             finish()
         }
     }
