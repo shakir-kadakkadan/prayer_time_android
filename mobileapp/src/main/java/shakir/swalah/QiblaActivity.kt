@@ -4,12 +4,12 @@ import android.location.Geocoder
 import android.location.Location
 import android.os.Bundle
 import android.view.View
+import androidx.core.view.isVisible
+import com.bumptech.glide.Glide
 import com.google.firebase.crashlytics.FirebaseCrashlytics
-
 import shakir.swalah.compass.CompassSensorManager
-
 import shakir.swalah.databinding.ActivityQiblaBinding
-import java.util.*
+import java.util.Locale
 
 
 class QiblaActivity : MainActivityLocationHMS() {
@@ -27,7 +27,7 @@ class QiblaActivity : MainActivityLocationHMS() {
         try {
             updateCompassView(location, locality)
         } catch (e: Exception) {
-           e.report()
+            e.report()
             toast(e.message)
         }
     }
@@ -47,7 +47,21 @@ class QiblaActivity : MainActivityLocationHMS() {
                 e.report()
                 toast(e.message)
             }
+
+            getHMSLocation()
         }
+        binding.intro.root.isVisible = true
+        binding.intro.root.alpha=.95f
+        binding.intro.ok.setOnClickListener {
+            binding.intro.root.isVisible = false
+            binding.locationButton.performClick()
+        }
+        binding.intro.ok2.setOnClickListener {
+            binding.intro.root.isVisible = false
+            binding.locationButton.performClick()
+        }
+        Glide.with(this).asGif().load(R.drawable.unnamed).into( binding.intro.imageView);
+
 
     }
 
@@ -135,9 +149,6 @@ class QiblaActivity : MainActivityLocationHMS() {
         super.onPause()
         compassSensorManager?.onPause()
     }
-
-
-
 
 
 }

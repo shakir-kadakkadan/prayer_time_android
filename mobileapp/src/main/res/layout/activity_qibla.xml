@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/rootViewLL"
@@ -10,306 +10,319 @@
     android:paddingTop="@dimen/_30sdp"
     tools:context=".QiblaActivity">
 
-    <Space
-        android:id="@+id/topSpacer"
-        android:layout_width="0dp"
-        android:layout_height="0dp" />
     <LinearLayout
-        android:id="@+id/locationLL"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/_20sdp"
-        android:layout_marginEnd="@dimen/_20sdp"
-
-        android:orientation="horizontal"
-        android:visibility="visible"
-        tools:visibility="visible"
-
-        >
-
-        <ImageView
-           app:tint="#FF9800"
-            android:id="@+id/locationButton"
-            android:layout_width="wrap_content"
-            android:layout_height="20dp"
-            android:layout_gravity="center_vertical"
-            android:src="@drawable/ic_baseline_location_on_24" />
-
-        <TextView
-            android:id="@+id/locationTV"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:layout_marginStart="@dimen/_5sdp"
-            android:layout_marginTop="@dimen/_5sdp"
-            android:layout_marginBottom="@dimen/_5sdp"
-            android:layout_weight="1"
-            android:text="Location"
-            android:textColor="#FF9800" />
-
-
-
-
-    </LinearLayout>
-
-
-    <LinearLayout
-        android:layout_gravity="center"
-        android:gravity="center"
-        android:id="@+id/fullscreen_content"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/textView"
+
+        <Space
+            android:id="@+id/topSpacer"
+            android:layout_width="0dp"
+            android:layout_height="0dp" />
+
+        <LinearLayout
+            android:id="@+id/locationLL"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:includeFontPadding="false"
+            android:layout_marginStart="@dimen/_20sdp"
+            android:layout_marginEnd="@dimen/_20sdp"
 
-            android:text="RESULT"
-            android:textColor="@color/white"
-            android:visibility="gone" />
+            android:orientation="horizontal"
+            android:visibility="visible"
+            tools:visibility="visible"
 
-        <TextView
-            android:id="@+id/compassText"
+            >
+
+            <ImageView
+                android:id="@+id/locationButton"
+                android:layout_width="wrap_content"
+                android:layout_height="20dp"
+                android:layout_gravity="center_vertical"
+                android:src="@drawable/ic_baseline_location_on_24"
+                app:tint="#FF9800" />
+
+            <TextView
+                android:id="@+id/locationTV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginStart="@dimen/_5sdp"
+                android:layout_marginTop="@dimen/_5sdp"
+                android:layout_marginBottom="@dimen/_5sdp"
+                android:layout_weight="1"
+                android:text="Location"
+                android:textColor="#FF9800" />
+
+
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:id="@+id/fullscreen_content"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:includeFontPadding="false"
-
-            android:text="compassText"
-            android:textColor="@color/white"
-            android:visibility="gone" />
-
-        <TextView
-            android:id="@+id/qiblaText"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:includeFontPadding="false"
-
-            android:text="qiblaText"
-            android:textColor="@color/white"
-            android:visibility="gone" />
-
-
-        <TextView
-            android:id="@+id/myLocationTextView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_gravity="center"
             android:gravity="center"
-            android:padding="16dp"
-            android:textColor="@color/white"
-            android:textSize="16dp"
-            android:visibility="gone"
+            android:orientation="vertical">
 
-            />
+            <TextView
+                android:id="@+id/textView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:includeFontPadding="false"
+
+                android:text="RESULT"
+                android:textColor="@color/white"
+                android:visibility="gone" />
+
+            <TextView
+                android:id="@+id/compassText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:includeFontPadding="false"
+
+                android:text="compassText"
+                android:textColor="@color/white"
+                android:visibility="gone" />
+
+            <TextView
+                android:id="@+id/qiblaText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:includeFontPadding="false"
+
+                android:text="qiblaText"
+                android:textColor="@color/white"
+                android:visibility="gone" />
 
 
-        <FrameLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            <TextView
+                android:id="@+id/myLocationTextView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:padding="16dp"
+                android:textColor="@color/white"
+                android:textSize="16dp"
+                android:visibility="gone"
 
-            <androidx.constraintlayout.widget.ConstraintLayout
+                />
+
+
+            <FrameLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
-                <FrameLayout
-                    android:layout_width="0dp"
-                    android:layout_height="0dp"
-                    app:layout_constraintDimensionRatio="H,1:1"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
 
-
-                    >
-
-                    <ImageView
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_margin="32dp"
-                        android:background="@drawable/gold_round"
-                        android:scaleType="fitCenter"
-
-                        />
-
-
-                    <shakir.swalah.compass.CompassViewFrame
-                        android:id="@+id/dialFrame"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_gravity="center"
-                        android:layout_margin="32dp"
+                    <FrameLayout
+                        android:layout_width="0dp"
+                        android:layout_height="0dp"
+                        app:layout_constraintDimensionRatio="H,1:1"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
 
 
                         >
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="40dp"
-                            android:layout_gravity="top|center_horizontal"
-                            android:layout_marginTop="8dp"
-                            android:gravity="center"
-                            android:rotation="0"
-                            android:text="@string/n"
-                            android:textColor="@color/white"
-                            android:textSize="20dp"
-                            android:textStyle="bold" />
-
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="40dp"
-                            android:layout_gravity="right|center_vertical"
-                            android:layout_marginLeft="20dp"
-                            android:layout_marginTop="8dp"
-                            android:layout_marginRight="20dp"
-                            android:layout_marginBottom="8dp"
-                            android:gravity="center"
-                            android:rotation="0"
-                            android:text="@string/e"
-                            android:textColor="@color/white"
-                            android:textSize="20dp"
-                            android:textStyle="bold" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="40dp"
-                            android:layout_gravity="bottom|center_horizontal"
-                            android:layout_marginLeft="20dp"
-                            android:layout_marginTop="20dp"
-                            android:layout_marginRight="20dp"
-                            android:layout_marginBottom="20dp"
-                            android:gravity="center"
-                            android:rotation="0"
-                            android:text="@string/s"
-                            android:textColor="@color/white"
-                            android:textSize="20dp"
-                            android:textStyle="bold" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="40dp"
-                            android:layout_gravity="left|center_vertical"
-
-                            android:layout_marginLeft="20dp"
-                            android:layout_marginTop="8dp"
-                            android:layout_marginRight="20dp"
-                            android:layout_marginBottom="8dp"
-                            android:gravity="center"
-                            android:rotation="0"
-                            android:text="@string/w"
-                            android:textColor="@color/white"
-                            android:textSize="20dp"
-                            android:textStyle="bold" />
-
 
                         <ImageView
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
-                            android:layout_margin="50dp"
-                            android:src="@drawable/arrow4gold" />
+                            android:layout_margin="32dp"
+                            android:background="@drawable/gold_round"
+                            android:scaleType="fitCenter"
+
+                            />
 
 
-                    </shakir.swalah.compass.CompassViewFrame>
-
-                    <shakir.swalah.compass.CompassViewFrame
-                        android:id="@+id/needleFrame"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_gravity="center"
-                        android:layout_margin="48dp"
-                        android:visibility="invisible"
-                        tools:rotation="45"
-                        tools:visibility="visible"
-
-
-                        >
-
-
-                        <androidx.constraintlayout.widget.ConstraintLayout
+                        <shakir.swalah.compass.CompassViewFrame
+                            android:id="@+id/dialFrame"
                             android:layout_width="match_parent"
-                            android:layout_height="match_parent">
+                            android:layout_height="match_parent"
+                            android:layout_gravity="center"
+                            android:layout_margin="32dp"
+
+
+                            >
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="40dp"
+                                android:layout_gravity="top|center_horizontal"
+                                android:layout_marginTop="8dp"
+                                android:gravity="center"
+                                android:rotation="0"
+                                android:text="@string/n"
+                                android:textColor="@color/white"
+                                android:textSize="20dp"
+                                android:textStyle="bold" />
+
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="40dp"
+                                android:layout_gravity="right|center_vertical"
+                                android:layout_marginLeft="20dp"
+                                android:layout_marginTop="8dp"
+                                android:layout_marginRight="20dp"
+                                android:layout_marginBottom="8dp"
+                                android:gravity="center"
+                                android:rotation="0"
+                                android:text="@string/e"
+                                android:textColor="@color/white"
+                                android:textSize="20dp"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="40dp"
+                                android:layout_gravity="bottom|center_horizontal"
+                                android:layout_marginLeft="20dp"
+                                android:layout_marginTop="20dp"
+                                android:layout_marginRight="20dp"
+                                android:layout_marginBottom="20dp"
+                                android:gravity="center"
+                                android:rotation="0"
+                                android:text="@string/s"
+                                android:textColor="@color/white"
+                                android:textSize="20dp"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="40dp"
+                                android:layout_gravity="left|center_vertical"
+
+                                android:layout_marginLeft="20dp"
+                                android:layout_marginTop="8dp"
+                                android:layout_marginRight="20dp"
+                                android:layout_marginBottom="8dp"
+                                android:gravity="center"
+                                android:rotation="0"
+                                android:text="@string/w"
+                                android:textColor="@color/white"
+                                android:textSize="20dp"
+                                android:textStyle="bold" />
+
 
                             <ImageView
-                                android:layout_width="0dp"
-                                android:layout_height="0dp"
-                                android:layout_gravity="center_horizontal|top"
-                                android:layout_margin="16dp"
-                                android:src="@drawable/kaba_arrow_gold"
-                                app:layout_constraintDimensionRatio="H,2:1.42"
-                                app:layout_constraintEnd_toEndOf="parent"
-                                app:layout_constraintStart_toStartOf="parent"
-
-                                tools:layout_editor_absoluteY="16dp" />
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:layout_margin="50dp"
+                                android:src="@drawable/arrow4gold" />
 
 
-                        </androidx.constraintlayout.widget.ConstraintLayout>
+                        </shakir.swalah.compass.CompassViewFrame>
+
+                        <shakir.swalah.compass.CompassViewFrame
+                            android:id="@+id/needleFrame"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_gravity="center"
+                            android:layout_margin="48dp"
+                            android:visibility="invisible"
+                            tools:rotation="45"
+                            tools:visibility="visible"
 
 
-                    </shakir.swalah.compass.CompassViewFrame>
-
-                    <ProgressBar
-                        android:id="@+id/progress_bar"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:indeterminateTint="#FF9800"
-                        android:scaleX="2"
-                        android:scaleY="2"
-
-                        />
+                            >
 
 
-                </FrameLayout>
+                            <androidx.constraintlayout.widget.ConstraintLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent">
+
+                                <ImageView
+                                    android:layout_width="0dp"
+                                    android:layout_height="0dp"
+                                    android:layout_gravity="center_horizontal|top"
+                                    android:layout_margin="16dp"
+                                    android:src="@drawable/kaba_arrow_gold"
+                                    app:layout_constraintDimensionRatio="H,2:1.42"
+                                    app:layout_constraintEnd_toEndOf="parent"
+                                    app:layout_constraintStart_toStartOf="parent"
+
+                                    tools:layout_editor_absoluteY="16dp" />
 
 
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
-        </FrameLayout>
+                            </androidx.constraintlayout.widget.ConstraintLayout>
 
 
-        <!--<TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:gravity="center"
-            android:text="@string/compassDesc"
-            android:textColor="@color/white"
-            android:textSize="16dp"
+                        </shakir.swalah.compass.CompassViewFrame>
 
-            />-->
+                        <ProgressBar
+                            android:id="@+id/progress_bar"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:indeterminateTint="#FF9800"
+                            android:scaleX="2"
+                            android:scaleY="2"
+
+                            />
 
 
-    </LinearLayout>
+                    </FrameLayout>
 
-    <!-- This FrameLayout insets its children based on system windows using
-         android:fitsSystemWindows. -->
-    <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:fitsSystemWindows="true">
 
-        <LinearLayout
-            android:id="@+id/fullscreen_content_controls"
-            style="?metaButtonBarStyle"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom|center_horizontal"
-            android:background="@color/black_overlay"
-            android:orientation="horizontal"
-            tools:ignore="UselessParent">
+                </androidx.constraintlayout.widget.ConstraintLayout>
 
-            <Button
-                android:id="@+id/dummy_button"
-                style="?metaButtonBarButtonStyle"
-                android:layout_width="0dp"
+            </FrameLayout>
+
+
+            <!--<TextView
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="@string/dummy_button" />
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:text="@string/compassDesc"
+                android:textColor="@color/white"
+                android:textSize="16dp"
+
+                />-->
+
 
         </LinearLayout>
-    </FrameLayout>
 
-</LinearLayout>
+        <!-- This FrameLayout insets its children based on system windows using
+             android:fitsSystemWindows. -->
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:fitsSystemWindows="true">
+
+            <LinearLayout
+                android:id="@+id/fullscreen_content_controls"
+                style="?metaButtonBarStyle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom|center_horizontal"
+                android:background="@color/black_overlay"
+                android:orientation="horizontal"
+                tools:ignore="UselessParent">
+
+                <Button
+                    android:id="@+id/dummy_button"
+                    style="?metaButtonBarButtonStyle"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/dummy_button" />
+
+            </LinearLayout>
+        </FrameLayout>
+    </LinearLayout>
+
+    <include
+        android:visibility="gone"
+        layout="@layout/activity_qibla_intro"
+        android:id="@+id/intro"
+        />
+
+
+</FrameLayout>
