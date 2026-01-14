@@ -1,7 +1,14 @@
 {
   "permissions": {
     "allow": [
-      "Bash(./gradlew:*)"
+      "Bash(./gradlew:*)",
+      "Bash(yt-dlp:*)",
+      "Bash(node generate-audio-json.js:*)",
+      "Bash(for file in *.mp3)",
+      "Bash(do echo \"Processing: $file\")",
+      "Bash(ffmpeg:*)",
+      "Bash(done)",
+      "Bash(ls:*)"
     ]
   }
 }

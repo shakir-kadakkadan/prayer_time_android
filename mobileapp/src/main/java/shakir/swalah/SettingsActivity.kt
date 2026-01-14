@@ -124,15 +124,11 @@ class SettingsActivity : BaseActivity() {
             thread {
                 try {
                     var url = try {
-                        sendGetRequest("https://install4-default-rtdb.asia-southeast1.firebasedatabase.app/athan_app_contact_us_url.json")?.replace("\"", "")
+                        sendGetRequest("https://prayer-time-shakir.web.app/contact.json")?.replace("\"", "")
                     } catch (e: Exception) {
                         null
                     }
-                    if (url.isNullOrBlank()) {
-                        //918590559204
-                        url = "https://wa.me/918129625121?text=This message is regarding أَذَان app.\n"
 
-                    }
                     runOnUiThread {
                         try {
                             val intent = Intent(Intent.ACTION_VIEW)

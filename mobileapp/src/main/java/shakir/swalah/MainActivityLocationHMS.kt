@@ -27,7 +27,6 @@ abstract class MainActivityLocationHMS : MainActivityLocation() {
 
             mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
             mLocationRequest.setNumUpdates(100)
-            mLocationRequest.setCoordinateType(LocationRequest.COORDINATE_TYPE_WGS84)
             if (null == mLocationCallback) {
                 // Set the location callback.
                 mLocationCallback = object : LocationCallback() {

@@ -16,9 +16,7 @@ import com.google.firebase.analytics.FirebaseAnalytics
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import org.json.JSONObject
 import java.io.File
-import java.net.URLEncoder
 import java.util.concurrent.TimeUnit
 
 
@@ -111,6 +109,7 @@ open class BaseActivity : AppCompatActivity() {
     }
 
     fun downloadSounds(force: Boolean = false, aaaaa: (String) -> Unit) {
+        var enteredDownloadQueue=false
         try {
             val lastDownloaded = sp.getLong("lastDownloaded", 0L)
             if (force || TimeUnit.MILLISECONDS.toHours(System.currentTimeMillis() - lastDownloaded) > 25) {
@@ -118,34 +117,45 @@ open class BaseActivity : AppCompatActivity() {
                     try {
                         withContext(Dispatchers.IO) {
                             try {
-                                val s = sendGetRequest("https://firebasestorage.googleapis.com/v0/b/prayer-time-shakir.appspot.com/o/")
-                                println("sssss")
-                                println(s)
-                                val jsonArray = JSONObject(s).getJSONArray("items")
+                                // Fetch audio list from Firebase Hosting
+                                val audioListJson = sendGetRequest("https://prayer-time-shakir.web.app/audio-list.json")
+                                val jsonArray = org.json.JSONArray(audioListJson)
+
+                                val temp = File(filesDir, "temp")
+                                val dir = File(filesDir, "adhanMp3s")
+                                if (!dir.exists()) dir.mkdir()
+
                                 for (i in 0 until jsonArray.length()) {
                                     try {
-                                        val name = jsonArray.getJSONObject(i).getString("name")
-                                        if (name.startsWith("adhan/")) {
-                                            val temp = File(filesDir, "temp")
-                                            val dir = File(filesDir, "adhanMp3s")
-                                            if (!dir.exists()) dir.mkdir()
-                                            val mp3 = File(dir, name.replaceFirst("adhan/", ""))
-                                            if (mp3.length() <= 0) {
-                                                val token = JSONObject(sendGetRequest("https://firebasestorage.googleapis.com/v0/b/prayer-time-shakir.appspot.com/o/${URLEncoder.encode(name)}")).getString("downloadTokens")
-                                                aaaaa.invoke("Downloading... $name")
-                                                downloadFileGET("https://firebasestorage.googleapis.com/v0/b/prayer-time-shakir.appspot.com/o/${URLEncoder.encode(name)}?alt=media&token=$token", temp)
-                                                temp.copyTo(mp3)
-                                                temp.delete()
-                                                if (i == jsonArray.length() - 1)
-                                                    aaaaa.invoke("Downloading Completed")
-                                            }
-                                            println("fileList mp3 ${mp3.path} ${mp3.length()}")
+                                        val audioObj = jsonArray.getJSONObject(i)
+                                        val name = audioObj.getString("name")
+                                        val url = audioObj.getString("url")
+                                        val size = audioObj.getLong("size")
 
+                                        // Create safe filename from name
+                                        val fileName = "${name}.mp3"
+                                        val mp3 = File(dir, fileName)
+
+                                        // Download if file doesn't exist or size doesn't match
+                                        if (!mp3.exists() || mp3.length() != size) {
+                                            enteredDownloadQueue=true
+                                            aaaaa.invoke("Downloading... $name")
+                                            downloadFileGET(url, temp)
+
+                                            if (temp.exists() && temp.length() > 0) {
+                                                temp.copyTo(mp3, overwrite = true)
+                                                temp.delete()
+                                                println("Downloaded: ${mp3.path} (${mp3.length()} bytes)")
+                                            }
+                                        } else {
+                                            println("Already exists: ${mp3.path} (${mp3.length()} bytes)")
                                         }
 
-
+                                        if (i == jsonArray.length() - 1&&enteredDownloadQueue) {
+                                            aaaaa.invoke("Download Completed")
+                                        }
                                     } catch (e: Exception) {
-                                        aaaaa.invoke("Downloading Failed\nPlease check your internet connection")
+                                        aaaaa.invoke("Download Failed: ${e.message}")
                                         e.printStackTrace()
                                     }
                                 }
@@ -158,7 +168,6 @@ open class BaseActivity : AppCompatActivity() {
                                 aaaaa.invoke("Downloading Failed\nPlease check your internet connection")
                                 e.printStackTrace()
                             }
-
                         }
                     } catch (e: Exception) {
                         e.printStackTrace()
@@ -168,7 +177,6 @@ open class BaseActivity : AppCompatActivity() {
         } catch (e: Exception) {
             e.printStackTrace()
         }
-
     }
 
 
