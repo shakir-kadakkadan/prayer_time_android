@@ -246,7 +246,7 @@ class LocationSelectorAvtivity : LocationSelectorActivityHMS() {
     var locationLastForDistanceCalculation: Location? = null
 
 
-    fun onGetLocation(location: Location) {
+    fun onGetLocation(location: Location?) {
         if (location != null) {
             GlobalScope.launch(Dispatchers.Main) {
                 try {
@@ -278,7 +278,7 @@ class LocationSelectorAvtivity : LocationSelectorActivityHMS() {
             LocationServices.getFusedLocationProviderClient(this)
                 .getCurrentLocation(android.location.LocationRequest.QUALITY_HIGH_ACCURACY, CancellationTokenSource().token)
                 .addOnSuccessListener { location ->
-                    onGetLocation(location)
+                        onGetLocation(location)
                 }
                 .addOnFailureListener {
                     it.printStackTrace()
