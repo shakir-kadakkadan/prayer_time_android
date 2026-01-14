@@ -14,5 +14,14 @@
 /captures
 .externalNativeBuild
 
-# Firebase configuration files
+# Firebase and Huawei AppGallery configuration files
 google-services.json
+agconnect-services.json
+
+# AppGallery certificates and keys
+app_gallery_cert.zip
+app_gallery_certificate.pem
+
+# Android keystore files
+*.jks
+KEY_STORE_adhan.jks
