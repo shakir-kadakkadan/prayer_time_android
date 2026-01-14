@@ -26,6 +26,7 @@ class QiblaIntroActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
         binding=ActivityQiblaIntroBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        adjustWithSystemWindow(binding.rootViewLL, binding.topSpacer, true)
         Glide.with(this).asGif().load(R.drawable.unnamed).into( binding.imageView);
         binding.ok2.setOnClickListener {
             startActivity(Intent(this,QiblaActivity::class.java))

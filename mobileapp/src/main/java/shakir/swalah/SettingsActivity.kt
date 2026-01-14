@@ -21,6 +21,7 @@ class SettingsActivity : BaseActivity() {
         binding = ActivitySettingsBinding.inflate(layoutInflater)
         setContentView(binding.root)
         adjustWithSystemWindow(binding.rootViewLL, binding.topSpacer, true)
+        binding.backButton.setOnClickListener { finish() }
         try {
             binding.battery.isVisible = Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && !(getSystemService(Context.POWER_SERVICE) as PowerManager).isIgnoringBatteryOptimizations(BuildConfig.APPLICATION_ID)
             binding.batteryLine.isVisible = binding.battery.isVisible

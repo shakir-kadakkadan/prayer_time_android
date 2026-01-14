@@ -23,6 +23,7 @@ class IqamaActivity : BaseActivity() {
         binding = ActivityIqamaBinding.inflate(layoutInflater)
         setContentView(binding.root)
         adjustWithSystemWindow(binding.rootViewLL, binding.topSpacer, true)
+        binding.backButton.setOnClickListener { finish() }
         val arrayView = arrayOf(
             binding.FAJR, binding.ZUHR, binding.ASR, binding.MAGHRIB, binding.ISHA
         )

@@ -109,6 +109,30 @@ open class BaseActivity : AppCompatActivity() {
     }
 
     fun downloadSounds(force: Boolean = false, aaaaa: (String) -> Unit) {
+
+
+        try {
+            if (sp.getBoolean("force_delete_require",true)){
+                val temp = File(filesDir, "temp")
+                val dir = File(filesDir, "adhanMp3s")
+
+                try {
+                    temp.deleteRecursively()
+                } catch (e: Exception) {
+
+                }
+
+                try {
+                    dir.deleteRecursively()
+                } catch (e: Exception) {
+                }
+                sp.edit().putBoolean("force_delete_require",false).commit()
+            }
+        } catch (e: Exception) {
+
+        }
+
+
         var enteredDownloadQueue=false
         try {
             val lastDownloaded = sp.getLong("lastDownloaded", 0L)

@@ -22,6 +22,7 @@ class AdhanTimeActivity : BaseActivity() {
         binding = ActivityAdhanTimeSettingsBinding.inflate(layoutInflater)
         setContentView(binding.root)
         adjustWithSystemWindow(binding.rootViewLL, binding.topSpacer, true)
+        binding.backButton.setOnClickListener { finish() }
         binding.hour24Value.setText(if (Util.is_24_hourFormat) "24 Hour" else "12 Hour")
         binding.showAMPMValue.setText(SimpleDateFormat(Util.timeFormat(), Locale.ENGLISH).format(Date()).ltrEmbed())
         binding.hour24.setOnClickListener {

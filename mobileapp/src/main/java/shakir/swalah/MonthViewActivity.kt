@@ -14,6 +14,7 @@ class MonthViewActivity : BaseActivity() {
         binding = ActivityMontViewBinding.inflate(layoutInflater)
         setContentView(binding.root)
         adjustWithSystemWindow(binding.rootViewLL, binding.topSpacer, true)
+        binding.backButton.setOnClickListener { finish() }
         val latitude = sp.getDouble("v2_latitude", INVALID_CORDINATE)
         val longitude = sp.getDouble("v2_longitude", INVALID_CORDINATE)
         var locality = sp.getString("v2_locality", null)

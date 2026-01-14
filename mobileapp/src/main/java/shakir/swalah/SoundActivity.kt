@@ -28,7 +28,7 @@ class SoundActivity : BaseActivity() {
         binding = ActivitySoundBinding.inflate(layoutInflater)
         setContentView(binding.root)
         adjustWithSystemWindow(binding.rootViewLL, binding.topSpacer, true)
-
+        binding.backButton.setOnClickListener { finish() }
 
         binding.alarm.isChecked = sp.getBoolean("soundTypeIsAlarm", false) == true
         binding.notification.isChecked = !binding.alarm.isChecked

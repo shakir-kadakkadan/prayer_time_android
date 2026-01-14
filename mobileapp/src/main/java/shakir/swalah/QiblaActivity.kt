@@ -40,6 +40,7 @@ class QiblaActivity : MainActivityLocationHMS() {
         binding = ActivityQiblaBinding.inflate(layoutInflater)
         setContentView(binding.root)
         adjustWithSystemWindow(binding.rootViewLL, binding.topSpacer, true)
+        binding.backButton.setOnClickListener { finish() }
         binding.locationButton.setOnClickListener {
             try {
                 requestForGPSLocationWithRotationAnimation()
