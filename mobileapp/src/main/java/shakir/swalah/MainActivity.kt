@@ -262,7 +262,10 @@ class MainActivity : BaseActivity() {
                                     Manifest.permission.POST_NOTIFICATIONS
                                 ) != PackageManager.PERMISSION_GRANTED
                             ) {
-                                requestPermissions(arrayOf(Manifest.permission.POST_NOTIFICATIONS), 16)
+                                if (!notificationPermissionRequested) {
+                                    notificationPermissionRequested = true
+                                    requestPermissions(arrayOf(Manifest.permission.POST_NOTIFICATIONS), 16)
+                                }
                             } else {
                                 ask_optimization_condetion_2_notification = true
                                 optimization()
@@ -405,9 +408,9 @@ class MainActivity : BaseActivity() {
 
 
 
-
+        println("onResumeonResumeonResume")
         setNextAlarm(this)
-        Util.setNextAlarmDND(AppApplication.instance,)
+        Util.setNextAlarmDND(AppApplication.instance)
 
 
     }
@@ -420,7 +423,7 @@ class MainActivity : BaseActivity() {
                 if (System.currentTimeMillis() - version_last_checked > TimeUnit.DAYS.toMillis(1)) {
 
 
-                    var apiVersion = sendGetRequest("https://install4-default-rtdb.asia-southeast1.firebasedatabase.app/adhan_app_version.json")?.replace("\"", "")?.toIntOrNull() ?: 0
+                    var apiVersion = sendGetRequest("https://prayer-time-shakir.firebaseio.com/adhan_app_version.json")?.replace("\"", "")?.toIntOrNull() ?: 0
                     println("apiVersion $apiVersion")
 
                     sp.edit {
@@ -563,7 +566,7 @@ class MainActivity : BaseActivity() {
 
 
 
-        if (sp.getInt("showMidNight", 1) == 0) {
+        if (sp.getInt("showMidNightv3", 1) == 0) {
             binding.prayerTimeLl.MIDNIGHT.prayerName.setText("Mid night")
             binding.prayerTimeLl.MIDNIGHT.prayerTime.setText(SimpleDateFormat(timeFormat, Locale.ENGLISH).format(Date(prayerTimes[0].time.plus(prayerTimesYest[4].time).div(2))).ltrEmbed())
             binding.prayerTimeLl.MIDNIGHT.root.isVisible = true
@@ -571,7 +574,7 @@ class MainActivity : BaseActivity() {
             binding.prayerTimeLl.MIDNIGHT.root.isVisible = false
         }
 
-        if (sp.getInt("showThirdNight", 0) == 0) {
+        if (sp.getInt("showThirdNightv4", 0) == 0) {
             binding.prayerTimeLl.THIRDNIGHTISHA.root.isVisible = true
             binding.prayerTimeLl.THIRDNIGHTISHA.prayerName.setText("Third night")
             binding.prayerTimeLl.THIRDNIGHTISHA.prayerTime.setText(
@@ -587,7 +590,7 @@ class MainActivity : BaseActivity() {
             binding.prayerTimeLl.THIRDNIGHTISHA.root.isVisible = false
         }
 
-        if (sp.getInt("showThirdNight", 0) == 1) {
+        if (sp.getInt("showThirdNightv4", 0) == 1) {
             binding.prayerTimeLl.THIRDNIGHT.prayerName.setText("Third night")
             binding.prayerTimeLl.THIRDNIGHT.root.isVisible = true
             binding.prayerTimeLl.THIRDNIGHT.prayerTime.setText(
@@ -614,7 +617,7 @@ class MainActivity : BaseActivity() {
 
 
         Util.setNextAlarm(this)
-        Util.setNextAlarmDND(AppApplication.instance,)
+        Util.setNextAlarmDND(AppApplication.instance)
 
         binding.locationTV.setText(if (l.isNullOrBlank()) "My Location" else l)
         println("$latitude $longitude $l")
@@ -658,6 +661,7 @@ class MainActivity : BaseActivity() {
     var optiDialog: AlertDialog? = null
     var ask_optimization_condetion_1_location = false
     var ask_optimization_condetion_2_notification = false
+    var notificationPermissionRequested = false
     fun optimization() {
 
         if (ask_optimization_condetion_1_location && ask_optimization_condetion_2_notification) {
@@ -685,6 +689,7 @@ class MainActivity : BaseActivity() {
                                 .setNegativeButton("Ignore") { dialog, which ->
                                     dialog.dismiss()
                                     sp.edit { putBoolean("stopOptimizeBatteryIgnored", true) }
+                                    alarmPermission()
                                 }
                                 .create()
                         optiDialog?.show()
@@ -704,7 +709,7 @@ class MainActivity : BaseActivity() {
 
     }
 
-
+    var alrmPermisiionAskDialog: AlertDialog?=null
     fun alarmPermission() {
 
         try {
@@ -717,12 +722,44 @@ class MainActivity : BaseActivity() {
                     }
 
                     else -> {
-                        startActivity(
-                            Intent(
-                                Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM,
-                                Uri.parse("package:$packageName")
-                            )
-                        )
+
+
+                        println("sp.getBoolean(\"askAlarmPermissionAsked\", false) ${sp.getBoolean("askAlarmPermissionAsked", false)}")
+
+                        if (!sp.getBoolean("askAlarmPermissionAsked", false)&&alrmPermisiionAskDialog==null) {
+                            alrmPermisiionAskDialog = AlertDialog.Builder(this/*, R.style.MyAlertDialogTheme*/)
+                                .setTitle("Alarm permission")
+                                .setMessage("This app requires alarm permission to function properly.")
+                                .setPositiveButton("OK") { dialog, which ->
+                                    try {
+                                        startActivity(
+                                            Intent(
+                                                Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM,
+                                                Uri.parse("package:$packageName")
+                                            )
+                                        )
+                                    } catch (e: Exception) {
+                                        e.report()
+                                        toast(e.message)
+                                    }
+
+                                }
+                                .setNegativeButton("Ignore") { dialog, which ->
+                                    dialog.dismiss()
+                                    sp.edit { putBoolean("askAlarmPermissionAsked", true) }
+                                }
+                                .create()
+                            alrmPermisiionAskDialog?.show()
+                        }
+
+
+
+
+
+
+
+
+
                     }
                 }
             }

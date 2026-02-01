@@ -161,7 +161,7 @@ class SettingsActivity : BaseActivity() {
         }
 
 
-        var showMidNight = sp.getInt("showMidNightv2", 1)
+        var showMidNight = sp.getInt("showMidNightv3", 1)
         var arr = arrayOf("Show", "Hide")
         binding.midnightValue.setText(arr[showMidNight])
         binding.midnight.setOnClickListener {
@@ -171,12 +171,12 @@ class SettingsActivity : BaseActivity() {
                     showMidNight = which
                     binding.midnightValue.setText(arr[which])
                     dialog.dismiss()
-                    sp.edit().putInt("showMidNightv2", showMidNight).commit()
+                    sp.edit().putInt("showMidNightv3", showMidNight).commit()
                 }
                 .show()
         }
 
-        var showThirdNight = sp.getInt("showThirdNight", 0)
+        var showThirdNight = sp.getInt("showThirdNightv4", 0)
         var arr2 = arrayOf("Isha Based", "Magrib Based", "Hide")
         binding.thirdNightValue.setText(arr2[showThirdNight])
         binding.thirdNight.setOnClickListener {
@@ -186,7 +186,7 @@ class SettingsActivity : BaseActivity() {
                     showThirdNight = which
                     binding.thirdNightValue.setText(arr2[which])
                     dialog.dismiss()
-                    sp.edit().putInt("showThirdNight", showThirdNight).commit()
+                    sp.edit().putInt("showThirdNightv4", showThirdNight).commit()
                 }
                 .show()
         }

@@ -42,6 +42,7 @@ class LocationSelectorAvtivity : LocationSelectorActivityHMS() {
         super.onCreate(savedInstanceState)
         binding = ActivityLocationSelectorBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        adjustWithSystemWindow(binding.rootViewLL, binding.topSpacer, true)
         assets.open("worldcities.csv").bufferedReader().useLines {
             arrayList.clear()
             it.forEach {

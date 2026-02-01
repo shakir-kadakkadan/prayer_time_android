@@ -92,7 +92,7 @@ class AppApplication : MultiDexApplication() {
 
     fun releaseCpuLock() {
         try {
-            if (sCpuWakeLock != null) {
+            if (sCpuWakeLock != null && sCpuWakeLock?.isHeld == true) {
                 sCpuWakeLock?.release()
                 sCpuWakeLock = null
             }

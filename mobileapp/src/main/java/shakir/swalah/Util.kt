@@ -35,6 +35,8 @@ object Util {
 
 
     fun setNextAlarm(context: Context, tommorrow: Boolean = false) {
+        println("setNextAlarmsetNextAlarmsetNextAlarm")
+
         try {
             Util.cancelLastPendingIntent(context)
             val sharedPreferences = getMySharedPreference(context)
@@ -102,18 +104,19 @@ object Util {
                                 createPendingIntent(context, milli, arabicNames, uniqueIndexForParayer)
 
 
-                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && !alarmManager.canScheduleExactAlarms()) {
+                                // No exact alarm permission, use inexact alarm
+                                alarmManager.set(alarmType, milli, pendingIntent)
+                            } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                                 alarmManager.setExactAndAllowWhileIdle(
                                     alarmType,
                                     milli,
                                     pendingIntent
                                 )
+                            } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                                alarmManager.setExact(alarmType, milli, pendingIntent)
                             } else {
-                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-                                    alarmManager.setExact(alarmType, milli, pendingIntent)
-                                } else {
-                                    alarmManager.set(alarmType, milli, pendingIntent)
-                                }
+                                alarmManager.set(alarmType, milli, pendingIntent)
                             }
 
 
@@ -226,18 +229,19 @@ object Util {
                                 createPendingIntent(context, milli, action, uniqueIndexForParayer)
 
 
-                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && !alarmManager.canScheduleExactAlarms()) {
+                                // No exact alarm permission, use inexact alarm
+                                alarmManager.set(alarmType, milli, pendingIntent)
+                            } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                                 alarmManager.setExactAndAllowWhileIdle(
                                     alarmType,
                                     milli,
                                     pendingIntent
                                 )
+                            } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                                alarmManager.setExact(alarmType, milli, pendingIntent)
                             } else {
-                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-                                    alarmManager.setExact(alarmType, milli, pendingIntent)
-                                } else {
-                                    alarmManager.set(alarmType, milli, pendingIntent)
-                                }
+                                alarmManager.set(alarmType, milli, pendingIntent)
                             }
                         }
 
