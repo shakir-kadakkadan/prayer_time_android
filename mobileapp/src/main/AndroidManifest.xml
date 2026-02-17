@@ -13,6 +13,7 @@
     <uses-permission android:name="android.permission.ACCESS_NOTIFICATION_POLICY" />
 
     <application
+
         android:name=".AppApplication"
         android:allowBackup="false"
         android:description="@string/desc"
@@ -21,6 +22,8 @@
         android:roundIcon="@mipmap/ic_launcher_gold_round"
         android:supportsRtl="true"
         android:taskAffinity=""
+        android:alternateLauncherLabels="@string/desc"
+
         android:theme="@style/Theme.MyApplication"
         tools:ignore="GoogleAppIndexingWarning"
         tools:replace="android:allowBackup">

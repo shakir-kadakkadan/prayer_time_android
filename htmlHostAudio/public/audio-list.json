@@ -3,30 +3,35 @@
     "name": "Adhan - Omar Hisham Al Arabi  ",
     "url": "https://prayer-time-shakir.web.app/audio/Adhan%20-%20Omar%20Hisham%20Al%20Arabi%20%20.mp3",
     "size": 2913608,
-    "sizeFormatted": "2.78 MB"
+    "sizeFormatted": "2.78 MB",
+    "tgid" : "CQADBQADSxwAAiofoVSuQWlbrtIChQI"
   },
   {
     "name": "Adhan Fajr Mishary",
     "url": "https://prayer-time-shakir.web.app/audio/Adhan%20Fajr%20Mishary.mp3",
     "size": 3771706,
-    "sizeFormatted": "3.6 MB"
+    "sizeFormatted": "3.6 MB",
+    "tgid" : "CQADBQADTBwAAiofoVTFpCzHd0__EAI"
   },
   {
     "name": "Azan by Nasir Al-Qatami ",
     "url": "https://prayer-time-shakir.web.app/audio/Azan%20by%20Nasir%20Al-Qatami%20.mp3",
     "size": 2161373,
-    "sizeFormatted": "2.06 MB"
+    "sizeFormatted": "2.06 MB",
+    "tgid" : "CQADBQADTRwAAiofoVSdnpFhi-lxQAI"
   },
   {
     "name": "Azan Islam Sobhi ",
     "url": "https://prayer-time-shakir.web.app/audio/Azan%20Islam%20Sobhi%20.mp3",
     "size": 2733559,
-    "sizeFormatted": "2.61 MB"
+    "sizeFormatted": "2.61 MB",
+    "tgid" : "CQADBQADThwAAiofoVRZ_r_ad873VgI"
   },
   {
     "name": "Azan Madina Marwan Qassas ",
-    "url": "https://prayer-time-shakir.web.app/audio/Azan%20Madina%20Marwan%20Qassas%20.mp3",
+    "url": "https://api.telegram.org/file/bot1459621036:AAGm0H3X7kWKo2XwqBMVSYx4G4uhny0bsIc/music/file_2.mp3",
     "size": 3653069,
-    "sizeFormatted": "3.48 MB"
+    "sizeFormatted": "3.48 MB",
+    "tgid" : "CQADBQADTxwAAiofoVRAqMVTlf9WbgI"
   }
 ]

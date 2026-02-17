@@ -31,6 +31,9 @@ class SettingsActivity : BaseActivity() {
 
 
 
+
+
+
         try {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
                 val alarmManager =
@@ -106,18 +109,18 @@ class SettingsActivity : BaseActivity() {
         binding.adhanAlarm.setOnCheckedChangeListener { buttonView, isChecked ->
             Util.isadhanAlarmOn = isChecked
             Util.setNextAlarm(this@SettingsActivity)
-            Util.setNextAlarmDND(AppApplication.instance,)
+            Util.setNextAlarmDND(AppApplication.instance)
         }
         binding.iqamaAlarm.setOnCheckedChangeListener { buttonView, isChecked ->
             Util.isiqamaAlarmOn = isChecked
             Util.setNextAlarm(this@SettingsActivity)
-            Util.setNextAlarmDND(AppApplication.instance,)
+            Util.setNextAlarmDND(AppApplication.instance)
         }
 
         binding.openApp.setOnCheckedChangeListener { buttonView, isChecked ->
             Util.openApp = isChecked
             Util.setNextAlarm(this@SettingsActivity)
-            Util.setNextAlarmDND(AppApplication.instance,)
+            Util.setNextAlarmDND(AppApplication.instance)
         }
 
 
@@ -125,7 +128,7 @@ class SettingsActivity : BaseActivity() {
             thread {
                 try {
                     var url = try {
-                        sendGetRequest("https://prayer-time-shakir.web.app/contact.json")?.replace("\"", "")
+                        sendGetRequest("https://prayer-time-shakir.firebaseio.com/contact.json")?.replace("\"", "")
                     } catch (e: Exception) {
                         null
                     }
@@ -192,6 +195,30 @@ class SettingsActivity : BaseActivity() {
         }
 
 
+        var suhoors = arrayOf(
+            "Off" to -1,
+            "20 Minute Before Fajr" to 20,
+            "30 Minute Before Fajr" to 30,
+            "40 Minute Before Fajr" to 40,
+            "1 Hour Before Fajr" to 60,
+            "1 Hour 30 Minute Before Fajr" to 90,
+            "2 Hour Before Fajr" to 120,
+            "3 Hour Before Fajr" to 180,
+        )
+        var suhoorMinute = sp.getInt("suhoorMinute", 60)
+        binding.suhoorReminderValue.setText(suhoors[suhoors.indexOfFirst { it.second == suhoorMinute }].first)
+        binding.suhoorReminder.setOnClickListener {
+            AlertDialog.Builder(this@SettingsActivity)
+                .setTitle("Suhoor Reminder")
+                .setSingleChoiceItems(suhoors.map { it.first }.toTypedArray(), suhoors.indexOfFirst { it.second == suhoorMinute }) { dialog, which ->
+                    binding.suhoorReminderValue.setText(suhoors[which].first)
+                    dialog.dismiss()
+                    sp.edit().putInt("suhoorMinute", suhoors[which].second).commit()
+                }
+                .show()
+        }
+
+
     }
 
     override fun onResume() {
@@ -235,7 +262,7 @@ class SettingsActivity : BaseActivity() {
                                 .setTitle("Warning")
                                 .setMessage("Allow 'Do Not Disturb' permission to activate silent mode automatically during prayer ")
                                 .setPositiveButton("OK") { dialog, which ->
-                                    Util.setNextAlarmDND(AppApplication.instance,  )
+                                    Util.setNextAlarmDND(AppApplication.instance)
                                     dialog.dismiss()
                                     askDNDPermission()
                                     sp.edit().putBoolean("dnd", isChecked).commit()

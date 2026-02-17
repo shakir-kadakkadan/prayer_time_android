@@ -169,9 +169,11 @@ val pendingIntent: PendingIntent = PendingIntent.getActivity(this, 0, intent, 0)
 
     val sp = Util.getMySharedPreference(AppApplication.instance)
     var prefKey = if (title.contains("الإقامة")) "iqama_sound" else
+        if (title.contains("سَحُورٌ")) "suhoor_sound" else
         if (title.contains("الفجر")) "fajr_sound" else "athan_sound"
 
-    var prefKeyName = if (title.contains("الإقامة")) "iqama_soundName" else
+    var prefKeyName = if (title.contains("سَحُورٌ")) "suhoor_soundName" else
+        if (title.contains("الإقامة")) "iqama_soundName" else
         if (title.contains("الفجر")) "fajr_soundName"
         else "athan_soundName"
     var soundName = sp.getString(prefKeyName, null) ?: "Adhan"
@@ -180,7 +182,10 @@ val pendingIntent: PendingIntent = PendingIntent.getActivity(this, 0, intent, 0)
     var path = if (sp.getString(prefKey, null) != null) {
         Uri.parse(sp.getString(prefKey, null))
     } else {
-        if (title.contains("الإقامة")) {
+        if (title.contains("سَحُورٌ")) {
+            soundName = "panic"
+            Uri.parse("android.resource://" + AppApplication.instance.packageName + "/" + R.raw.panic)
+        } else if (title.contains("الإقامة")) {
             soundName = "mixkit_access_allowed_tone_2869"
             Uri.parse("android.resource://" + AppApplication.instance.packageName + "/" + R.raw.mixkit_access_allowed_tone_2869)
         } else {
@@ -196,7 +201,7 @@ val pendingIntent: PendingIntent = PendingIntent.getActivity(this, 0, intent, 0)
     }
 
 
-    println("path ${path}")
+    println("path ${path} soundName ${soundName} prefKey ${prefKey} prefKeyName ${prefKeyName}")
 
     var NotificationSoundUri: Uri? = null
     var channelName = "Adhan"
@@ -205,7 +210,7 @@ val pendingIntent: PendingIntent = PendingIntent.getActivity(this, 0, intent, 0)
         channelName = "default_channel"
     } else {
         NotificationSoundUri = path
-        channelName = soundName + "_v1"
+        channelName = soundName + "_v2"
     }
 
     createNotificationChannel(context, channelName, NotificationSoundUri)

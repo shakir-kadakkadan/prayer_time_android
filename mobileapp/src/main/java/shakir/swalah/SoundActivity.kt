@@ -77,6 +77,11 @@ class SoundActivity : BaseActivity() {
             showSoundList("fajr_")
         }
 
+        binding.suhoorAudio.setOnClickListener {
+            stopPlay()
+            showSoundList("suhoor_")
+        }
+
 
 
 
@@ -96,6 +101,7 @@ class SoundActivity : BaseActivity() {
         stopPlay()
         binding.adhanSoundAudioName.setText(sp.getString("${"athan_"}soundName", null))
         binding.iqamaAudioName.setText(sp.getString("${"iqama_"}soundName", null))
+        binding.suhoorAudioName.setText(sp.getString("${"suhoor_"}soundName", null))
         var fajrrr = sp.getString("${"fajr_"}soundName", null)
         binding.fajrSoundAudioName.setText(fajrrr)
         if (fajrrr.isNullOrBlank()) {
@@ -115,9 +121,9 @@ class SoundActivity : BaseActivity() {
                     }
                 }
                 if (rety > 0)
-                    updateAudioNameTextViews(rety = rety-1)
+                    updateAudioNameTextViews(rety = rety - 1)
             } catch (e: Exception) {
-             e.printStackTrace()
+                e.printStackTrace()
             }
 
         }
@@ -148,6 +154,7 @@ class SoundActivity : BaseActivity() {
             "mixkit_access_allowed_tone_2869" to R.raw.mixkit_access_allowed_tone_2869,
             "beep_beep_beep" to R.raw.beep_beep_beep,
             "athan" to R.raw.athan,
+            "panic" to R.raw.panic,
         )
 
         var prevSoundName = sp.getString("${key}soundName", null)
@@ -191,7 +198,10 @@ class SoundActivity : BaseActivity() {
                     }
                 }
 
-                showNoti(this, "Sample ${if (key == "iqama_") "(" + "الإقامة" + ")" else ""}${if (key == "fajr_") "(" + "الفجر" + ")" else ""}")
+                showNoti(this, "Sample ${
+                    if (key == "suhoor_") "(" + "سَحُورٌ" + ")" else
+
+                    if (key == "iqama_") "(" + "الإقامة" + ")" else ""}${if (key == "fajr_") "(" + "الفجر" + ")" else ""}")
 
 
             })
@@ -282,8 +292,6 @@ class SoundActivity : BaseActivity() {
             binding.alarmVolumeSeekBar.isEnabled = false
         }
     }
-
-
 
 
     fun updateseekBarOnUpdateVolumeKey() {

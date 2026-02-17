@@ -30,26 +30,25 @@
             android:orientation="horizontal">
 
             <ImageView
-                android:layout_gravity="left|center_vertical"
                 android:id="@+id/backButton"
                 android:layout_width="48dp"
                 android:layout_height="48dp"
-                android:padding="12dp"
-                android:src="@drawable/ic_arrow_back_white"
+                android:layout_gravity="left|center_vertical"
                 android:background="?attr/selectableItemBackgroundBorderless"
-                android:contentDescription="Back" />
+                android:contentDescription="Back"
+                android:padding="12dp"
+                android:src="@drawable/ic_arrow_back_white" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:gravity="center"
                 android:layout_gravity="center"
+                android:gravity="center"
                 android:paddingTop="16dp"
                 android:paddingBottom="16dp"
                 android:text="Sound Settings"
                 android:textColor="@color/white"
                 android:textSize="18dp" />
-
 
 
         </FrameLayout>
@@ -157,10 +156,10 @@
                 android:textSize="16dp" />
 
             <TextView
-                android:layout_weight="1"
                 android:id="@+id/adhanSoundAudioName"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_weight="1"
                 android:padding="16dp"
                 android:textColor="@color/white"
                 android:textSize="16dp"
@@ -195,10 +194,10 @@
                 android:textSize="16dp" />
 
             <TextView
-                android:layout_weight="1"
                 android:id="@+id/fajrSoundAudioName"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_weight="1"
                 android:padding="16dp"
                 android:textColor="@color/white"
                 android:textSize="16dp"
@@ -232,12 +231,49 @@
                 android:textSize="16dp" />
 
             <TextView
-                android:layout_weight="1"
                 android:id="@+id/iqamaAudioName"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_weight="1"
                 android:padding="16dp"
                 android:text="Iqama Audio"
+                android:textColor="@color/white"
+                android:textSize="16dp" />
+
+
+        </LinearLayout>
+
+        <View
+
+            android:layout_width="match_parent"
+            android:layout_height="1px"
+            android:background="#FF9800" />
+
+        <LinearLayout
+            android:id="@+id/suhoorAudio"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="start|center_vertical"
+            android:gravity="start|center_vertical"
+            android:orientation="horizontal">
+
+            <TextView
+
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:padding="16dp"
+                android:text="Suhoor Audio"
+                android:textColor="@color/white"
+                android:textSize="16dp" />
+
+            <TextView
+                android:id="@+id/suhoorAudioName"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:padding="16dp"
+                tools:text="Iqama Audio"
                 android:textColor="@color/white"
                 android:textSize="16dp" />
 
@@ -255,16 +291,12 @@
             android:id="@+id/downloading"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:padding="16dp"
             android:layout_gravity="right"
             android:gravity="right"
-            tools:text="Iqama Audio"
+            android:padding="16dp"
             android:textColor="#FF6D00"
-            android:textSize="16dp" />
-
-
-
-
+            android:textSize="16dp"
+            tools:text="Iqama Audio" />
 
 
     </LinearLayout>

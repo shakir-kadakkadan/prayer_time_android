@@ -9,6 +9,7 @@ import android.os.Build
 import android.text.format.DateFormat
 import android.util.Log
 import com.azan.astrologicalCalc.SimpleDate
+import shakir.swalah.AppApplication.Companion.sp
 
 import java.text.SimpleDateFormat
 import java.util.Calendar
@@ -52,10 +53,12 @@ object Util {
             val azan = getAthanObj(latitude, longitude)
             val prayerTimes = azan.getAthanOfDate(dateS)
             (0..5).forEachIndexed { index, prayersType ->
-                arrayOf(false, true).forEach { _isIqama ->
-                    val isIqama = _isIqama && index != 1
+                arrayOf(0, 1, 2).forEach { _isIqama ->
+                    val isIqama = _isIqama == 1 && index != 1
+                    val isSuhoor = _isIqama == 2 && index == 0
+                    var suhoorMinute = sp.getInt("suhoorMinute", 60)
 
-                    if ((isIqama && Util.isiqamaAlarmOn) || (!isIqama && Util.isadhanAlarmOn)) {
+                    if ((isIqama && Util.isiqamaAlarmOn) || (!isIqama && Util.isadhanAlarmOn) || (isSuhoor && suhoorMinute > 0)) {
                         var milli = prayerTimes[prayersType].time
                         if (isIqama) {
                             val iqsettings = Util.getIqamaSettings().get(if (index == 0) 0 else index - 1)
@@ -66,11 +69,20 @@ object Util {
                             }
 
                         }
+
+                        if (isSuhoor) {
+                            milli = milli - (TimeUnit.MINUTES.toMillis(suhoorMinute.toLong()))
+                        }
+
+
                         if (milli >= System.currentTimeMillis()) {
 
                             var arabicNames = AppApplication.getArabicNames(prayersType)
                             if (isIqama) {
                                 arabicNames = arabicNames + " " + "(الإقامة)"
+                            }
+                            if (isSuhoor) {
+                                arabicNames = "سَحُورٌ Time for Sahur"
                             }
 
 

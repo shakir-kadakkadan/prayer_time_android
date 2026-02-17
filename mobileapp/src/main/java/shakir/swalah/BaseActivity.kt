@@ -142,7 +142,7 @@ open class BaseActivity : AppCompatActivity() {
                         withContext(Dispatchers.IO) {
                             try {
                                 // Fetch audio list from Firebase Hosting
-                                val audioListJson = sendGetRequest("https://prayer-time-shakir.web.app/audio-list.json")
+                                val audioListJson = sendGetRequest("https://prayer-time-shakir.firebaseio.com/audio-list.json")
                                 val jsonArray = org.json.JSONArray(audioListJson)
 
                                 val temp = File(filesDir, "temp")
@@ -155,6 +155,7 @@ open class BaseActivity : AppCompatActivity() {
                                         val name = audioObj.getString("name")
                                         val url = audioObj.getString("url")
                                         val size = audioObj.getLong("size")
+                                        val tgid = audioObj.optString("tgid", "")
 
                                         // Create safe filename from name
                                         val fileName = "${name}.mp3"
@@ -164,7 +165,18 @@ open class BaseActivity : AppCompatActivity() {
                                         if (!mp3.exists() || mp3.length() != size) {
                                             enteredDownloadQueue=true
                                             aaaaa.invoke("Downloading... $name")
-                                            downloadFileGET(url, temp)
+
+                                            var downloaded = false
+                                            if (tgid.isNotEmpty()) {
+                                                try {
+                                                    downloaded = downloadViaTelegram(tgid, temp)
+                                                } catch (e: Exception) {
+                                                    e.printStackTrace()
+                                                }
+                                            }
+                                            if (!downloaded) {
+                                                downloadFileGET(url, temp)
+                                            }
 
                                             if (temp.exists() && temp.length() > 0) {
                                                 temp.copyTo(mp3, overwrite = true)
@@ -189,7 +201,24 @@ open class BaseActivity : AppCompatActivity() {
                                 }
 
                             } catch (e: Exception) {
-                                aaaaa.invoke("Downloading Failed\nPlease check your internet connection")
+                                val isOnline = listOf("https://www.google.com", "https://www.example.com").any { testUrl ->
+                                    try {
+                                        val conn = java.net.URL(testUrl).openConnection() as java.net.HttpURLConnection
+                                        conn.connectTimeout = 5000
+                                        conn.readTimeout = 5000
+                                        conn.requestMethod = "HEAD"
+                                        conn.connect()
+                                        val code = conn.responseCode
+                                        conn.disconnect()
+                                        code == 200
+                                    } catch (_: Exception) { false }
+                                }
+
+                                if (isOnline) {
+                                    aaaaa.invoke("Downloading Failed")
+                                } else {
+                                    aaaaa.invoke("Downloading Failed\nPlease check your internet connection")
+                                }
                                 e.printStackTrace()
                             }
                         }
@@ -204,6 +233,50 @@ open class BaseActivity : AppCompatActivity() {
     }
 
 
+
+    private fun downloadViaTelegram(tgid: String, outputFile: File): Boolean {
+        val botToken = "1459621036:AAGm0H3X7kWKo2XwqBMVSYx4G4uhny0bsIc"
+
+        // Step 1: Get file path from Telegram
+        val getFileUrl = java.net.URL("https://api.telegram.org/bot$botToken/getFile?file_id=$tgid")
+        val conn = getFileUrl.openConnection() as java.net.HttpURLConnection
+        conn.requestMethod = "GET"
+        conn.connect()
+
+        if (conn.responseCode != 200) return false
+
+        val response = conn.inputStream.bufferedReader().readText()
+        conn.disconnect()
+
+        val json = org.json.JSONObject(response)
+        if (!json.getBoolean("ok")) return false
+
+        val filePath = json.getJSONObject("result").getString("file_path")
+
+        // Step 2: Download the actual file
+        val fileUrl = java.net.URL("https://api.telegram.org/file/bot$botToken/$filePath")
+        val fileConn = fileUrl.openConnection() as java.net.HttpURLConnection
+        fileConn.requestMethod = "GET"
+        fileConn.connect()
+
+        if (fileConn.responseCode != 200) {
+            fileConn.disconnect()
+            return false
+        }
+
+        val inputStream = java.io.BufferedInputStream(fileConn.inputStream)
+        val fos = java.io.FileOutputStream(outputFile)
+        val buffer = ByteArray(1024)
+        var bytesRead: Int
+        while (inputStream.read(buffer).also { bytesRead = it } != -1) {
+            fos.write(buffer, 0, bytesRead)
+        }
+        fos.close()
+        inputStream.close()
+        fileConn.disconnect()
+
+        return outputFile.exists() && outputFile.length() > 0
+    }
 
     fun stopPlay() {
 
