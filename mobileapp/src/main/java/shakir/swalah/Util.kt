@@ -52,15 +52,16 @@ object Util {
             val dateS = SimpleDate(date)
             val azan = getAthanObj(latitude, longitude)
             val prayerTimes = azan.getAthanOfDate(dateS)
-            (0..5).forEachIndexed { index, prayersType ->
-                arrayOf(0, 1, 2).forEach { _isIqama ->
-                    val isIqama = _isIqama == 1 && index != 1
-                    val isSuhoor = _isIqama == 2 && index == 0
-                    var suhoorMinute = sp.getInt("suhoorMinute", 60)
 
-                    if ((isIqama && Util.isiqamaAlarmOn) || (!isIqama && Util.isadhanAlarmOn) || (isSuhoor && suhoorMinute > 0)) {
+            val adhanType=0
+            val iqamaType=1
+            val suhoorType=-1
+            var suhoorMinute = sp.getInt("suhoorMinute", 60)
+            (0..5).forEachIndexed { index, prayersType ->
+                arrayOf(suhoorType ,adhanType,iqamaType ).forEach { type ->
+                    if ((type==iqamaType && Util.isiqamaAlarmOn&& index!=1 ) || (type==adhanType && Util.isadhanAlarmOn) || (type==suhoorType && suhoorMinute > 0&&index==0)) {
                         var milli = prayerTimes[prayersType].time
-                        if (isIqama) {
+                        if (type==iqamaType) {
                             val iqsettings = Util.getIqamaSettings().get(if (index == 0) 0 else index - 1)
                             if (iqsettings.isAfter) {
                                 milli = milli + (TimeUnit.MINUTES.toMillis(iqsettings.after.toLong()))
@@ -70,7 +71,7 @@ object Util {
 
                         }
 
-                        if (isSuhoor) {
+                        if (type==suhoorType) {
                             milli = milli - (TimeUnit.MINUTES.toMillis(suhoorMinute.toLong()))
                         }
 
@@ -78,10 +79,10 @@ object Util {
                         if (milli >= System.currentTimeMillis()) {
 
                             var arabicNames = AppApplication.getArabicNames(prayersType)
-                            if (isIqama) {
+                            if (type==iqamaType) {
                                 arabicNames = arabicNames + " " + "(الإقامة)"
                             }
-                            if (isSuhoor) {
+                            if (type==suhoorType) {
                                 arabicNames = "سَحُورٌ Time for Sahur"
                             }
 
@@ -133,7 +134,7 @@ object Util {
 
 
 
-                            println("settttttt milli $milli arabicNames $arabicNames uniqueIndexForParayer $uniqueIndexForParayer $isIqama")
+
 
 
                             var lastMilli_prev = sharedPreferences.getLong("lastMilli_copy", 0L)
