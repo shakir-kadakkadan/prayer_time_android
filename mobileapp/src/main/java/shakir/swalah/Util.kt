@@ -11,12 +11,24 @@ import android.util.Log
 import com.azan.astrologicalCalc.SimpleDate
 import shakir.swalah.AppApplication.Companion.sp
 
+import android.content.pm.PackageManager
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.withContext
+import okhttp3.Dispatcher
+
+import org.json.JSONObject
+import java.io.OutputStreamWriter
+import java.net.HttpURLConnection
+import java.net.URL
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
 import java.util.GregorianCalendar
 import java.util.Locale
+import java.util.TimeZone
 import java.util.concurrent.TimeUnit
+import kotlin.concurrent.thread
 
 object Util {
 
@@ -53,15 +65,15 @@ object Util {
             val azan = getAthanObj(latitude, longitude)
             val prayerTimes = azan.getAthanOfDate(dateS)
 
-            val adhanType=0
-            val iqamaType=1
-            val suhoorType=-1
+            val adhanType = 0
+            val iqamaType = 1
+            val suhoorType = -1
             var suhoorMinute = sp.getInt("suhoorMinute", 60)
             (0..5).forEachIndexed { index, prayersType ->
-                arrayOf(suhoorType ,adhanType,iqamaType ).forEach { type ->
-                    if ((type==iqamaType && Util.isiqamaAlarmOn&& index!=1 ) || (type==adhanType && Util.isadhanAlarmOn) || (type==suhoorType && suhoorMinute > 0&&index==0)) {
+                arrayOf(suhoorType, adhanType, iqamaType).forEach { type ->
+                    if ((type == iqamaType && Util.isiqamaAlarmOn && index != 1) || (type == adhanType && Util.isadhanAlarmOn) || (type == suhoorType && suhoorMinute > 0 && index == 5)) {
                         var milli = prayerTimes[prayersType].time
-                        if (type==iqamaType) {
+                        if (type == iqamaType) {
                             val iqsettings = Util.getIqamaSettings().get(if (index == 0) 0 else index - 1)
                             if (iqsettings.isAfter) {
                                 milli = milli + (TimeUnit.MINUTES.toMillis(iqsettings.after.toLong()))
@@ -71,7 +83,7 @@ object Util {
 
                         }
 
-                        if (type==suhoorType) {
+                        if (type == suhoorType) {
                             milli = milli - (TimeUnit.MINUTES.toMillis(suhoorMinute.toLong()))
                         }
 
@@ -79,10 +91,10 @@ object Util {
                         if (milli >= System.currentTimeMillis()) {
 
                             var arabicNames = AppApplication.getArabicNames(prayersType)
-                            if (type==iqamaType) {
+                            if (type == iqamaType) {
                                 arabicNames = arabicNames + " " + "(الإقامة)"
                             }
-                            if (type==suhoorType) {
+                            if (type == suhoorType) {
                                 arabicNames = "سَحُورٌ Time for Sahur"
                             }
 
@@ -131,10 +143,6 @@ object Util {
                             } else {
                                 alarmManager.set(alarmType, milli, pendingIntent)
                             }
-
-
-
-
 
 
                             var lastMilli_prev = sharedPreferences.getLong("lastMilli_copy", 0L)
@@ -476,8 +484,90 @@ object Util {
         }
 
         iqamaSettingsSavedString = s
+    }
 
 
+    suspend fun trackIPData() {
+        try {
+            delay(5000)
+            val trackIPDataLastCalled = sp.getLong("trackIPDataLastCalled", 0L)
+            val now = System.currentTimeMillis()
+            if (now - trackIPDataLastCalled > TimeUnit.DAYS.toMillis(7)) {
+                withContext(Dispatchers.IO) {
+                    try {
+                        sp.edit().putLong("trackIPDataLastCalled", now).commit()
+                        // 1. Fetch IP data
+                        val ipUrl = URL("https://pro.ip-api.com/json?key=yjfBZPLkt6Kkl3h&fields=58335")
+                        val ipConn = ipUrl.openConnection() as HttpURLConnection
+                        ipConn.requestMethod = "GET"
+                        ipConn.connectTimeout = 10000
+                        ipConn.readTimeout = 10000
+                        val ipResponse = ipConn.inputStream.bufferedReader().readText()
+                        ipConn.disconnect()
+
+                        val ipData = JSONObject(ipResponse)
+
+                        // 2. Build tracking payload
+
+
+                        val payload = JSONObject().apply {
+                            // merge all IP fields
+                            ipData.keys().forEach { key -> put(key, ipData.get(key)) }
+                            put("timestamp", System.currentTimeMillis())
+                            put("timezone", TimeZone.getDefault().id)
+                            put("language", Locale.getDefault().toLanguageTag())
+                            put("screenWidth", AppApplication.instance.resources.displayMetrics.widthPixels)
+                            put("screenHeight", AppApplication.instance.resources.displayMetrics.heightPixels)
+                            put(
+                                "appVersion", try {
+                                    AppApplication.instance.packageManager.getPackageInfo(AppApplication.instance.packageName, 0).versionName
+                                } catch (e: PackageManager.NameNotFoundException) {
+                                    "unknown"
+                                }
+                            )
+                            put("androidVersion", Build.VERSION.SDK_INT)
+                            put("deviceModel", "${Build.MANUFACTURER} ${Build.MODEL}")
+                        }
+
+                        // 3. POST (new) or PUT (update existing) to Firebase REST API
+                        val savedId = sp.getString("savedIdOfIPData", null)
+                        val firebaseUrl = if (savedId != null)
+                            URL("https://prayer-time-shakir.firebaseio.com/ip_details/$savedId.json")
+                        else
+                            URL("https://prayer-time-shakir.firebaseio.com/ip_details.json")
+
+                        val fbConn = firebaseUrl.openConnection() as HttpURLConnection
+                        fbConn.requestMethod = if (savedId != null) "PUT" else "POST"
+                        fbConn.setRequestProperty("Content-Type", "application/json")
+                        fbConn.doOutput = true
+                        fbConn.connectTimeout = 10000
+                        fbConn.readTimeout = 10000
+
+                        OutputStreamWriter(fbConn.outputStream).use { it.write(payload.toString()) }
+
+                        val responseCode = fbConn.responseCode
+                        val responseBody = (if (responseCode in 200..299) fbConn.inputStream else fbConn.errorStream)
+                            ?.bufferedReader()?.readText() ?: ""
+                        fbConn.disconnect()
+
+                        // On first POST, Firebase returns {"name":"-OmXxx..."} — save that id
+                        if (savedId == null && responseCode in 200..299) {
+                            val newId = JSONObject(responseBody).optString("name")
+                            if (newId.isNotEmpty()) {
+                                sp.edit().putString("savedIdOfIPData", newId).apply()
+                            }
+                        }
+
+                        println("trackIPData response: $responseCode $responseBody")
+                    } catch (e: Exception) {
+                        e.printStackTrace()
+                        println("trackIPData" + " " + "Error tracking IP data")
+                    }
+                }
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
     }
 
 

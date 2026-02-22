@@ -214,6 +214,8 @@ class SettingsActivity : BaseActivity() {
                     binding.suhoorReminderValue.setText(suhoors[which].first)
                     dialog.dismiss()
                     sp.edit().putInt("suhoorMinute", suhoors[which].second).commit()
+                    Util.setNextAlarm(this@SettingsActivity)
+                    Util.setNextAlarmDND(AppApplication.instance)
                 }
                 .show()
         }

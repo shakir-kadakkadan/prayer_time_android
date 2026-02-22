@@ -11,18 +11,62 @@ import android.media.AudioManager
 import android.media.RingtoneManager
 import android.net.Uri
 import android.os.Bundle
+import android.provider.OpenableColumns
+import android.util.TypedValue
+import android.widget.LinearLayout
+import android.widget.ListView
+import android.widget.TextView
 import android.view.KeyEvent
 import android.widget.SeekBar
 import android.widget.SeekBar.OnSeekBarChangeListener
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.FileProvider
 import androidx.core.content.edit
 import shakir.swalah.databinding.ActivitySoundBinding
 import java.io.File
+import kotlin.concurrent.thread
 
 
 class SoundActivity : BaseActivity() {
     private lateinit var binding: ActivitySoundBinding
+
+    private var pendingPickerKey: String? = null
+    private val filePickerLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        if (result.resultCode == RESULT_OK) {
+            val uri = result.data?.data ?: return@registerForActivityResult
+            val key = pendingPickerKey ?: return@registerForActivityResult
+            val name = contentResolver.query(uri, null, null, null, null)?.use { cursor ->
+                val col = cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME)
+                cursor.moveToFirst()
+                if (col >= 0) cursor.getString(col) else null
+            } ?: uri.lastPathSegment ?: "local_file"
+            thread {
+                try {
+                    val dir = File(filesDir, "adhanMp3s").also { if (!it.exists()) it.mkdir() }
+                    val destFile = File(dir, name)
+                    contentResolver.openInputStream(uri)!!.use { input ->
+                        destFile.outputStream().use { input.copyTo(it) }
+                    }
+                    val fileUri = FileProvider.getUriForFile(this, "${packageName}.provider", destFile)
+                    sp.edit(commit = true) {
+                        putString("${key}sound", fileUri.toString())
+                        putString("${key}soundName", name)
+                    }
+                    runOnUiThread {
+                        updateAudioNameTextViews(0)
+                        updateDownloadFolderSize()
+                        showSoundList(key)
+                        showNoti(this, "Sample ${
+                            if (key == "suhoor_") "(" + "سَحُورٌ" + ")" else
+                            if (key == "iqama_") "(" + "الإقامة" + ")" else ""}${if (key == "fajr_") "(" + "الفجر" + ")" else ""}")
+                    }
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
+            }
+        }
+    }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivitySoundBinding.inflate(layoutInflater)
@@ -82,8 +126,30 @@ class SoundActivity : BaseActivity() {
             showSoundList("suhoor_")
         }
 
-
-
+        updateDownloadFolderSize()
+        binding.clearDownloadsBtn.setOnClickListener {
+            val dir = File(filesDir, "adhanMp3s")
+            val sizeText = folderSizeText(dir)
+            AlertDialog.Builder(this)
+                .setTitle("Cached Audio")
+                .setMessage("Delete all cached audio files? ($sizeText)")
+                .setPositiveButton("Delete") { _, _ ->
+                    val deletedNames = dir.listFiles()?.map { it.name }?.toSet() ?: emptySet()
+                    dir.listFiles()?.forEach { it.delete() }
+                    arrayOf("athan_", "iqama_", "fajr_", "suhoor_").forEach { key ->
+                        if (sp.getString("${key}soundName", null)?.let { it in deletedNames } == true) {
+                            sp.edit {
+                                putString("${key}sound", null)
+                                putString("${key}soundName", null)
+                            }
+                        }
+                    }
+                    updateDownloadFolderSize()
+                    updateAudioNameTextViews(0)
+                }
+                .setNegativeButton("Cancel", null)
+                .show()
+        }
 
         updateAudioNameTextViews(1)
 
@@ -164,68 +230,82 @@ class SoundActivity : BaseActivity() {
         list.addAll(appSoundList.map { it.first })
         list.addAll(fileList.map { it.name })
         list.addAll(notificationSounds.map { it.first })
-        var pos = -1
-        if (sp.getString("${key}soundName", null) != null) {
-            pos = list.indexOf(sp.getString("${key}soundName", null))
-        }
-        AlertDialog.Builder(this)
-            .setSingleChoiceItems(list.toTypedArray(), pos, DialogInterface.OnClickListener { dialog, which ->
-                pos = which
-//                println("which $pos")
-//                if (appSoundList.map { it.first }.contains(list.get(pos))) {
-//                    val path = Uri.parse("android.resource://" + AppApplication.instance.packageName + "/" + appSoundList.get(pos).second)
-//                    playSound(this@SoundActivity, path)
-//                } else {
-//                    playSound(this@SoundActivity, notificationSounds.first { it.first == list.get(pos) }.second)
-//                }
+        val pos = if (prevSoundName != null) list.indexOf(prevSoundName) else -1
 
-                if (fileList.find { it.name == list.get(pos) } != null) {
-                    val path = FileProvider.getUriForFile(this, "${this.packageName}.provider", fileList.find { it.name == list.get(pos) }!!)
+        // Sticky "Select local file" header — lives in setCustomTitle (never scrolls away)
+        val dp16 = (16 * resources.displayMetrics.density).toInt()
+        val headerLayout = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
+        val localFileRow = TextView(this).apply {
+            text = "📁 Select local file..."
+            setPadding(dp16 * 3, dp16, dp16, dp16)
+            textSize = 16f
+            isClickable = true
+            isFocusable = true
+            TypedValue().also { tv ->
+                context.theme.resolveAttribute(android.R.attr.selectableItemBackground, tv, true)
+                setBackgroundResource(tv.resourceId)
+            }
+        }
+        headerLayout.addView(localFileRow)
+        headerLayout.addView(
+            android.view.View(this).apply { setBackgroundColor(0x1F000000) },
+            LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 1)
+        )
+
+        var dialogRef: AlertDialog? = null
+        localFileRow.setOnClickListener {
+            pendingPickerKey = key
+            dialogRef?.dismiss()
+            filePickerLauncher.launch(Intent(Intent.ACTION_OPEN_DOCUMENT).apply {
+                addCategory(Intent.CATEGORY_OPENABLE)
+                type = "audio/*"
+            })
+        }
+
+        dialogRef = AlertDialog.Builder(this)
+            .setCustomTitle(headerLayout)
+            .setSingleChoiceItems(list.toTypedArray(), pos) { _, which ->
+                val selectedName = list[which]
+                val fileMatch = fileList.find { it.name == selectedName }
+                val appSoundMatch = appSoundList.find { it.first == selectedName }
+                val notifSoundMatch = notificationSounds.find { it.first == selectedName }
+
+                if (fileMatch != null) {
+                    val path = FileProvider.getUriForFile(this, "${packageName}.provider", fileMatch)
                     sp.edit(commit = true) {
                         putString("${key}sound", path.toString())
-                        putString("${key}soundName", list.get(pos))
+                        putString("${key}soundName", selectedName)
                     }
-                } else if (appSoundList.map { it.first }.contains(list.get(pos))) {
-                    val path = Uri.parse("android.resource://" + AppApplication.instance.packageName + "/" + appSoundList.get(pos).second)
+                } else if (appSoundMatch != null) {
+                    val path = Uri.parse("android.resource://${packageName}/${appSoundMatch.second}")
                     sp.edit(commit = true) {
                         putString("${key}sound", path.toString())
-                        putString("${key}soundName", list.get(pos))
+                        putString("${key}soundName", selectedName)
                     }
-                } else {
+                } else if (notifSoundMatch != null) {
                     sp.edit(commit = true) {
-                        putString("${key}sound", notificationSounds.first { it.first == list.get(pos) }.second.toString())
-                        putString("${key}soundName", list.get(pos))
+                        putString("${key}sound", notifSoundMatch.second.toString())
+                        putString("${key}soundName", selectedName)
                     }
                 }
 
                 showNoti(this, "Sample ${
                     if (key == "suhoor_") "(" + "سَحُورٌ" + ")" else
-
                     if (key == "iqama_") "(" + "الإقامة" + ")" else ""}${if (key == "fajr_") "(" + "الفجر" + ")" else ""}")
-
-
-            })
+            }
             .setCancelable(false)
-            .setPositiveButton("OK", DialogInterface.OnClickListener { dialog, which ->
-
-                dialog.dismiss()
-
-            })
-            .setOnDismissListener {
-                updateAudioNameTextViews(0)
-            }
-            .setOnCancelListener {
-                updateAudioNameTextViews(0)
-            }
-
-            .setNegativeButton("Cancel", DialogInterface.OnClickListener { dialog, which ->
+            .setPositiveButton("OK") { dialog, _ -> dialog.dismiss() }
+            .setOnDismissListener { updateAudioNameTextViews(0) }
+            .setOnCancelListener { updateAudioNameTextViews(0) }
+            .setNegativeButton("Cancel") { dialog, _ ->
                 dialog.dismiss()
                 sp.edit(commit = true) {
                     putString("${key}sound", prevSound)
                     putString("${key}soundName", prevSoundName)
                 }
-            })
-            .show()
+            }
+            .create()
+        dialogRef.show()
 
 
     }
@@ -233,6 +313,7 @@ class SoundActivity : BaseActivity() {
     val notificationSounds: ArrayList<Pair<String, Uri>> = arrayListOf()
     override fun onStart() {
         super.onStart()
+        updateDownloadFolderSize()
         try {
             notificationSounds.clear()
             notificationSounds.addAll(getNotificationSounds(this))
@@ -242,7 +323,8 @@ class SoundActivity : BaseActivity() {
         downloadSounds(force = true) {
             runOnUiThread {
                 try {
-                    binding.downloading.setText(it)
+                    binding.downloading.text = it
+                    binding.downloading.visibility = if (it.isNullOrEmpty()) android.view.View.GONE else android.view.View.VISIBLE
                 } catch (e: Exception) {
 
                 }
@@ -305,6 +387,20 @@ class SoundActivity : BaseActivity() {
         } catch (e: Exception) {
             e.printStackTrace()
         }
+    }
+
+    private fun folderSizeText(dir: File): String {
+        val bytes = dir.walkTopDown().filter { it.isFile }.sumOf { it.length() }
+        return when {
+            bytes >= 1_048_576 -> "%.1f MB".format(bytes / 1_048_576.0)
+            bytes >= 1_024    -> "%.1f KB".format(bytes / 1_024.0)
+            else              -> "$bytes B"
+        }
+    }
+
+    fun updateDownloadFolderSize() {
+        val dir = File(filesDir, "adhanMp3s")
+        binding.cacheSizeText.text = folderSizeText(dir)
     }
 
     var volumeChangeReceiver: BroadcastReceiver = object : BroadcastReceiver() {

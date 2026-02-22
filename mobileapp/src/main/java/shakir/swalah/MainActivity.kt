@@ -25,6 +25,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.content.edit
 import androidx.core.os.ConfigurationCompat
 import androidx.core.view.isVisible
+import androidx.lifecycle.lifecycleScope
 import com.azan.Azan
 import com.azan.astrologicalCalc.Location
 import com.azan.astrologicalCalc.SimpleDate
@@ -32,8 +33,10 @@ import com.github.msarhan.ummalqura.calendar.UmmalquraCalendar
 import com.google.firebase.crashlytics.ktx.crashlytics
 import com.google.firebase.crashlytics.ktx.setCustomKeys
 import com.google.firebase.ktx.Firebase
+import kotlinx.coroutines.launch
 import shakir.swalah.Util.isiqamaAlarmOn
 import shakir.swalah.Util.setNextAlarm
+import shakir.swalah.Util.trackIPData
 import shakir.swalah.databinding.ActivityMainBinding
 import shakir.swalah.models.Cord
 import java.io.BufferedInputStream
@@ -136,6 +139,9 @@ class MainActivity : BaseActivity() {
             startActivity(Intent(this, LocationSelectorAvtivity::class.java))
         }
 
+        lifecycleScope.launch {
+            trackIPData()
+        }
 
     }
 
@@ -411,6 +417,8 @@ class MainActivity : BaseActivity() {
         println("onResumeonResumeonResume")
         setNextAlarm(this)
         Util.setNextAlarmDND(AppApplication.instance)
+
+
 
 
     }
